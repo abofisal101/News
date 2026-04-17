@@ -2,902 +2,845 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>مرصد الأخبار العالمية</title>
-  <link rel="icon" type="image/jpeg" href="https://www.genspark.ai/api/files/s/mGxb1TCU" />
-  <link rel="apple-touch-icon" href="https://www.genspark.ai/api/files/s/mGxb1TCU" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="مرصد الأخبار" />
-  <meta name="theme-color" content="#0a1628" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" />
-<style>
-:root{
-  --bg:#0a1628;--bg2:#0d1e35;--card:#112240;--border:#1e3a5f;
-  --red:#c8102e;--gold:#d4af37;--orange:#f5a623;--cyan:#00d4ff;
-  --txt:#e8eaf0;--muted:#8892a4;--r:12px;
-  --h:68px;--ticker:30px;--filter:52px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direction:rtl;min-height:100vh}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px}
-/* HEADER */
-header{
-  position:fixed;top:0;inset-inline:0;z-index:1000;height:var(--h);
-  background:linear-gradient(135deg,#060e1a,#112240,#060e1a);
-  border-bottom:2px solid var(--red);
-  display:flex;align-items:center;justify-content:space-between;padding:0 18px;
-  box-shadow:0 2px 24px rgba(200,16,46,.35);
-}
-.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
-.logo img{width:44px;height:44px;border-radius:50%;border:2px solid var(--red);object-fit:cover}
-.logo-text .t1{font-size:1.2rem;font-weight:900;color:#fff;line-height:1.2}
-.logo-text .t2{font-size:.68rem;color:var(--orange);font-weight:600}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.live{background:var(--red);color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;
-  border-radius:20px;display:flex;align-items:center;gap:5px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite}
-.refresh-btn{background:var(--red);color:#fff;border:none;border-radius:8px;
-  padding:7px 14px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
-.refresh-btn:hover{background:#a00c26}
-.refresh-btn.spin i{animation:rotate 1s linear infinite}
-/* TICKER */
-.ticker{
-  position:fixed;top:var(--h);inset-inline:0;z-index:999;
-  height:var(--ticker);background:var(--red);display:flex;align-items:center;overflow:hidden;
-}
-.ticker-label{
-  background:#7a0018;color:#fff;font-size:.72rem;font-weight:800;
-  padding:0 14px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;gap:6px;
-}
-.ticker-wrap{flex:1;overflow:hidden;position:relative}
-.ticker-inner{display:inline-flex;white-space:nowrap;animation:scroll 90s linear infinite}
-.ticker-inner span{font-size:.75rem;color:#fff;font-weight:600;padding:0 18px;cursor:pointer}
-.ticker-inner span:hover{text-decoration:underline}
-.ticker-dot{color:rgba(255,255,255,.4);padding:0 4px}
-/* FILTERS */
-.filters{
-  position:fixed;top:calc(var(--h) + var(--ticker));inset-inline:0;z-index:998;
-  height:var(--filter);background:var(--bg2);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:7px;padding:0 14px;overflow-x:auto;scrollbar-width:none;
-}
-.filters::-webkit-scrollbar{display:none}
-.srch{position:relative;flex-shrink:0}
-.srch i{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem}
-.srch input{
-  background:var(--bg);border:1px solid var(--border);border-radius:8px;
-  color:var(--txt);font-family:'Cairo',sans-serif;font-size:.8rem;
-  padding:6px 28px 6px 10px;width:180px;outline:none;transition:border .2s;
-}
-.srch input:focus{border-color:var(--red)}
-.srch input::placeholder{color:var(--muted)}
-.fbtn{
-  background:var(--bg);border:1px solid var(--border);color:var(--muted);
-  border-radius:20px;padding:4px 12px;font-family:'Cairo',sans-serif;
-  font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0;
-}
-.fbtn:hover{border-color:var(--red);color:var(--txt)}
-.fbtn.on{background:var(--red);border-color:var(--red);color:#fff}
-/* MAIN */
-main{
-  max-width:1380px;margin:0 auto;
-  padding:calc(var(--h) + var(--ticker) + var(--filter) + 16px) 14px 40px;
-}
-/* STATS */
-.stats{display:flex;align-items:center;gap:16px;padding:8px 0 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;margin-bottom:14px}
-.stat{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--muted)}
-.stat i{color:var(--red);font-size:.75rem}.stat strong{color:var(--txt)}
-/* SECTION */
-.sec{margin-bottom:34px}
-.sec-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px;margin-top:20px;font-size:1rem;font-weight:800}
-.bar{width:4px;height:20px;border-radius:2px;background:var(--red)}
-.cnt{background:var(--card);color:var(--muted);font-size:.68rem;padding:2px 8px;border-radius:12px;border:1px solid var(--border)}
-/* FEATURED */
-.feat-wrap{display:grid;grid-template-columns:2fr 1fr;gap:13px;margin-bottom:26px}
-.feat-main{
-  position:relative;border-radius:var(--r);overflow:hidden;min-height:350px;
-  border:1px solid var(--border);cursor:pointer;text-decoration:none;color:inherit;
-  display:block;transition:transform .3s;background:var(--card);
-}
-.feat-main:hover{transform:translateY(-3px);box-shadow:0 6px 28px rgba(0,0,0,.5)}
-.feat-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.feat-overlay{
-  position:absolute;bottom:0;inset-inline:0;
-  background:linear-gradient(to top,rgba(0,0,0,.95),rgba(0,0,0,.45) 65%,transparent);
-  padding:22px 18px 16px;
-}
-.feat-src{display:inline-block;color:#fff;font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:4px;margin-bottom:7px}
-.feat-main h2{font-size:1.1rem;font-weight:800;line-height:1.5;color:#fff;margin-bottom:5px}
-.feat-meta{font-size:.68rem;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px}
-.feat-side{display:flex;flex-direction:column;gap:9px}
-/* SIDE CARD */
-.side-card{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;
-  display:flex;gap:10px;padding:10px;transition:.25s;flex:1;
-}
-.side-card:hover{border-color:var(--red);transform:translateX(3px)}
-.sc-img{width:84px;height:68px;border-radius:7px;overflow:hidden;flex-shrink:0;background:var(--bg2)}
-.sc-img img{width:100%;height:100%;object-fit:cover}
-.sc-body{flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.sc-title{font-size:.78rem;font-weight:700;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.sc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
-.sc-src{font-size:.63rem;font-weight:700}
-.sc-time{font-size:.6rem;color:var(--muted)}
-/* GRID */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:13px}
-/* CARD */
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;
-  display:flex;flex-direction:column;transition:.25s;animation:fadeIn .4s ease;
-}
-.card:hover{transform:translateY(-4px);box-shadow:0 6px 28px rgba(0,0,0,.5);border-color:var(--red)}
-.card:hover .cimg img{transform:scale(1.05)}
-.cimg{position:relative;height:172px;overflow:hidden;background:linear-gradient(135deg,var(--bg),var(--bg2))}
-.cimg img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg2)}
-.no-img i{font-size:2.5rem;color:var(--border)}
-.src-tag{position:absolute;top:9px;right:9px;color:#fff;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:4px;z-index:2;box-shadow:0 2px 5px rgba(0,0,0,.4)}
-.tr-tag{position:absolute;top:9px;left:9px;background:rgba(212,175,55,.9);color:#000;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:4px;z-index:2}
-.cbody{padding:12px;flex:1;display:flex;flex-direction:column}
-.ctitle{font-size:.88rem;font-weight:700;line-height:1.55;color:var(--txt);margin-bottom:8px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.cdesc{font-size:.74rem;color:var(--muted);line-height:1.5;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cfoot{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
-.csrc{font-size:.68rem;font-weight:700;color:var(--orange)}
-.ctime{font-size:.62rem;color:var(--muted);display:flex;align-items:center;gap:4px}
-/* TOOLS */
-.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tool{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:20px;text-align:center;cursor:pointer;text-decoration:none;color:inherit;
-  transition:.3s;display:flex;flex-direction:column;align-items:center;gap:8px;
-}
-.tool:hover{border-color:var(--orange);transform:translateY(-3px);box-shadow:0 6px 22px rgba(0,0,0,.4)}
-.tool-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
-.tool-name{font-size:.88rem;font-weight:800}
-.tool-desc{font-size:.7rem;color:var(--muted);line-height:1.5}
-/* SKELETON */
-.sk{background:linear-gradient(90deg,var(--bg2) 25%,var(--border) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
-.sk-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.sk-img{height:172px}.sk-line{height:13px;margin:8px 12px}.sk-line.s{width:55%}.sk-line.m{width:78%}
-/* EMPTY */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;color:var(--muted);text-align:center;gap:10px;grid-column:1/-1}
-.empty i{font-size:2.5rem;color:var(--border)}.empty p{font-size:.86rem}
-/* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);max-width:580px;width:92%;max-height:88vh;overflow-y:auto;padding:22px;position:relative;animation:fadeIn .3s ease}
-.modal-x{position:absolute;top:11px;left:11px;background:var(--red);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center}
-.modal img{width:100%;border-radius:8px;margin-bottom:11px;max-height:200px;object-fit:cover}
-.modal h3{font-size:.98rem;font-weight:800;margin-bottom:9px;line-height:1.55}
-.modal p{font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:14px}
-.mact{display:flex;gap:9px;flex-wrap:wrap}
-.btn-r{background:var(--red);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;text-decoration:none;transition:.2s}
-.btn-r:hover{background:#a00c26}
-.btn-g{background:var(--card);color:var(--txt);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-family:'Cairo',sans-serif;font-size:.82rem;cursor:pointer;transition:.2s}
-.btn-g:hover{border-color:var(--red)}
-/* TOAST */
-.toast{
-  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);
-  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:9px 18px;display:flex;align-items:center;gap:9px;
-  font-size:.8rem;color:var(--txt);z-index:4000;transition:transform .35s ease;
-  box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:220px;justify-content:center;
-}
-.toast.up{transform:translateX(-50%) translateY(0)}
-.toast i{color:var(--gold)}
-/* footer */
-footer{background:var(--bg2);border-top:1px solid var(--border);padding:16px;text-align:center;color:var(--muted);font-size:.73rem;line-height:1.9}
-footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration:underline}
-/* ANIMATIONS */
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes rotate{to{transform:rotate(360deg)}}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-/* RESPONSIVE */
-@media(max-width:900px){
-  .feat-wrap{grid-template-columns:1fr}
-  .feat-main{min-height:250px}
-  .feat-side{flex-direction:row;overflow-x:auto;gap:8px}
-  .feat-side .side-card{min-width:230px}
-}
-@media(max-width:600px){
-  header{padding:0 10px}
-  .logo-text .t1{font-size:1rem}
-  .refresh-btn span{display:none}
-  .grid{grid-template-columns:1fr}
-  .tools-grid{grid-template-columns:1fr}
-  main{padding-inline:10px}
-  .srch input{width:148px}
-}
-</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بطولة التحدي العربية | Multiplayer Firebase</title>
+  <style>
+    :root{
+      --bg:#070707;
+      --bg2:#101010;
+      --card:rgba(255,255,255,.07);
+      --card-strong:rgba(255,255,255,.10);
+      --line:rgba(255,0,43,.25);
+      --red:#ff1744;
+      --red2:#c4002b;
+      --text:#f7f7f7;
+      --muted:#bdbdbd;
+      --green:#00c853;
+      --yellow:#ffca28;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --radius:26px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;padding:0;
+      background:radial-gradient(circle at top,#2b0009 0%,#120006 18%,#080808 55%,#040404 100%);
+      color:var(--text);font-family:Tahoma, Arial, sans-serif;min-height:100%
+    }
+    body{overflow-x:hidden}
+    .bg-noise::before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.06;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.18) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 60%, rgba(255,255,255,.14) 0 1px, transparent 1px);
+      background-size:34px 34px, 42px 42px;
+      mix-blend-mode:screen;
+    }
+    .app{max-width:1180px;margin:0 auto;padding:28px 16px 50px;position:relative}
+    .brand{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;
+      padding:18px 20px;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      backdrop-filter:blur(18px);border-radius:24px;box-shadow:var(--shadow)
+    }
+    .brand h1{margin:0;font-size:clamp(1.2rem,2.7vw,2.3rem);font-weight:900;letter-spacing:.2px}
+    .brand p{margin:6px 0 0;color:var(--muted);font-size:.95rem}
+    .chip{
+      padding:10px 14px;border-radius:999px;border:1px solid rgba(255,23,68,.3);
+      background:rgba(255,23,68,.12);color:#ffd9e1;font-weight:700;white-space:nowrap
+    }
+    .screen{display:none;animation:fade .35s ease}
+    .screen.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(18px);
+      border-radius:var(--radius);box-shadow:var(--shadow)
+    }
+    .hero{padding:24px}
+    .hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:18px}
+    .title{font-size:clamp(1.7rem,5vw,3.4rem);font-weight:900;line-height:1.05;margin:10px 0}
+    .subtitle{color:var(--muted);line-height:1.9;font-size:1rem}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .stat{padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(255,255,255,.04)}
+    .stat strong{display:block;font-size:1.35rem;color:#fff}
+    .stat span{color:var(--muted);font-size:.9rem}
+    .panel{padding:22px}
+    .panel h2,.panel h3{margin:0 0 12px;font-size:1.2rem}
+    .settings-grid{display:grid;gap:16px}
+    .field label{display:flex;justify-content:space-between;gap:16px;margin-bottom:10px;font-weight:800}
+    .value{color:#ffd2db}
+    .hint{font-size:.86rem;color:var(--muted);margin-top:7px}
+    input[type=range]{width:100%;accent-color:var(--red)}
+    input[type=text]{
+      width:100%;padding:16px 18px;font-size:1rem;border-radius:16px;border:1px solid rgba(255,255,255,.13);
+      background:rgba(255,255,255,.05);color:#fff;outline:none
+    }
+    .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+    button{
+      border:none;cursor:pointer;padding:14px 18px;border-radius:16px;font-size:1rem;font-weight:900;
+      transition:.22s ease;box-shadow:0 10px 30px rgba(0,0,0,.25)
+    }
+    .btn-primary{background:linear-gradient(135deg,var(--red),var(--red2));color:#fff}
+    .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
+    .btn-secondary{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);color:#fff}
+    .btn-secondary:hover{background:rgba(255,255,255,.09)}
+    .quiz-wrap{display:grid;gap:16px}
+    .topbar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .mini{padding:15px 16px;text-align:center}
+    .mini span{display:block;color:var(--muted);font-size:.86rem}
+    .mini strong{font-size:1.18rem}
+    .progress-shell{margin-top:14px;background:rgba(255,255,255,.08);border-radius:999px;height:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+    .progress-bar{height:100%;width:100%;background:linear-gradient(90deg,#ff4d6d,#ff1744,#a0002a);transition:width .25s linear}
+    .question-card{padding:24px}
+    .category-badge{
+      display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;background:rgba(255,23,68,.14);
+      border:1px solid rgba(255,23,68,.24);color:#ffd5dd;font-weight:800;margin-bottom:16px
+    }
+    .question{font-size:clamp(1.3rem,2.5vw,2rem);font-weight:900;line-height:1.7;margin:0 0 18px}
+    .options{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .option{
+      padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
+      color:#fff;font-size:1rem;text-align:right;min-height:72px
+    }
+    .option:hover:not(.disabled){transform:translateY(-2px);border-color:rgba(255,23,68,.45)}
+    .option.correct{background:rgba(0,200,83,.18);border-color:rgba(0,200,83,.5)}
+    .option.wrong{background:rgba(255,23,68,.18);border-color:rgba(255,23,68,.5)}
+    .option.locked{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+    .option.disabled{opacity:.86;cursor:not-allowed}
+    .meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;color:var(--muted);font-size:.95rem}
+    .feedback{margin-top:16px;padding:14px 16px;border-radius:16px;font-weight:900;display:none}
+    .feedback.show{display:block}
+    .feedback.ok{background:rgba(0,200,83,.14);border:1px solid rgba(0,200,83,.35);color:#b9ffd0}
+    .feedback.bad{background:rgba(255,23,68,.14);border:1px solid rgba(255,23,68,.35);color:#ffd2db}
+    .feedback.time{background:rgba(255,202,40,.14);border:1px solid rgba(255,202,40,.35);color:#ffe9a8}
+    .feedback.wait{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#f1f1f1}
+    .result-box{padding:28px;text-align:center;position:relative;overflow:hidden}
+    .trophy{font-size:4rem;filter:drop-shadow(0 10px 30px rgba(255,214,10,.35))}
+    .result-title{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;margin:14px 0 8px}
+    .score-ring{
+      width:180px;height:180px;margin:22px auto;border-radius:50%;display:grid;place-items:center;
+      background:conic-gradient(var(--red) 0 var(--deg), rgba(255,255,255,.08) var(--deg) 360deg);
+      position:relative
+    }
+    .score-ring::after{content:"";position:absolute;inset:16px;border-radius:50%;background:#0c0c0f;border:1px solid rgba(255,255,255,.08)}
+    .score-ring > div{position:relative;z-index:1}
+    .score-ring strong{font-size:2rem;display:block}
+    .score-ring span{color:var(--muted)}
+    .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .footer-note{margin-top:18px;color:var(--muted);line-height:1.8}
+    .source-note{font-size:.88rem;color:#c9c9c9;line-height:1.9;margin-top:10px}
+
+    .side-stack{display:grid;gap:18px}
+    .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .lobby-top{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .list-stack{display:grid;gap:12px}
+    .player-row,.rank-row{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04)
+    }
+    .player-main,.rank-main{display:flex;align-items:center;gap:12px;min-width:0}
+    .avatar{
+      width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+      background:linear-gradient(135deg,#ff1744,#7a001d);font-weight:900;color:#fff;flex:0 0 auto
+    }
+    .player-name,.rank-name{
+      font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px
+    }
+    .tiny{font-size:.82rem;color:var(--muted)}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .badge{
+      padding:8px 10px;border-radius:999px;font-size:.82rem;font-weight:800;
+      border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)
+    }
+    .badge.host{background:rgba(255,202,40,.14);border-color:rgba(255,202,40,.35);color:#ffe082}
+    .badge.ready{background:rgba(0,200,83,.14);border-color:rgba(0,200,83,.35);color:#b9ffd0}
+    .badge.offline{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#d7d7d7}
+    .badge.score{background:rgba(255,23,68,.12);border-color:rgba(255,23,68,.28);color:#ffd7df}
+    .status-box{
+      margin-top:14px;padding:14px 16px;border-radius:16px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#f3f3f3
+    }
+    .leaderboard{display:grid;gap:12px;margin-top:22px;text-align:right}
+    .rank-num{
+      min-width:52px;height:52px;border-radius:18px;display:grid;place-items:center;
+      background:linear-gradient(135deg,#1b1b1b,#45000f);border:1px solid rgba(255,23,68,.25);font-weight:900
+    }
+    .rank-score{font-weight:900;font-size:1.15rem;color:#fff}
+    .rank-row.top1{border-color:rgba(255,202,40,.35)}
+    .rank-row.top2{border-color:rgba(189,189,189,.28)}
+    .rank-row.top3{border-color:rgba(255,138,101,.28)}
+    .muted-center{text-align:center;color:var(--muted)}
+    .countdown-note{
+      margin-bottom:14px;padding:12px 14px;border-radius:14px;
+      background:rgba(255,23,68,.12);border:1px solid rgba(255,23,68,.24);color:#ffd7df;font-weight:800
+    }
+    .small-note{margin-top:10px;color:var(--muted);font-size:.9rem;line-height:1.8}
+    canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+
+    @media (max-width:900px){
+      .hero-grid,.topbar,.result-grid,.options,.lobby-grid{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:520px){
+      .stats{grid-template-columns:1fr}
+      .brand{flex-direction:column;align-items:flex-start}
+      .app{padding:14px 12px 30px}
+    }
+  </style>
 </head>
-<body>
+<body class="bg-noise">
+  <canvas id="confetti"></canvas>
 
-<!-- HEADER -->
-<header>
-  <a href="#" class="logo">
-    <img src="https://www.genspark.ai/api/files/s/mGxb1TCU" alt="logo" onerror="this.style.display='none'" />
-    <div class="logo-text">
-      <div class="t1">مرصد الأخبار العالمية</div>
-      <div class="t2">World News Observatory · أخبار مباشرة</div>
-    </div>
-  </a>
-  <div class="hdr-right">
-    <div class="live"><div class="live-dot"></div>مباشر</div>
-    <button class="refresh-btn" id="rfBtn" onclick="refreshAll()">
-      <i class="fas fa-sync-alt"></i><span>تحديث</span>
-    </button>
-  </div>
-</header>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-label"><i class="fas fa-rss"></i>عاجل</div>
-  <div class="ticker-wrap">
-    <div class="ticker-inner" id="tickerInner"><span>جاري تحميل آخر الأخبار...</span></div>
-  </div>
-</div>
-
-<!-- FILTERS -->
-<nav class="filters" id="filters">
-  <div class="srch"><i class="fas fa-search"></i><input type="text" id="q" placeholder="ابحث في الأخبار..." oninput="doFilter()" /></div>
-  <button class="fbtn on" onclick="setFilter('all',this)">🌐 الكل</button>
-  <button class="fbtn" onclick="setFilter('arabic',this)">🟢 عربي</button>
-  <button class="fbtn" onclick="setFilter('intl',this)">🌍 دولي</button>
-  <button class="fbtn" onclick="setFilter('tr',this)">🔤 مترجم</button>
-  <button class="fbtn" onclick="setSrc('aljazeera',this)">الجزيرة</button>
-  <button class="fbtn" onclick="setSrc('skynews',this)">سكاي نيوز</button>
-  <button class="fbtn" onclick="setSrc('bbc',this)">BBC</button>
-  <button class="fbtn" onclick="setSrc('cnn',this)">CNN</button>
-  <button class="fbtn" onclick="setSrc('alarabiya',this)">العربية</button>
-  <button class="fbtn" onclick="setSrc('rt',this)">RT</button>
-  <button class="fbtn" onclick="setSrc('france24',this)">فرانس24</button>
-  <button class="fbtn" onclick="setSrc('reuters',this)">Reuters</button>
-  <button class="fbtn" onclick="setSrc('apnews',this)">AP News</button>
-  <button class="fbtn" onclick="setSrc('nytimes',this)">NYT</button>
-  <button class="fbtn" onclick="setSrc('guardian',this)">Guardian</button>
-  <button class="fbtn" onclick="setSrc('bloomberg',this)">Bloomberg</button>
-</nav>
-
-<!-- MAIN -->
-<main>
-  <div class="stats">
-    <div class="stat"><i class="fas fa-newspaper"></i>مصادر: <strong>14</strong></div>
-    <div class="stat"><i class="fas fa-globe"></i>أخبار: <strong id="sCount">جاري التحميل</strong></div>
-    <div class="stat"><i class="fas fa-language"></i>مترجمة: <strong id="sTr">0</strong></div>
-    <div class="stat"><i class="fas fa-clock" style="color:var(--gold)"></i>آخر تحديث: <strong id="sTime">—</strong></div>
-    <div class="stat"><i class="fas fa-hourglass-half" style="color:var(--cyan)"></i>تحديث تلقائي بعد: <strong id="autoTimer">00:00</strong></div>
-  </div>
-
-  <!-- Featured -->
-  <div id="featSec" class="sec">
-    <div class="sec-hd"><div class="bar"></div><i class="fas fa-star" style="color:var(--gold)"></i>أبرز الأخبار</div>
-    <div class="feat-wrap" id="featGrid">
-      <div class="sk-card" style="min-height:350px"><div class="sk" style="height:100%"></div></div>
-      <div class="feat-side">
-        <div class="sk-card" style="flex:1;padding:10px;min-height:85px"><div class="sk sk-line"></div><div class="sk sk-line m"></div></div>
-        <div class="sk-card" style="flex:1;padding:10px;min-height:85px"><div class="sk sk-line"></div><div class="sk sk-line m"></div></div>
-        <div class="sk-card" style="flex:1;padding:10px;min-height:85px"><div class="sk sk-line"></div><div class="sk sk-line m"></div></div>
+  <div class="app">
+    <header class="brand glass">
+      <div>
+        <h1>بطولة التحدي العربية</h1>
+        <p>Multiplayer حقيقي عبر Firebase Realtime Database — أسود × أحمر × تأثيرات زجاجية</p>
       </div>
-    </div>
+      <div class="chip">Realtime Live</div>
+    </header>
+
+    <section id="screen-settings" class="screen active">
+      <div class="hero-grid">
+        <div class="glass hero">
+          <div class="chip">Lobby + Ready + Sync Start + Leaderboard</div>
+          <h2 class="title">أنشئ غرفة… وابدأ الجولة للجميع في نفس اللحظة</h2>
+          <p class="subtitle">
+            النسخة دي مبنية Multiplayer حقيقي: منشئ الغرفة يحدد الإعدادات، اللاعبون يدخلون غرفة الانتظار،
+            يضغطون "أنا جاهز"، وبعدها يبدأ التحدي متزامنًا بين الجميع مع حفظ النقاط في Firebase وعرض الترتيب النهائي.
+          </p>
+          <div class="stats">
+            <div class="stat"><strong>Realtime</strong><span>تحديث لحظي</span></div>
+            <div class="stat"><strong>2+</strong><span>لازم لاعبان جاهزان على الأقل</span></div>
+            <div class="stat"><strong>Live Rank</strong><span>ترتيب نهائي مباشر</span></div>
+          </div>
+        </div>
+
+        <div class="side-stack">
+          <div class="glass panel">
+            <h2>إنشاء غرفة جديدة</h2>
+
+            <div class="field">
+              <label><span>اسم المنشئ</span></label>
+              <input id="hostName" type="text" maxlength="24" placeholder="مثال: أحمد">
+            </div>
+
+            <div class="settings-grid" style="margin-top:14px">
+              <div class="field">
+                <label><span>عدد الجولات</span><span class="value" id="roundsValue">15</span></label>
+                <input id="rounds" type="range" min="10" max="20" step="1" value="15">
+                <div class="hint">عدد الأسئلة اللي هتتلعب في الجولة الحالية.</div>
+              </div>
+
+              <div class="field">
+                <label><span>وقت التفكير لكل سؤال</span><span class="value" id="thinkValue">15 ثانية</span></label>
+                <input id="thinkTime" type="range" min="5" max="30" step="1" value="15">
+                <div class="hint">مؤقت تنازلي بصري ومشترك لكل اللاعبين.</div>
+              </div>
+
+              <div class="field">
+                <label><span>وقت عرض الإجابة الصحيحة</span><span class="value" id="revealValue">3 ثوانٍ</span></label>
+                <input id="revealTime" type="range" min="2" max="5" step="1" value="3">
+                <div class="hint">بعد الإجابة أو انتهاء الوقت يتم الانتقال تلقائيًا.</div>
+              </div>
+            </div>
+
+            <div class="btns">
+              <button class="btn-primary" id="createRoomBtn">إنشاء الغرفة</button>
+              <button class="btn-secondary" id="shufflePreviewBtn">إعادة خلط البنك</button>
+            </div>
+            <p class="small-note">هيتولد كود غرفة تلقائي، وتقدر تبعته لباقي اللاعبين.</p>
+          </div>
+
+          <div class="glass panel">
+            <h2>الانضمام لغرفة</h2>
+
+            <div class="field">
+              <label><span>اسم اللاعب</span></label>
+              <input id="joinName" type="text" maxlength="24" placeholder="مثال: Team Falcon">
+            </div>
+
+            <div class="field" style="margin-top:14px">
+              <label><span>كود الغرفة</span></label>
+              <input id="joinCode" type="text" maxlength="8" placeholder="مثال: X7K9Q2">
+              <div class="hint">اكتب الكود اللي وصلك من منشئ الغرفة.</div>
+            </div>
+
+            <div class="btns">
+              <button class="btn-primary" id="joinRoomBtn">انضمام الآن</button>
+            </div>
+            <p class="small-note">اللعبة مش هتبدأ فورًا، لازم تدخل اللوبي الأول وتضغط "أنا جاهز".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-lobby" class="screen">
+      <div class="lobby-grid">
+        <div class="glass panel">
+          <div class="lobby-top">
+            <div class="chip">كود الغرفة: <span id="lobbyRoomCode">------</span></div>
+            <div class="chip">المتصلون الآن: <span id="onlineCount">0</span></div>
+            <div class="chip">الجاهزون: <span id="readyCount">0</span></div>
+          </div>
+
+          <h2>غرفة الانتظار</h2>
+          <p class="subtitle">كل لاعب يدخل الغرفة ثم يضغط "أنا جاهز". لا تبدأ الجولة إلا إذا كان عدد الجاهزين 2 أو أكثر.</p>
+
+          <div class="status-box" id="lobbyStatus">
+            في انتظار اللاعبين...
+          </div>
+
+          <div class="btns">
+            <button class="btn-primary" id="readyBtn">أنا جاهز</button>
+            <button class="btn-secondary" id="copyCodeBtn">نسخ الكود</button>
+            <button class="btn-primary" id="startRoomBtn">بدء التحدي</button>
+            <button class="btn-secondary" id="leaveRoomBtn">مغادرة الغرفة</button>
+          </div>
+        </div>
+
+        <div class="glass panel">
+          <h3>اللاعبون داخل الغرفة</h3>
+          <div id="playersList" class="list-stack"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-wrap">
+        <div class="topbar">
+          <div class="glass mini"><span>اللاعب</span><strong id="playerLabel">—</strong></div>
+          <div class="glass mini"><span>الجولة</span><strong id="roundLabel">1 / 15</strong></div>
+          <div class="glass mini"><span>النقاط</span><strong id="scoreLabel">0</strong></div>
+          <div class="glass mini"><span>الوقت المتبقي</span><strong id="timerLabel">15</strong></div>
+        </div>
+
+        <div class="glass question-card">
+          <div id="countdownNote" class="countdown-note" style="display:none"></div>
+          <div class="category-badge" id="categoryBadge">تصنيف</div>
+          <div class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
+          <h2 id="questionText" class="question">...</h2>
+          <div id="optionsWrap" class="options"></div>
+          <div id="feedbackBox" class="feedback"></div>
+          <div class="meta">
+            <span id="questionCountMeta">سؤال 1 من 15</span>
+            <span id="bankMeta">Realtime Sync</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-result" class="screen">
+      <div class="glass result-box">
+        <div class="trophy">🏆</div>
+        <div class="chip">لوحة الشرف</div>
+        <h2 class="result-title">نتيجة <span id="winnerName">المتسابق</span></h2>
+
+        <div class="score-ring" id="scoreRing" style="--deg:0deg">
+          <div>
+            <strong id="finalScore">0/15</strong>
+            <span id="finalPercent">0%</span>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <div class="glass mini"><span>إجمالي الجولات</span><strong id="finalRounds">15</strong></div>
+          <div class="glass mini"><span>إجابات صحيحة</span><strong id="correctCount">0</strong></div>
+          <div class="glass mini"><span>مستوى الأداء</span><strong id="performanceText">مبتدئ</strong></div>
+        </div>
+
+        <div class="leaderboard" id="leaderboardWrap"></div>
+
+        <p class="footer-note">الترتيب النهائي هنا مبني على النقاط المسجلة في Firebase Realtime Database.</p>
+
+        <div class="btns" style="justify-content:center">
+          <button class="btn-primary" id="restartBtn">إعادة للجولة التالية</button>
+          <button class="btn-secondary" id="homeBtn">العودة للرئيسية</button>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <!-- Arabic -->
-  <div id="arSec" class="sec">
-    <div class="sec-hd"><div class="bar"></div><i class="fas fa-satellite-dish"></i>المصادر العربية<span class="cnt" id="arCnt">0</span></div>
-    <div class="grid" id="arGrid">
-      <div class="sk-card"><div class="sk sk-img"></div><div style="padding:11px"><div class="sk sk-line"></div><div class="sk sk-line m"></div><div class="sk sk-line s"></div></div></div>
-      <div class="sk-card"><div class="sk sk-img"></div><div style="padding:11px"><div class="sk sk-line"></div><div class="sk sk-line m"></div><div class="sk sk-line s"></div></div></div>
-      <div class="sk-card"><div class="sk sk-img"></div><div style="padding:11px"><div class="sk sk-line"></div><div class="sk sk-line m"></div><div class="sk sk-line s"></div></div></div>
-    </div>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      update,
+      onValue,
+      push,
+      serverTimestamp,
+      onDisconnect,
+      runTransaction,
+      remove
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  <!-- International -->
-  <div id="intlSec" class="sec">
-    <div class="sec-hd"><div class="bar" style="background:var(--gold)"></div><i class="fas fa-globe-americas" style="color:var(--gold)"></i>المصادر الدولية — مترجمة تلقائياً<span class="cnt" id="intlCnt">0</span></div>
-    <div class="grid" id="intlGrid">
-      <div class="sk-card"><div class="sk sk-img"></div><div style="padding:11px"><div class="sk sk-line"></div><div class="sk sk-line m"></div><div class="sk sk-line s"></div></div></div>
-      <div class="sk-card"><div class="sk sk-img"></div><div style="padding:11px"><div class="sk sk-line"></div><div class="sk sk-line m"></div><div class="sk sk-line s"></div></div></div>
-      <div class="sk-card"><div class="sk sk-img"></div><div style="padding:11px"><div class="sk sk-line"></div><div class="sk sk-line m"></div><div class="sk sk-line s"></div></div></div>
-    </div>
-  </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKs24sqojKX51Q4HAPv3amY1oTGo3YcyA",
+      authDomain: "myquiz-314f9.firebaseapp.com",
+      databaseURL: "https://myquiz-314f9-default-rtdb.firebaseio.com",
+      projectId: "myquiz-314f9",
+      storageBucket: "myquiz-314f9.firebasestorage.app",
+      messagingSenderId: "86590365416",
+      appId: "1:86590365416:web:0d37b3695ec028103ff35d",
+      measurementId: "G-YMJP9VT0B3"
+    };
 
-  <!-- Tools -->
-  <div class="sec">
-    <div class="sec-hd"><div class="bar" style="background:var(--cyan)"></div><i class="fas fa-satellite" style="color:var(--cyan)"></i>أدوات المتابعة التفاعلية</div>
-    <div class="tools-grid">
-      <a href="https://www.flightradar24.com" target="_blank" rel="noopener" class="tool">
-        <div class="tool-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-plane" style="color:#fff"></i></div>
-        <span class="tool-name">Flightradar24</span>
-        <span class="tool-desc">متابعة حركة الطيران العسكري والمدني لحظةً بلحظة حول العالم</span>
-      </a>
-      <a href="https://liveuamap.com" target="_blank" rel="noopener" class="tool">
-        <div class="tool-icon" style="background:linear-gradient(135deg,#ef4444,#b91c1c)"><i class="fas fa-map-marked-alt" style="color:#fff"></i></div>
-        <span class="tool-name">Liveuamap</span>
-        <span class="tool-desc">خرائط تفاعلية حية لتغطية النزاعات والحروب والأحداث العسكرية</span>
-      </a>
-    </div>
-  </div>
-</main>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-<!-- MODAL -->
-<div class="overlay" id="ov" onclick="ovClick(event)">
-  <div class="modal">
-    <button class="modal-x" onclick="closeModal()"><i class="fas fa-times"></i></button>
-    <img id="mImg" src="" alt="" style="display:none" />
-    <div id="mSrc"></div>
-    <h3 id="mTitle"></h3>
-    <p id="mDesc"></p>
-    <div class="mact">
-      <a id="mLink" href="#" target="_blank" rel="noopener" class="btn-r"><i class="fas fa-external-link-alt"></i>اقرأ الخبر من المصدر</a>
-      <button class="btn-g" onclick="closeModal()">إغلاق</button>
-    </div>
-  </div>
-</div>
+    const QUESTION_BANK = [
+      {category:'ديني',question:'ما هي أوَّل سورةٍ قرآنية نزلت على رسول الله ﷺ؟',options:['سورة الفاتحة','سورة العلق','سورة المدثر','سورة يس'],answer:1},
+      {category:'ديني',question:'ما السورة التي تُعد أمّ الكتاب؟',options:['سورة البقرة','سورة الفاتحة','سورة الإخلاص','سورة الملك'],answer:1},
+      {category:'ديني',question:'أي سورة لا تبدأ بالبسملة؟',options:['سورة الأنفال','سورة التوبة','سورة مريم','سورة الكهف'],answer:1},
+      {category:'ديني',question:'أين كان يتعبد الرسول ﷺ قبل البعثة؟',options:['غار ثور','غار حراء','المسجد النبوي','جبل أحد'],answer:1},
+      {category:'ديني',question:'ما أول عمل قام به النبي ﷺ فور وصوله إلى المدينة؟',options:['بناء السوق','بناء المسجد النبوي','إرسال السرايا','فرض الزكاة'],answer:1},
+      {category:'ديني',question:'من أول شهيدة في الإسلام؟',options:['خديجة بنت خويلد','سمية بنت الخياط','أسماء بنت أبي بكر','نسيبة بنت كعب'],answer:1},
+      {category:'ديني',question:'كم عدد أبواب الجنة؟',options:['6','7','8','9'],answer:2},
+      {category:'ديني',question:'من هي صاحبة لقب ذات الخمار؟',options:['أسماء بنت أبي بكر','خديجة بنت خويلد','حفصة بنت عمر','عائشة بنت أبي بكر'],answer:0},
+      {category:'ديني',question:'الصحابي الذي كان جبريل عليه السلام ينزل على صورته هو…',options:['زيد بن ثابت','دحية الكلبي','أبو هريرة','سعد بن معاذ'],answer:1},
+      {category:'ديني',question:'ما أطول سورة في القرآن الكريم؟',options:['آل عمران','النساء','البقرة','الكهف'],answer:2},
 
-<!-- TOAST -->
-<div class="toast" id="toast"><i class="fas fa-spinner fa-spin"></i><span id="toastTxt">جاري التحميل...</span></div>
+      {category:'خرائط ودول',question:'ما هي عاصمة الهند؟',options:['نيودلهي','مومباي','كراتشي','داكا'],answer:0},
+      {category:'خرائط ودول',question:'ما هي عاصمة تركيا؟',options:['إسطنبول','أنقرة','إزمير','بورصة'],answer:1},
+      {category:'خرائط ودول',question:'ما أكبر دولة في العالم من حيث المساحة؟',options:['الصين','كندا','الولايات المتحدة','روسيا'],answer:3},
+      {category:'خرائط ودول',question:'أي دولة تقع في قارة لوحدها؟',options:['أيسلندا','أستراليا','اليابان','مدغشقر'],answer:1},
+      {category:'خرائط ودول',question:'ما أقدم مدينة في التاريخ بحسب السؤال؟',options:['دمشق','بغداد','أريحا','القاهرة'],answer:2},
+      {category:'خرائط ودول',question:'أي مدينة تركية تقع في قارتي آسيا وأوروبا؟',options:['أنطاليا','أنقرة','إسطنبول','طرابزون'],answer:2},
+      {category:'خرائط ودول',question:'أين تقع مكة المكرمة؟',options:['في الأردن','في العراق','في المملكة العربية السعودية','في اليمن'],answer:2},
+      {category:'خرائط ودول',question:'تقع أريتيريا في أي قارة؟',options:['آسيا','أفريقيا','أوروبا','أمريكا الجنوبية'],answer:1},
+      {category:'خرائط ودول',question:'أين تقع البتراء في الشرق الأوسط؟',options:['الأردن','سوريا','لبنان','فلسطين'],answer:0},
+      {category:'خرائط ودول',question:'ما عاصمة إسبانيا؟',options:['برشلونة','إشبيلية','مدريد','فالنسيا'],answer:2},
+      {category:'خرائط ودول',question:'ما المحيط الذي يحيط بمدغشقر؟',options:['الهادي','الهندي','الأطلسي','المتجمد الجنوبي'],answer:1},
 
-<footer>
-  <strong style="color:var(--txt)">مرصد الأخبار العالمية</strong> — مصادر:
-  <a href="https://aljazeera.net" target="_blank">الجزيرة</a> •
-  <a href="https://skynewsarabia.com" target="_blank">سكاي نيوز</a> •
-  <a href="https://bbc.com/arabic" target="_blank">BBC</a> •
-  <a href="https://arabic.cnn.com" target="_blank">CNN</a> •
-  <a href="https://alarabiya.net" target="_blank">العربية</a> •
-  <a href="https://arabic.rt.com" target="_blank">RT</a> •
-  <a href="https://france24.com/ar" target="_blank">فرانس24</a> •
-  <a href="https://reuters.com" target="_blank">Reuters</a> •
-  <a href="https://apnews.com" target="_blank">AP</a> •
-  <a href="https://nytimes.com" target="_blank">NYT</a> •
-  <a href="https://wsj.com" target="_blank">WSJ</a> •
-  <a href="https://theguardian.com" target="_blank">Guardian</a> •
-  <a href="https://bloomberg.com" target="_blank">Bloomberg</a>
-  <br>الأخبار الإنجليزية تُترجم تلقائياً • اضغط أي خبر للانتقال للمصدر الأصلي
-</footer>
+      {category:'أفلام ومشاهير عرب',question:'كم سنة استمر عرض مسرحية مدرسة المشاغبين؟',options:['3 سنوات','5 سنوات','6 سنوات','10 سنوات'],answer:2},
+      {category:'أفلام ومشاهير عرب',question:'من الممثل السوري الذي أدى دور البطولة في مسلسل عصي الدمع؟',options:['تيم حسن','جمال سليمان','قصي خولي','باسل خياط'],answer:1},
+      {category:'أفلام ومشاهير عرب',question:'من أشهر الفنانين العرب من مواليد 1 أبريل 1968؟',options:['نور الشريف','يحيى الفخراني','جوليا بطرس','هاني سلامة'],answer:2},
+      {category:'أفلام ومشاهير عرب',question:'من أشهر الفنانين العرب من مواليد 7 أبريل 1945؟',options:['يحيى الفخراني','نور الشريف','عادل إمام','فاروق الفيشاوي'],answer:1},
+      {category:'أفلام ومشاهير عرب',question:'من مخرج فيلم إذاعة حب؟',options:['شريف عرفة','أحمد سمير فرج','طارق العريان','عمرو سلامة'],answer:1},
+      {category:'أفلام ومشاهير عرب',question:'ما سنة إنتاج فيلم الرجل الذي فقد ظله؟',options:['1968','1972','1959','1980'],answer:0},
+      {category:'أفلام ومشاهير عرب',question:'كم عدد الأفلام التي شارك بها نبيل الحلفاوي؟',options:['12','20','33','50'],answer:1},
+      {category:'أفلام ومشاهير عرب',question:'كم عدد أفلام الممثل المصري يونس شلبي؟',options:['41','55','77','90'],answer:2},
+      {category:'أفلام ومشاهير عرب',question:'من أهم أبطال فيلم الضوء الخافت؟',options:['سعاد حسني','منى زكي','فاتن حمامة','إلهام شاهين'],answer:0},
+      {category:'أفلام ومشاهير عرب',question:'أي من الأسماء التالية ذُكر ضمن مواليد شهر أبريل من الفنانين العرب؟',options:['أحمد حلمي','جوليا بطرس','أصالة','كاظم الساهر'],answer:1},
 
-<script>
-// ============================================================
-//  SOURCES
-// ============================================================
-const SRCS=[
-  {id:'aljazeera',name:'الجزيرة نت',color:'#e8282b',cat:'arabic',lang:'ar',
-   feeds:['https://www.aljazeera.net/xml/rss2.0.xml'],site:'https://www.aljazeera.net'},
-  {id:'skynews',name:'سكاي نيوز عربية',color:'#00a3e0',cat:'arabic',lang:'ar',
-   feeds:['https://www.skynewsarabia.com/rss.xml'],site:'https://www.skynewsarabia.com'},
-  {id:'bbc',name:'BBC عربي',color:'#bb1919',cat:'arabic',lang:'ar',
-   feeds:['https://feeds.bbci.co.uk/arabic/rss.xml'],site:'https://www.bbc.com/arabic'},
-  {id:'cnn',name:'CNN بالعربية',color:'#cc0000',cat:'arabic',lang:'ar',
-   feeds:['https://arabic.cnn.com/api/v1/rss/rss.xml'],site:'https://arabic.cnn.com'},
-  {id:'alarabiya',name:'العربية نت',color:'#005ea5',cat:'arabic',lang:'ar',
-   feeds:['https://www.alarabiya.net/rss.xml'],site:'https://www.alarabiya.net'},
-  {id:'rt',name:'روسيا اليوم',color:'#007dc6',cat:'arabic',lang:'ar',
-   feeds:['https://arabic.rt.com/rss/'],site:'https://arabic.rt.com'},
-  {id:'france24',name:'فرانس 24',color:'#003082',cat:'arabic',lang:'ar',
-   feeds:['https://www.france24.com/ar/rss'],site:'https://www.france24.com/ar'},
-  {id:'reuters',name:'رويترز',color:'#ff671f',cat:'intl',lang:'en',
-   feeds:['https://feeds.reuters.com/reuters/topNews','https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best'],site:'https://www.reuters.com'},
-  {id:'apnews',name:'أسوشيتد برس',color:'#d10000',cat:'intl',lang:'en',
-   feeds:['https://apnews.com/index.rss'],site:'https://apnews.com'},
-  {id:'nytimes',name:'نيويورك تايمز',color:'#333',cat:'intl',lang:'en',
-   feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml'],site:'https://www.nytimes.com'},
-  {id:'wsj',name:'وول ستريت جورنال',color:'#1d477b',cat:'intl',lang:'en',
-   feeds:['https://feeds.a.dj.com/rss/RSSWorldNews.xml'],site:'https://www.wsj.com'},
-  {id:'guardian',name:'ذا غارديان',color:'#052962',cat:'intl',lang:'en',
-   feeds:['https://www.theguardian.com/world/rss'],site:'https://www.theguardian.com'},
-  {id:'bloomberg',name:'بلومبيرغ',color:'#1a1a1a',cat:'intl',lang:'en',
-   feeds:['https://feeds.bloomberg.com/politics/news.rss','https://feeds.bloomberg.com/markets/news.rss'],site:'https://www.bloomberg.com'},
-];
+      {category:'معلومات عامة',question:'النفط والغاز الطبيعي والفحم أمثلة على ماذا؟',options:['معادن خام','وقود أحفوري','طاقة متجددة','صخور نارية'],answer:1},
+      {category:'معلومات عامة',question:'لكل فعل رد فعل مساوٍ له في المقدار. هذا هو قانون نيوتن…',options:['الأول','الثاني','الثالث','الرابع'],answer:2},
+      {category:'معلومات عامة',question:'ما أخف عنصر في الجدول الدوري؟',options:['الهيليوم','الهيدروجين','النيتروجين','الليثيوم'],answer:1},
+      {category:'معلومات عامة',question:'ما هو ثلاثة أخماس الرقم 100؟',options:['30','40','50','60'],answer:3},
+      {category:'معلومات عامة',question:'ما أكبر حيوان عاش على الأرض مطلقًا؟',options:['الديناصور ريكس','الفيل الأفريقي','الحوت الأزرق','القرش الأبيض'],answer:2},
+      {category:'معلومات عامة',question:'من الفنان الذي رسم لوحة الموناليزا؟',options:['فان كوخ','بيكاسو','ليوناردو دافينشي','يوهانس فيرمير'],answer:2},
+      {category:'معلومات عامة',question:'من هو مؤسس الحركة التكعيبية في الفن؟',options:['سلفادور دالي','بابلو بيكاسو','كلود مونيه','رامبرانت'],answer:1},
+      {category:'معلومات عامة',question:'من صاحب لوحة الفتاة ذات القرط اللؤلؤي؟',options:['فنسنت فان كوخ','ليوناردو دافينشي','يوهانس فيرمير','رافائيل'],answer:2},
 
-// ============================================================
-//  ENHANCED PROXY STRATEGIES WITH MORE RELIABLE SERVICES
-// ============================================================
-async function fetchFeed(feedUrl){
-  const encoded=encodeURIComponent(feedUrl);
-  
-  // List of all proxy services to try in order
-  const proxyServices = [
-    {
-      name: 'rss2json',
-      url: `https://api.rss2json.com/v1/api.json?rss_url=${encoded}&count=15`,
-      handler: async (response) => {
-        const data = await response.json();
-        if(data.status === 'ok' && data.items?.length > 0) {
-          return {type:'rss2json', data:data};
+      {category:'ألغاز ذكاء',question:'شيء يوجد في القرن مرة، وفي الدقيقة مرتين، ولا يوجد في الساعة. ما هو؟',options:['حرف القاف','حرف النون','حرف الدال','حرف الراء'],answer:2},
+      {category:'ألغاز ذكاء',question:'ما الشيء الذي كلما أخذت منه كبر؟',options:['الحفرة','الكتاب','النور','الصندوق'],answer:0},
+      {category:'ألغاز ذكاء',question:'أين يوجد البحر بلا ماء؟',options:['في السماء','في الخريطة','في الجبل','في الغابة'],answer:1},
+      {category:'ألغاز ذكاء',question:'أخت خالك وليست خالتك، فمن تكون؟',options:['أختك','أمك','ابنة عمك','جدتك'],answer:1},
+      {category:'ألغاز ذكاء',question:'ما الشيء الذي له أسنان ولا يعض؟',options:['المنشار','المشط','السحاب','المفتاح'],answer:1},
+      {category:'ألغاز ذكاء',question:'بيت بلا أبواب ولا نوافذ، فما هو؟',options:['الخيمة','البيضة','الكتاب','القلم'],answer:1},
+      {category:'ألغاز ذكاء',question:'إذا كان عندك 3 تفاحات وأخذت منك 2، كم تبقى معك؟',options:['1','2','3','0'],answer:1},
+      {category:'ألغاز ذكاء',question:'شيء يكتب ولا يقرأ، ما هو؟',options:['الامتحان','القلم','الطبشور','اللوحة'],answer:0}
+    ];
+
+    const screens = {
+      settings: document.getElementById('screen-settings'),
+      lobby: document.getElementById('screen-lobby'),
+      quiz: document.getElementById('screen-quiz'),
+      result: document.getElementById('screen-result')
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const savedPlayerId = localStorage.getItem('quizPlayerId');
+    const playerId = savedPlayerId || crypto.randomUUID();
+    if (!savedPlayerId) localStorage.setItem('quizPlayerId', playerId);
+
+    const state = {
+      playerId,
+      playerName: '',
+      roomId: null,
+      joinCode: '',
+      isHost: false,
+      room: null,
+      rounds: 15,
+      thinkTime: 15,
+      revealTime: 3,
+      phaseTimer: null,
+      hostTimer: null,
+      roomUnsubs: [],
+      presenceUnsubs: [],
+      currentRenderedIndex: -1,
+      lastPhase: '',
+      activeScreen: 'settings',
+      serverTimeOffset: 0,
+      hostWriteBusy: false
+    };
+
+    onValue(ref(db, '.info/serverTimeOffset'), (snap) => {
+      state.serverTimeOffset = snap.val() || 0;
+    });
+
+    function serverNow() {
+      return Date.now() + state.serverTimeOffset;
+    }
+
+    function showScreen(name){
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[name].classList.add('active');
+      state.activeScreen = name;
+      if (name !== 'quiz') clearInterval(state.phaseTimer);
+    }
+
+    function updateSettingsPreview(){
+      state.rounds = +$('rounds').value;
+      state.thinkTime = +$('thinkTime').value;
+      state.revealTime = +$('revealTime').value;
+      $('roundsValue').textContent = state.rounds;
+      $('thinkValue').textContent = state.thinkTime + ' ثانية';
+      $('revealValue').textContent = state.revealTime + ' ثوانٍ';
+      localStorage.setItem('quizSettings', JSON.stringify({
+        rounds: state.rounds,
+        thinkTime: state.thinkTime,
+        revealTime: state.revealTime
+      }));
+    }
+
+    function loadSettings(){
+      const saved = JSON.parse(localStorage.getItem('quizSettings') || 'null');
+      if(saved){
+        $('rounds').value = saved.rounds || 15;
+        $('thinkTime').value = saved.thinkTime || 15;
+        $('revealTime').value = saved.revealTime || 3;
+      }
+      updateSettingsPreview();
+    }
+
+    function shuffleArray(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    function makeCode(length=6){
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let out = '';
+      for(let i=0;i<length;i++){
+        out += chars[Math.floor(Math.random()*chars.length)];
+      }
+      return out;
+    }
+
+    async function generateUniqueCode(){
+      for(let i=0;i<20;i++){
+        const code = makeCode(6);
+        const snap = await get(ref(db, `roomCodes/${code}`));
+        if(!snap.exists()) return code;
+      }
+      return makeCode(8);
+    }
+
+    function getCurrentPlayer(){
+      return state.room?.players?.[state.playerId] || null;
+    }
+
+    function getPlayersArray(room = state.room){
+      const players = room?.players || {};
+      return Object.entries(players).map(([id, p]) => ({ id, ...p }));
+    }
+
+    function getReadyCount(room = state.room){
+      return getPlayersArray(room).filter(p => p.ready).length;
+    }
+
+    function getOnlineCount(room = state.room){
+      return getPlayersArray(room).filter(p => p.online).length;
+    }
+
+    function performanceLabel(percent){
+      if(percent >= 90) return 'أسطوري';
+      if(percent >= 75) return 'ممتاز';
+      if(percent >= 60) return 'قوي جدًا';
+      if(percent >= 40) return 'جيد';
+      return 'مبتدئ';
+    }
+
+    function destroySubscriptions(){
+      state.roomUnsubs.forEach(fn => { try{ fn(); }catch{} });
+      state.roomUnsubs = [];
+      state.presenceUnsubs.forEach(fn => { try{ fn(); }catch{} });
+      state.presenceUnsubs = [];
+      clearInterval(state.hostTimer);
+      clearInterval(state.phaseTimer);
+    }
+
+    async function attachPresence(roomId){
+      state.presenceUnsubs.forEach(fn => { try{ fn(); }catch{} });
+      state.presenceUnsubs = [];
+
+      const connectedRef = ref(db, '.info/connected');
+      const unsub = onValue(connectedRef, async (snap) => {
+        if(snap.val() === true && state.roomId === roomId){
+          const playerBase = `rooms/${roomId}/players/${state.playerId}`;
+          const onlineRef = ref(db, `${playerBase}/online`);
+          const lastSeenRef = ref(db, `${playerBase}/lastSeen`);
+          const conRef = push(ref(db, `${playerBase}/connections`));
+
+          try{
+            await onDisconnect(conRef).remove();
+            await onDisconnect(onlineRef).set(false);
+            await onDisconnect(lastSeenRef).set(serverTimestamp());
+
+            await set(conRef, true);
+            await update(ref(db, playerBase), {
+              online: true,
+              lastSeen: Date.now()
+            });
+          }catch(err){
+            console.error('Presence error:', err);
+          }
         }
-        return null;
-      }
-    },
-    {
-      name: 'feedparser',
-      url: `https://feedparser.xyz/api/parse?url=${encoded}`,
-      handler: async (response) => {
-        const data = await response.json();
-        if(data.entries?.length > 0) return {type:'feedparser', data:data};
-        return null;
-      }
-    },
-    {
-      name: 'allorigins',
-      url: `https://api.allorigins.win/get?url=${encoded}`,
-      handler: async (response) => {
-        const data = await response.json();
-        if(data.contents && data.contents.length > 200) return {type:'xml', data:data.contents};
-        return null;
-      }
-    },
-    {
-      name: 'corsproxy',
-      url: `https://corsproxy.io/?${encoded}`,
-      handler: async (response) => {
-        const text = await response.text();
-        if(text && text.length > 200) return {type:'xml', data:text};
-        return null;
-      }
-    },
-    {
-      name: 'corsbridge',
-      url: `https://cors.bridged.cc/${feedUrl}`,
-      handler: async (response) => {
-        const text = await response.text();
-        if(text && text.length > 200) return {type:'xml', data:text};
-        return null;
-      }
-    },
-    {
-      name: 'thingproxy',
-      url: `https://thingproxy.freeboard.io/fetch/${feedUrl}`,
-      handler: async (response) => {
-        const text = await response.text();
-        if(text && text.length > 200) return {type:'xml', data:text};
-        return null;
-      }
+      });
+
+      state.presenceUnsubs.push(unsub);
     }
-  ];
-  
-  for(const service of proxyServices) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
-      const response = await fetch(service.url, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      
-      if(response.ok) {
-        const result = await service.handler(response);
-        if(result) return result;
-      }
-    } catch(e) {
-      // Continue to next proxy service
-    }
-  }
-  
-  throw new Error('All proxies failed');
-}
 
-function parseRss2json(d,src){
-  return (d.items||[]).slice(0,12).map((it,i)=>{
-    const img=it.enclosure?.link||it.thumbnail||extractImg(it.description||it.content||'')||'';
-    const desc=strip(it.description||it.content||'').substring(0,300);
-    if(!it.title||!it.link) return null;
-    // Validate date - if no valid date, skip this item
-    const pubDate = it.pubDate || '';
-    const parsedDate = new Date(pubDate);
-    if(!pubDate || isNaN(parsedDate.getTime())) return null;
-    return mk(src,i,it.title.trim(),it.link,desc,img,pubDate);
-  }).filter(Boolean);
-}
+    async function createRoom(){
+      const hostName = ($('hostName').value || '').trim() || 'المنشئ';
+      state.playerName = hostName;
+      state.isHost = true;
+      updateSettingsPreview();
 
-function parseFeedparser(d,src){
-  return (d.entries||[]).slice(0,12).map((it,i)=>{
-    const img=it.media?.content?.[0]?.url||it.image?.href||extractImg(it.summary||it.content||'')||'';
-    const desc=strip(it.summary||it.content||'').substring(0,300);
-    const link=it.link||it.url||'';
-    if(!it.title||!link) return null;
-    const pubDate = it.published || it.updated || '';
-    const parsedDate = new Date(pubDate);
-    if(!pubDate || isNaN(parsedDate.getTime())) return null;
-    return mk(src,i,(it.title||'').trim(),link,desc,img,pubDate);
-  }).filter(Boolean);
-}
+      const code = await generateUniqueCode();
+      const roomRef = push(ref(db, 'rooms'));
+      const roomId = roomRef.key;
 
-function parseXmlStr(xmlStr,src){
-  try{
-    const doc=new DOMParser().parseFromString(xmlStr,'application/xml');
-    return Array.from(doc.querySelectorAll('item')).slice(0,12).map((el,i)=>{
-      const title=el.querySelector('title')?.textContent?.trim()||'';
-      const link=el.querySelector('link')?.textContent?.trim()||'';
-      const desc=el.querySelector('description')?.textContent?.trim()||'';
-      const pub=el.querySelector('pubDate')?.textContent||'';
-      let img=el.querySelector('[url]')?.getAttribute('url')||'';
-      if(!img){const e=el.querySelector('enclosure');if(e?.getAttribute('type')?.startsWith('image'))img=e.getAttribute('url')||'';}
-      if(!img) img=extractImg(desc);
-      if(!title||!link) return null;
-      const parsedDate = new Date(pub);
-      if(!pub || isNaN(parsedDate.getTime())) return null;
-      return mk(src,i,title,link,strip(desc).substring(0,300),img,pub);
-    }).filter(Boolean);
-  }catch(e){return[];}
-}
+      const selectedQuestions = shuffleArray(QUESTION_BANK).slice(0, Math.min(state.rounds, QUESTION_BANK.length));
 
-function mk(src,i,title,link,desc,img,pubDate){
-  return{
-    id:`${src.id}_${i}_${Date.now()}_${Math.random()}`,
-    title,titleAr:src.lang==='ar'?title:null,
-    link,
-    description:desc,descriptionAr:src.lang==='ar'?desc:null,
-    image:img,pubDate,
-    source:src.id,sourceName:src.name,sourceColor:src.color,
-    cat:src.cat,lang:src.lang,translated:false,
-  };
-}
-
-function extractImg(html){const m=html.match(/<img[^>]+src=["']([^"']+)["']/i);return m?m[1]:'';}
-function strip(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent||d.innerText||'';}
-
-// ============================================================
-//  TRANSLATION (Google Translate via free API)
-// ============================================================
-const trCache={};
-async function trText(text){
-  if(!text||text.length<4) return text;
-  const k=text.substring(0,80);
-  if(trCache[k]) return trCache[k];
-  const chunk=text.substring(0,500);
-  try{
-    const u=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(chunk)}`;
-    const r=await fetch(u,{signal:AbortSignal.timeout(8000)});
-    const d=await r.json();
-    if(d && d[0]){
-      const translated = d[0].map(item => item[0]).join('');
-      if(translated && translated.length > 3){
-        trCache[k]=translated;
-        return translated;
-      }
-    }
-  }catch(e){}
-  return text;
-}
-
-async function trItem(item){
-  if(item.lang==='ar'||item.translated) return;
-  try{
-    const[ta,da]=await Promise.all([trText(item.title),item.description?trText(item.description.substring(0,260)):Promise.resolve('')]);
-    item.titleAr=ta||item.title;
-    item.descriptionAr=da||item.description;
-    item.translated=true;
-    trCount++;
-    document.getElementById('sTr').textContent=trCount;
-    liveUpdateCard(item);
-  }catch(e){}
-}
-
-function liveUpdateCard(item){
-  const c=document.getElementById('c_'+item.id);
-  if(!c) return;
-  const te=c.querySelector('.ctitle');const de=c.querySelector('.cdesc');const b=c.querySelector('.tr-tag');
-  if(te&&item.titleAr) te.textContent=item.titleAr;
-  if(de&&item.descriptionAr) de.textContent=item.descriptionAr;
-  if(b) b.style.display='block';
-}
-
-// ============================================================
-//  TIME - Improved to show accurate time
-// ============================================================
-function ago(s){
-  if(!s) return 'تاريخ غير معروف';
-  const d=new Date(s);
-  if(isNaN(d.getTime())) return 'تاريخ غير معروف';
-  
-  const now = new Date();
-  const diffMs = now - d;
-  const diffMins = Math.floor(diffMs / 60000);
-  
-  if(diffMins < 1) return 'الآن';
-  if(diffMins < 60) return `منذ ${diffMins} دقيقة`;
-  
-  const diffHours = Math.floor(diffMins / 60);
-  if(diffHours < 24) return `منذ ${diffHours} ساعة`;
-  
-  const diffDays = Math.floor(diffHours / 24);
-  if(diffDays < 7) return `منذ ${diffDays} يوم`;
-  
-  return d.toLocaleDateString('ar-SA', { year:'numeric', month:'numeric', day:'numeric' });
-}
-
-function e(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-// ============================================================
-//  RENDER
-// ============================================================
-function cardHTML(item){
-  const title=item.titleAr||item.title;
-  const desc=item.descriptionAr||item.description;
-  const imgH=item.image
-    ?`<img src="${e(item.image)}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-img\\'><i class=\\'fas fa-newspaper\\'></i></div>'" />`
-    :`<div class="no-img"><i class="fas fa-newspaper"></i></div>`;
-  return`
-  <a class="card" id="c_${item.id}" data-src="${item.source}" data-cat="${item.cat}" data-tr="${item.translated?1:0}">
-    <div class="cimg">
-      ${imgH}
-      <div class="src-tag" style="background:${item.sourceColor}">${e(item.sourceName)}</div>
-      ${item.lang==='en'?`<div class="tr-tag" style="${item.translated?'':'display:none'}"><i class="fas fa-language"></i> مترجم</div>`:''}
-    </div>
-    <div class="cbody">
-      <div class="ctitle">${e(title)}</div>
-      ${desc?`<div class="cdesc">${e(desc)}</div>`:''}
-      <div class="cfoot"><span class="csrc">${e(item.sourceName)}</span><span class="ctime"><i class="fas fa-clock"></i>${ago(item.pubDate)}</span></div>
-    </div>
-  </a>`;
-}
-
-function featMainHTML(item){
-  const title=item.titleAr||item.title;
-  const img=item.image||'';
-  return`<a class="feat-main" id="c_${item.id}" data-src="${item.source}" data-cat="${item.cat}">
-    ${img?`<img src="${e(img)}" alt="" onerror="this.style.display='none'" />`:''}
-    <div class="feat-overlay">
-      <div class="feat-src" style="background:${item.sourceColor}">${e(item.sourceName)}</div>
-      <h2>${e(title)}</h2>
-      <div class="feat-meta"><span><i class="fas fa-clock"></i>${ago(item.pubDate)}</span><span>•</span><span><i class="fas fa-mouse-pointer"></i>اضغط للقراءة</span></div>
-    </div>
-  </a>`;
-}
-
-function sideCardHTML(item){
-  const title=item.titleAr||item.title;
-  const img=item.image||'';
-  return`<a class="side-card" id="c_${item.id}" data-src="${item.source}" data-cat="${item.cat}">
-    <div class="sc-img">${img?`<img src="${e(img)}" alt="" loading="lazy" onerror="this.style.display='none'" />`:''}</div>
-    <div class="sc-body">
-      <div class="sc-title">${e(title)}</div>
-      <div class="sc-foot"><span class="sc-src" style="color:${item.sourceColor}">${e(item.sourceName)}</span><span class="sc-time">${ago(item.pubDate)}</span></div>
-    </div>
-  </a>`;
-}
-
-function renderGrids(){
-  const qv=searchQuery.toLowerCase();
-  const filtered=allNews.filter(it=>{
-    const t=(it.titleAr||it.title||'').toLowerCase();
-    if(qv&&!t.includes(qv)) return false;
-    if(curSrc&&it.source!==curSrc) return false;
-    if(curFilt==='arabic'&&it.cat!=='arabic') return false;
-    if(curFilt==='intl'&&it.cat!=='intl') return false;
-    if(curFilt==='tr'&&!it.translated) return false;
-    return true;
-  });
-
-  const arab=filtered.filter(i=>i.cat==='arabic');
-  const intl=filtered.filter(i=>i.cat==='intl');
-
-  document.getElementById('arCnt').textContent=arab.length;
-  document.getElementById('intlCnt').textContent=intl.length;
-
-  fillGrid('arGrid',arab);
-  fillGrid('intlGrid',intl);
-
-  const showF=curFilt==='all'&&!curSrc&&!searchQuery;
-  document.getElementById('featSec').style.display=showF?'':'none';
-  if(showF&&filtered.length) renderFeat(filtered.slice(0,5));
-}
-
-function fillGrid(id,items){
-  const g=document.getElementById(id);
-  if(!items.length){g.innerHTML='<div class="empty"><i class="fas fa-newspaper"></i><p>لا توجد أخبار مطابقة</p></div>';return;}
-  g.innerHTML=items.map(cardHTML).join('');
-  g.querySelectorAll('a[data-src]').forEach(a=>{
-    const id=a.id.replace('c_','');
-    const item=allNews.find(n=>n.id===id);
-    if(item) a.addEventListener('click',ev=>{ev.preventDefault();showModal(item);});
-  });
-}
-
-function renderFeat(items){
-  const g=document.getElementById('featGrid');
-  if(!items.length) return;
-  let html=featMainHTML(items[0]);
-  const sides=items.slice(1,4).map(sideCardHTML).join('');
-  html+=`<div class="feat-side">${sides}</div>`;
-  g.innerHTML=html;
-  g.querySelectorAll('a[data-src]').forEach(a=>{
-    const id=a.id.replace('c_','');
-    const item=allNews.find(n=>n.id===id);
-    if(item) a.addEventListener('click',ev=>{ev.preventDefault();showModal(item);});
-  });
-}
-
-function buildTicker(items){
-  const ti=document.getElementById('tickerInner');
-  const sl=items.slice(0,20);
-  const html=sl.map(i=>`<span>${e(i.titleAr||i.title)}</span><span class="ticker-dot">●</span>`).join('');
-  ti.innerHTML=html;
-}
-
-// ============================================================
-//  MODAL
-// ============================================================
-function showModal(item){
-  const title=item.titleAr||item.title;
-  const desc=item.descriptionAr||item.description||'اضغط على زر القراءة للاطلاع على الخبر كاملاً من المصدر الأصلي.';
-  document.getElementById('mTitle').textContent=title;
-  document.getElementById('mDesc').textContent=desc;
-  document.getElementById('mLink').href=item.link;
-  document.getElementById('mSrc').innerHTML=
-    `<span style="display:inline-block;background:${item.sourceColor};color:#fff;font-size:.62rem;font-weight:700;padding:2px 9px;border-radius:4px;margin-bottom:9px">${e(item.sourceName)}</span>`;
-  const mi=document.getElementById('mImg');
-  if(item.image){mi.src=item.image;mi.style.display='block';mi.onerror=()=>mi.style.display='none';}
-  else mi.style.display='none';
-  document.getElementById('ov').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function ovClick(ev){if(ev.target===document.getElementById('ov'))closeModal();}
-function closeModal(){document.getElementById('ov').classList.remove('open');document.body.style.overflow='';}
-document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeModal();});
-
-// ============================================================
-//  FILTERS
-// ============================================================
-let curFilt='all',curSrc=null,searchQuery='';
-function setFilter(f,btn){
-  curFilt=f;curSrc=null;
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  renderGrids();
-}
-function setSrc(sid,btn){
-  if(curSrc===sid){
-    curSrc=null;
-    document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
-    document.querySelector('.fbtn').classList.add('on');
-    curFilt='all';
-  }else{
-    curSrc=sid;
-    document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
-    btn.classList.add('on');
-  }
-  renderGrids();
-}
-function doFilter(){searchQuery=document.getElementById('q').value.trim();renderGrids();}
-
-// ============================================================
-//  TOAST
-// ============================================================
-function toast(msg,icon='fa-spinner fa-spin'){
-  document.getElementById('toastTxt').textContent=msg;
-  document.querySelector('#toast i').className='fas '+icon;
-  document.getElementById('toast').classList.add('up');
-  setTimeout(() => {
-    document.getElementById('toast').classList.remove('up');
-  }, 3000);
-}
-function hideToast(){document.getElementById('toast').classList.remove('up');}
-
-// ============================================================
-//  MAIN FETCH - Improved to avoid static news
-// ============================================================
-let allNews=[],trCount=0,busy=false;
-let autoRefreshInterval = null;
-let secondsLeft = 0;
-
-function updateAutoTimerDisplay() {
-    const timerElement = document.getElementById('autoTimer');
-    if (timerElement && secondsLeft >= 0) {
-        const minutes = Math.floor(secondsLeft / 60);
-        const seconds = secondsLeft % 60;
-        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-}
-
-function startAutoRefreshTimer() {
-    if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-    
-    secondsLeft = 5 * 60;
-    updateAutoTimerDisplay();
-    
-    autoRefreshInterval = setInterval(() => {
-        if (!busy && secondsLeft <= 1) {
-            refreshAll();
-        } else if (secondsLeft > 0) {
-            secondsLeft--;
-            updateAutoTimerDisplay();
+      const roomData = {
+        code,
+        hostId: state.playerId,
+        status: 'lobby',
+        createdAt: Date.now(),
+        settings: {
+          rounds: state.rounds,
+          thinkTime: state.thinkTime,
+          revealTime: state.revealTime
+        },
+        questionSet: selectedQuestions,
+        currentQuestionIndex: -1,
+        startAt: null,
+        questionStartedAt: null,
+        questionEndsAt: null,
+        revealEndsAt: null,
+        endedAt: null,
+        players: {
+          [state.playerId]: {
+            name: hostName,
+            ready: false,
+            score: 0,
+            online: true,
+            isHost: true,
+            joinedAt: Date.now(),
+            lastSeen: Date.now()
+          }
         }
-    }, 1000);
-}
+      };
 
-async function loadSource(src){
-  for(const feedUrl of src.feeds){
-    try{
-      const res=await fetchFeed(feedUrl);
-      let items=[];
-      if(res.type==='rss2json') items=parseRss2json(res.data,src);
-      else if(res.type==='feedparser') items=parseFeedparser(res.data,src);
-      else items=parseXmlStr(res.data,src);
-      if(items.length>0) return items;
-    }catch(e){
-      console.log(`Failed to load ${src.name}: ${e.message}`);
+      await set(roomRef, roomData);
+      await set(ref(db, `roomCodes/${code}`), roomId);
+
+      state.roomId = roomId;
+      state.joinCode = code;
+
+      localStorage.setItem('quizLastRoomId', roomId);
+      localStorage.setItem('quizLastRoomCode', code);
+
+      subscribeToRoom(roomId);
+      await attachPresence(roomId);
+      showScreen('lobby');
     }
-  }
-  return [];
-}
 
-async function loadAll(){
-  if(busy) return;
-  busy=true;
-  allNews=[];trCount=0;
-  document.getElementById('sTr').textContent='0';
-  document.getElementById('sCount').textContent='جاري التحميل...';
-  document.getElementById('sTime').textContent='—';
-  document.getElementById('rfBtn').classList.add('spin');
-  toast('جاري تحميل آخر الأخبار من 14 مصدر عالمي...');
+    async function joinRoom(){
+      const name = ($('joinName').value || '').trim() || 'متسابق';
+      const code = ($('joinCode').value || '').trim().toUpperCase();
 
-  const results=await Promise.allSettled(SRCS.map(s=>loadSource(s)));
-  results.forEach((r)=>{
-    if(r.status==='fulfilled' && r.value.length>0){
-      allNews.push(...r.value);
+      if(!code){
+        alert('اكتب كود الغرفة أولًا');
+        return;
+      }
+
+      const codeSnap = await get(ref(db, `roomCodes/${code}`));
+      if(!codeSnap.exists()){
+        alert('كود الغرفة غير موجود');
+        return;
+      }
+
+      const roomId = codeSnap.val();
+      const roomSnap = await get(ref(db, `rooms/${roomId}`));
+      if(!roomSnap.exists()){
+        alert('الغرفة غير متاحة');
+        return;
+      }
+
+      const room = roomSnap.val();
+      if(room.status === 'playing'){
+        alert('المسابقة بدأت بالفعل. انتظر الجولة القادمة أو اطلب من المنشئ إنشاء غرفة جديدة.');
+        return;
+      }
+
+      state.playerName = name;
+      state.isHost = room.hostId === state.playerId;
+      state.roomId = roomId;
+      state.joinCode = code;
+
+      await update(ref(db, `rooms/${roomId}/players/${state.playerId}`), {
+        name,
+        ready: false,
+        score: room.players?.[state.playerId]?.score || 0,
+        online: true,
+        isHost: room.hostId === state.playerId,
+        joinedAt: room.players?.[state.playerId]?.joinedAt || Date.now(),
+        lastSeen: Date.now()
+      });
+
+      localStorage.setItem('quizLastRoomId', roomId);
+      localStorage.setItem('quizLastRoomCode', code);
+
+      subscribeToRoom(roomId);
+      await attachPresence(roomId);
+      showScreen('lobby');
     }
-  });
 
-  // Remove duplicates based on title and link
-  const uniqueNews = [];
-  const seen = new Set();
-  for(const news of allNews) {
-    const key = `${news.title}_${news.link}`;
-    if(!seen.has(key)) {
-      seen.add(key);
-      uniqueNews.push(news);
+    function subscribeToRoom(roomId){
+      destroySubscriptions();
+
+      const roomRef = ref(db, `rooms/${roomId}`);
+      const unsubRoom = onValue(roomRef, (snap) => {
+        if(!snap.exists()){
+          alert('تم حذف الغرفة أو لم تعد متاحة');
+          resetToHome(true);
+          return;
+        }
+
+        state.room = snap.val();
+        state.joinCode = state.room.code || state.joinCode;
+        state.isHost = state.room.hostId === state.playerId;
+
+        syncUIWithRoom();
+
+        if(state.isHost && state.room.status === 'playing'){
+          startHostLoop();
+        }else{
+          clearInterval(state.hostTimer);
+        }
+      });
+
+      state.roomUnsubs.push(unsubRoom);
     }
-  }
-  allNews = uniqueNews;
-  
-  // Sort newest first
-  allNews.sort((a,b)=>new Date(b.pubDate||0)-new Date(a.pubDate||0));
-  document.getElementById('sCount').textContent=allNews.length||'0';
-  const now=new Date();
-  document.getElementById('sTime').textContent=now.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
 
-  renderGrids();
-  buildTicker(allNews);
-  document.getElementById('rfBtn').classList.remove('spin');
+    function syncUIWithRoom(){
+      if(!state.room) return;
 
-  const enItems=allNews.filter(i=>i.lang==='en');
-  if(enItems.length){
-    toast(`جاري ترجمة ${enItems.length} خبر إنجليزي...`,'fa-language');
-    for(let i=0;i<enItems.length;i+=3){
-      await Promise.allSettled([
-        trItem(enItems[i]),
-        enItems[i+1]?trItem(enItems[i+1]):null,
-        enItems[i+2]?trItem(enItems[i+2]):null,
-      ].filter(Boolean));
-      await new Promise(r=>setTimeout(r,350));
-      if(i%12===0) renderGrids();
+      if(state.room.status === 'lobby'){
+        renderLobby();
+        showScreen('lobby');
+      } else if(state.room.status === 'playing'){
+        showScreen('quiz');
+        renderSyncedQuestion();
+      } else if(state.room.status === 'finished'){
+        renderResult();
+        showScreen('result');
+      }
     }
-    renderGrids();
-    buildTicker(allNews);
-  }
 
-  hideToast();
-  busy=false;
-  startAutoRefreshTimer();
-}
+    function renderLobby(){
+      if(!state.room) return;
 
-function refreshAll(){
-  if(busy) {
-      toast('جاري التحديث حالياً، انتظر قليلاً...', 'fa-info-circle');
-      return;
-  }
-  secondsLeft = 5 * 60;
-  updateAutoTimerDisplay();
-  loadAll();
-}
+      $('lobbyRoomCode').textContent = state.room.code || '------';
+      $('onlineCount').textContent = getOnlineCount(state.room);
+      $('readyCount').textContent = getReadyCount(state.room);
 
-document.addEventListener('DOMContentLoaded',loadAll);
-</script>
-</body>
-</html>
+      const me = getCurrentPlayer();
+      const readyCount = getReadyCount(state.room);
+      const onlineCount = getOnlineCount(state.room);
+
+      $('readyBtn').textContent = me?.ready ? 'إلغاء الجاهزية' : 'أنا جاهز';
+      $('playerLabel').textContent = me?.name || state.playerName || '—';
+      $('startRoomBtn').style.display = state.isHost ? 'inline-block' : 'none';
+      $('startRoomBtn').disabled = !(readyCount >= 2);
+
+      let lobbyMsg = `عدد المتصلين الآن ${onlineCount}، وعدد الجاهزين ${readyCount}. `;
+      if(!state.isHost){
+        lobbyMsg += 'في انتظار المنشئ ليضغط بدء.';
+      } else if(readyCount < 2){
+        lobbyMsg += 'لا يمكن البدء قبل وجود لاعبين جاهزين أو أكثر.';
+      } else {
+        lobbyMsg += 'تقدر تبدأ التحدي الآن.';
+      }
+      $('lobbyStatus').textContent = lobbyMsg;
+
+      const wrap = $('playersList');
+      wrap.innerHTML = '';
+
+      const players = getPlayersArray(state.room)
+        .sort((a,b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+
+      if(!players.length){
+        wrap.innerHTML = '<div class="muted-center">لا يوجد لاعبون داخل الغرفة</div>';
+        return;
+      }
+
+      players.forEach((p, idx) => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+
+        const initials = (p.name || '?').trim().charAt(0).toUpperCase() || '?';
+
+        row.innerHTML = `
+          <div class="player-main">
+            <div class="avatar">${initials}</div>
+            <div>
+              <div class="player-name">${escapeHtml(p.name || 'لاعب')}</div>
+              <div class="tiny">${p.online ? 'متصل الآن' : 'غير متصل'}</div>
+            </div>
+          </div>
+          <div class="badges">
+            ${p.isHost ? '<span class="badge host">منشئ</span>' : ''}
+            ${p.ready ? '<span class="badge ready">جاهز</span>' : ''}
+            ${!p.online ? '<span class="badge offline">Offline</span>' : ''}
+            <span class="badge score">${p.score || 0} نقطة</span>
+          </div>
+        `;
+
+        wrap.appendChild(row);
+      });
+    }
+
+    async function toggleReady(){
+      if(!state.roomId) return;
+      const me = getCurrentPlayer();
+      await update(ref(db, `rooms/${state.roomId}/players/${state.playerId}`), {
+        ready: !Boolean(me?.ready),
+        lastSeen: Date.now()
+      });
+    }
+
+    async function startRoom(){
+      if(!state.isHost || !state.room) return;
+
+      const readyCount = getReadyCount(state.room);
+      if(readyCount < 2){
+        alert('لازم يكون فيه لاعبان جاهزان أو أكثر');
+        return;
+      }
+
+      const room = state.room;
+      const rounds = room.settings?.rounds || 15;
+      const thinkMs = (room.settings?.thinkTime || 15) * 1000;
+      const reveal
