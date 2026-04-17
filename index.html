@@ -63,7 +63,7 @@
   </div>
 
   <div class="game-container">
-    <!-- شاشة البداية: اختيار إنشاء أو انضمام -->
+    <!-- شاشة البداية -->
     <div id="entryScreen" class="screen active">
       <div class="glass-panel">
         <h1>🎮 كَلاك</h1>
@@ -75,7 +75,7 @@
       </div>
     </div>
 
-    <!-- شاشة الإعدادات (للمنشئ فقط) -->
+    <!-- شاشة الإعدادات -->
     <div id="setupScreen" class="screen">
       <div class="glass-panel">
         <h1>⚙️ إعدادات الجولة</h1>
@@ -213,8 +213,7 @@
       let uniqueQuestion = {
         q: `${base.q} (${i + 1})`,
         opts: [...base.opts],
-        ans: base.ans,
-        cat: i % 5 === 0 ? "دينية" : i % 5 === 1 ? "خرائط" : i % 5 === 2 ? "أفلام" : i % 5 === 3 ? "عامة" : "ألغاز"
+        ans: base.ans
       };
       riddlesBank.push(uniqueQuestion);
     }
@@ -241,7 +240,11 @@
     end: document.getElementById('endScreen')
   };
   
-  function showScreen(id) { Object.keys(screens).forEach(s => screens[s].classList.remove('active')); screens[id].classList.add('active'); currentScreen = id; }
+  function showScreen(id) { 
+    Object.keys(screens).forEach(s => screens[s].classList.remove('active')); 
+    screens[id].classList.add('active'); 
+    currentScreen = id; 
+  }
   
   // ==================== نظام الغرف ====================
   function generateRoomId() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
@@ -252,7 +255,6 @@
     showScreen('setup');
     document.getElementById('displayRoomId').innerText = roomId;
     
-    // إعدادات slider
     const rs = document.getElementById('roundsSlider'), ts = document.getElementById('thinkSlider'), av = document.getElementById('answerViewSlider');
     document.getElementById('roundsValue').innerText = rs.value;
     document.getElementById('thinkTimeValue').innerText = ts.value;
@@ -270,7 +272,6 @@
     };
     
     db.ref(`rooms/${roomId}/settings`).set(gameSettings);
-    db.ref(`rooms/${roomId}/host`).set({ id: 'host', name: '' });
     
     showScreen('lobby');
     document.getElementById('lobbyRoomId').innerText = roomId;
@@ -283,8 +284,9 @@
     roomId = inputRoom;
     isHost = false;
     
-    db.ref(`rooms/${roomId}`).once('value', (snap) => {
+    db.ref(`rooms/${roomId}/settings`).once('value', (snap) => {
       if(snap.exists()) {
+        gameSettings = snap.val();
         showScreen('lobby');
         document.getElementById('lobbyRoomId').innerText = roomId;
         initLobbyAsGuest();
@@ -297,6 +299,8 @@
   function initLobbyAsHost() {
     document.getElementById('hostStartBtn').style.display = 'block';
     document.getElementById('readyBtn').style.display = 'block';
+    
+    // تسجيل المضيف كلاعب عادي
     document.getElementById('playerNameInput').oninput = function() {
       playerName = this.value.trim();
       document.getElementById('readyBtn').disabled = !playerName;
@@ -321,20 +325,33 @@
     document.getElementById('hostStartBtn').onclick = () => {
       const allReady = Object.values(playersData).every(p => p.ready);
       const playerCount = Object.keys(playersData).length;
+      
       if(playerCount >= 2 && allReady) {
         const shuffled = shuffleArray([...riddlesBank]);
         const selected = shuffled.slice(0, gameSettings.rounds);
         db.ref(`rooms/${roomId}/gameState`).set({
           started: true,
+          settings: gameSettings,
           questions: selected,
           currentRound: 0
         });
       }
     };
+    
+    // مستمع لبدء اللعبة (للمضيف أيضاً)
+    db.ref(`rooms/${roomId}/gameState`).on('value', (snap) => {
+      const state = snap.val();
+      if(state && state.started && currentScreen === 'lobby') {
+        gameSettings = state.settings;
+        questions = state.questions;
+        startGameForAll();
+      }
+    });
   }
   
   function initLobbyAsGuest() {
     document.getElementById('hostStartBtn').style.display = 'none';
+    
     document.getElementById('playerNameInput').oninput = function() {
       playerName = this.value.trim();
       document.getElementById('readyBtn').disabled = !playerName;
@@ -359,7 +376,7 @@
     db.ref(`rooms/${roomId}/gameState`).on('value', (snap) => {
       const state = snap.val();
       if(state && state.started && currentScreen === 'lobby') {
-        gameSettings = state.settings || gameSettings;
+        gameSettings = state.settings;
         questions = state.questions;
         startGameForAll();
       }
@@ -395,7 +412,9 @@
     
     const allReady = players.every(([id, p]) => p.ready);
     const canStart = count >= 2 && allReady;
-    document.getElementById('hostStartBtn').disabled = !canStart;
+    if(isHost) {
+      document.getElementById('hostStartBtn').disabled = !canStart;
+    }
     document.getElementById('lobbyStatus').innerText = count < 2 ? '⏳ انتظار لاعبين...' : (allReady ? '✅ الجميع جاهز!' : '⏳ انتظار الجاهزية...');
   }
   
@@ -411,60 +430,98 @@
     document.getElementById('onlineCount').innerText = `👤 ${arr.length}`;
   }
   
-  // خروج
   document.getElementById('exitRoomBtn').onclick = () => {
     if(playerId) db.ref(`rooms/${roomId}/players/${playerId}`).remove();
     location.reload();
   };
   
   function startGameForAll() {
-    gameActive = true; currentRound = 0; score = 0;
+    gameActive = true; 
+    currentRound = 0; 
+    score = 0;
     showScreen('game');
     document.getElementById('exitRoomBtn').style.display = 'inline-block';
+    document.getElementById('scoreDisplay').innerText = '🏅 0';
     startRound();
   }
   
   function startRound() {
-    if(currentRound >= gameSettings.rounds) { endGame(); return; }
+    if(currentRound >= gameSettings.rounds) { 
+      endGame(); 
+      return; 
+    }
     answerLock = false;
-    const q = questions[currentRound]; correctAnswer = q.ans;
+    const q = questions[currentRound]; 
+    correctAnswer = q.ans;
     document.getElementById('roundIndicator').innerText = `جولة ${currentRound+1}/${gameSettings.rounds}`;
     document.getElementById('questionText').innerText = q.q;
-    const container = document.getElementById('answersContainer'); container.innerHTML = '';
+    const container = document.getElementById('answersContainer'); 
+    container.innerHTML = '';
     shuffleArray([...q.opts]).forEach(opt => {
-      const btn = document.createElement('button'); btn.className = 'answer-btn'; btn.innerText = opt;
-      btn.onclick = (e) => handleAnswer(opt, btn); container.appendChild(btn);
+      const btn = document.createElement('button'); 
+      btn.className = 'answer-btn'; 
+      btn.innerText = opt;
+      btn.onclick = (e) => handleAnswer(opt, btn); 
+      container.appendChild(btn);
     });
     
     let timeLeft = gameSettings.thinkTime;
-    const bar = document.getElementById('progressBar'); bar.style.width = '100%';
+    const bar = document.getElementById('progressBar'); 
+    bar.style.width = '100%';
     if(timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
-      timeLeft -= 0.1; bar.style.width = Math.max(0, (timeLeft/gameSettings.thinkTime)*100) + '%';
-      if(timeLeft <= 0) { clearInterval(timerInterval); if(!answerLock) { answerLock=true; playSound('timeout'); showCorrectAnswer(); } }
+      timeLeft -= 0.1; 
+      bar.style.width = Math.max(0, (timeLeft/gameSettings.thinkTime)*100) + '%';
+      if(timeLeft <= 0) { 
+        clearInterval(timerInterval); 
+        if(!answerLock) { 
+          answerLock=true; 
+          playSound('timeout'); 
+          showCorrectAnswer(); 
+        } 
+      }
     }, 100);
   }
   
   function handleAnswer(selected, btn) {
-    if(answerLock) return; answerLock = true; clearInterval(timerInterval);
+    if(answerLock) return; 
+    answerLock = true; 
+    clearInterval(timerInterval);
     const isCorrect = (selected === correctAnswer);
-    if(isCorrect) { playSound('correct'); score += 10; document.getElementById('scoreDisplay').innerText = `🏅 ${score}`; btn.classList.add('correct'); db.ref(`rooms/${roomId}/players/${playerId}/score`).set(score); }
-    else { playSound('wrong'); btn.classList.add('wrong'); }
+    if(isCorrect) { 
+      playSound('correct'); 
+      score += 10; 
+      document.getElementById('scoreDisplay').innerText = `🏅 ${score}`; 
+      btn.classList.add('correct'); 
+      db.ref(`rooms/${roomId}/players/${playerId}/score`).set(score); 
+    } else { 
+      playSound('wrong'); 
+      btn.classList.add('wrong'); 
+    }
     document.querySelectorAll('.answer-btn').forEach(b=>b.disabled=true);
     setTimeout(() => showCorrectAnswer(), gameSettings.answerViewTime*1000);
   }
   
   function showCorrectAnswer() {
-    document.querySelectorAll('.answer-btn').forEach(b => { if(b.innerText === correctAnswer) b.classList.add('correct'); });
-    setTimeout(() => { currentRound++; startRound(); }, gameSettings.answerViewTime*1000);
+    document.querySelectorAll('.answer-btn').forEach(b => { 
+      if(b.innerText === correctAnswer) b.classList.add('correct'); 
+    });
+    setTimeout(() => { 
+      currentRound++; 
+      startRound(); 
+    }, gameSettings.answerViewTime*1000);
   }
   
   function endGame() {
-    gameActive = false; showScreen('end');
+    gameActive = false; 
+    showScreen('end');
     confetti({particleCount:200, spread:100});
     document.getElementById('finalCongrats').innerText = `${playerName} · ${score} نقطة`;
-    const lb = document.getElementById('finalLeaderboard'); lb.innerHTML = '<h3>🏆 الترتيب النهائي</h3>';
-    Object.entries(playersData).sort((a,b) => b[1].score - a[1].score).forEach(([id,p]) => lb.innerHTML += `<p>${p.name} : ${p.score||0}</p>`);
+    const lb = document.getElementById('finalLeaderboard'); 
+    lb.innerHTML = '<h3>🏆 الترتيب النهائي</h3>';
+    Object.entries(playersData).sort((a,b) => b[1].score - a[1].score).forEach(([id,p]) => {
+      lb.innerHTML += `<p>${p.name} : ${p.score||0}</p>`;
+    });
   }
   
   document.getElementById('playAgainBtn').onclick = () => location.reload();
