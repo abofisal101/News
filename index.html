@@ -5,415 +5,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="format-detection" content="telephone=no">
-  <title>✦ كَلاك · المسابقة ✦</title>
+  <title>✦ كَلاك · غرفة المسابقة ✦</title>
   
-  <!-- خطوط عربية -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
-  
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      width: 100%;
-      min-height: 100vh;
-      background: #000000;
-      font-family: 'Cairo', 'Tajawal', sans-serif;
-      color: white;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    body {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 8px;
-      padding-top: max(8px, env(safe-area-inset-top));
-      padding-bottom: max(8px, env(safe-area-inset-bottom));
-      padding-left: max(8px, env(safe-area-inset-left));
-      padding-right: max(8px, env(safe-area-inset-right));
-    }
-
-    /* الحاوية الرئيسية */
-    .game-wrapper {
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .game-container {
-      background: rgba(15, 0, 0, 0.65);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 2px solid rgba(255, 40, 40, 0.6);
-      box-shadow: 0 0 50px rgba(255, 0, 0, 0.4), inset 0 0 15px #ff1a1a40;
-      border-radius: 32px;
-      padding: 20px 16px;
-      width: 100%;
-    }
-
-    /* الشاشات */
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    /* عناوين */
-    h1, h2, h3 {
-      font-weight: 800;
-      text-shadow: 0 0 15px #ff1a1a, 0 0 30px #b30000;
-      line-height: 1.3;
-    }
-
-    h1 {
-      font-size: 2rem;
-      background: linear-gradient(135deg, #fff0f0, #ff8080);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-
-    /* لوحة زجاجية */
-    .glass-panel {
-      background: rgba(20, 0, 0, 0.5);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1.5px solid #ff3a3a;
-      border-radius: 28px;
-      padding: 20px 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 25px #ff1a1a66;
-    }
-
-    /* أزرار نيون */
-    .neon-btn {
-      background: rgba(40, 0, 0, 0.7);
-      border: 2px solid #ff3333;
-      color: #fff0f0;
-      font-weight: 800;
-      padding: 16px 18px;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      cursor: pointer;
-      box-shadow: 0 0 20px #ff0000b3, inset 0 0 8px #ff7777;
-      font-family: 'Cairo', sans-serif;
-      width: 100%;
-      margin: 8px 0;
-      transition: 0.15s;
-      text-align: center;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .neon-btn:active {
-      background: #aa0000;
-      transform: scale(0.98);
-      box-shadow: 0 0 35px #ff1a1a;
-    }
-
-    .neon-btn:disabled {
-      opacity: 0.35;
-      box-shadow: none;
-      border-color: #885555;
-      pointer-events: none;
-    }
-
-    /* حقول الإدخال */
-    input[type="text"] {
-      background: #140000;
-      border: 2px solid #ff4d4d;
-      padding: 16px 18px;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      color: white;
-      width: 100%;
-      outline: none;
-      font-family: 'Cairo', sans-serif;
-      -webkit-appearance: none;
-      appearance: none;
-      margin: 15px 0;
-    }
-
-    input[type="text"]:focus {
-      border-color: #ff8888;
-      box-shadow: 0 0 20px red;
-    }
-
-    /* شريط التقدم */
-    .progress-bar-container {
-      height: 18px;
-      background: #1f0000;
-      border-radius: 30px;
-      border: 1.5px solid #ff5555;
-      margin: 16px 0;
-      overflow: hidden;
-      box-shadow: inset 0 0 10px black, 0 0 15px red;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, #ff1a1a, #ff7b7b);
-      box-shadow: 0 0 20px #ff4444;
-    }
-
-    /* خيارات الإجابات */
-    .answers-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 20px 0;
-    }
-
-    .answer-btn {
-      background: rgba(0,0,0,0.55);
-      border: 2px solid #ff3333;
-      color: white;
-      padding: 18px 12px;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      cursor: pointer;
-      box-shadow: 0 0 12px #ff0000;
-      font-family: 'Tajawal', sans-serif;
-      word-break: break-word;
-      text-align: center;
-      transition: 0.1s;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .answer-btn:active:not(:disabled) {
-      background: #aa0000;
-      border-color: #ffaaaa;
-    }
-
-    .answer-btn.correct {
-      background: #00aa00;
-      border-color: #aaffaa;
-      box-shadow: 0 0 35px #00ff00;
-    }
-
-    .answer-btn.wrong {
-      background: #550000;
-      border-color: #ff7777;
-      opacity: 0.8;
-    }
-
-    .answer-btn:disabled {
-      opacity: 0.7;
-    }
-
-    /* شريط المتصدرين - مدمج أعلى الشاشة */
-    .leaderboard-bar {
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 2px solid #ff1a1a;
-      border-radius: 25px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 0 35px #ff000070;
-    }
-
-    .leaderboard-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      border-bottom: 1.5px solid #ff5e5e;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .leaderboard-list {
-      list-style: none;
-      max-height: 150px;
-      overflow-y: auto;
-    }
-
-    .leaderboard-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 6px;
-      border-bottom: 1px solid #700;
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    /* اللوبي */
-    .players-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 15px 0;
-    }
-
-    .player-badge {
-      background: #1f0000;
-      border: 1.5px solid #ff3333;
-      border-radius: 40px;
-      padding: 10px 18px;
-      font-size: 1rem;
-      font-weight: 600;
-      box-shadow: 0 0 10px red;
-    }
-
-    /* رؤوس الجولة */
-    .game-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    #roundIndicator, #scoreDisplay {
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
-
-    #questionText {
-      font-size: 1.5rem;
-      line-height: 1.5;
-      margin: 15px 0;
-      font-weight: 700;
-      word-break: break-word;
-    }
-
-    /* إعدادات المنزلق */
-    .slider-label {
-      font-size: 1.3rem;
-      display: block;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: #ff2a2a;
-      height: 8px;
-      margin-bottom: 25px;
-    }
-
-    /* نصوص الحالة */
-    .status-text {
-      color: #ffb0b0;
-      margin-top: 15px;
-      font-size: 1rem;
-      text-align: center;
-    }
-
-    /* زر الرجوع - صغير */
-    .back-btn {
-      background: none;
-      border: 1px solid #ff5e5e;
-      color: #ffc0c0;
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-      cursor: pointer;
-      display: inline-block;
-    }
-
-    /* تحسين التمرير */
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #ff3a3a;
-      border-radius: 10px;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; min-height: 100vh; background: #000; font-family: 'Cairo', 'Tajawal', sans-serif; color: white; overflow-x: hidden; }
+    body { display: flex; align-items: flex-start; justify-content: center; padding: 8px; padding-top: max(8px, env(safe-area-inset-top)); padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+    .game-wrapper { width: 100%; max-width: 500px; margin: 0 auto; }
+    .game-container { background: rgba(15, 0, 0, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 2px solid rgba(255, 40, 40, 0.6); box-shadow: 0 0 50px rgba(255, 0, 0, 0.4), inset 0 0 15px #ff1a1a40; border-radius: 32px; padding: 20px 16px; width: 100%; }
+    .screen { display: none; } .screen.active { display: block; }
+    h1, h2, h3 { font-weight: 800; text-shadow: 0 0 15px #ff1a1a, 0 0 30px #b30000; line-height: 1.3; }
+    h1 { font-size: 2rem; background: linear-gradient(135deg, #fff0f0, #ff8080); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 20px; text-align: center; }
+    h2 { font-size: 1.5rem; margin-bottom: 15px; }
+    .glass-panel { background: rgba(20, 0, 0, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1.5px solid #ff3a3a; border-radius: 28px; padding: 20px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 25px #ff1a1a66; }
+    .neon-btn { background: rgba(40, 0, 0, 0.7); border: 2px solid #ff3333; color: #fff0f0; font-weight: 800; padding: 16px 18px; border-radius: 50px; font-size: 1.2rem; backdrop-filter: blur(10px); cursor: pointer; box-shadow: 0 0 20px #ff0000b3; font-family: 'Cairo', sans-serif; width: 100%; margin: 8px 0; transition: 0.15s; text-align: center; -webkit-appearance: none; }
+    .neon-btn:active { background: #aa0000; transform: scale(0.98); }
+    .neon-btn:disabled { opacity: 0.35; box-shadow: none; border-color: #885555; }
+    .small-btn { padding: 10px 16px; font-size: 0.9rem; width: auto; display: inline-block; margin: 4px; }
+    .danger-btn { border-color: #ff6666; background: rgba(80, 0, 0, 0.8); }
+    input[type="text"] { background: #140000; border: 2px solid #ff4d4d; padding: 16px 18px; border-radius: 50px; font-size: 1.2rem; color: white; width: 100%; outline: none; font-family: 'Cairo', sans-serif; margin: 15px 0; }
+    .progress-bar-container { height: 18px; background: #1f0000; border-radius: 30px; border: 1.5px solid #ff5555; margin: 16px 0; overflow: hidden; }
+    .progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #ff1a1a, #ff7b7b); box-shadow: 0 0 20px #ff4444; }
+    .answers-grid { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+    .answer-btn { background: rgba(0,0,0,0.55); border: 2px solid #ff3333; color: white; padding: 18px 12px; border-radius: 30px; font-size: 1.2rem; font-weight: 700; backdrop-filter: blur(15px); cursor: pointer; box-shadow: 0 0 12px #ff0000; font-family: 'Tajawal', sans-serif; word-break: break-word; text-align: center; }
+    .answer-btn:active:not(:disabled) { background: #aa0000; }
+    .answer-btn.correct { background: #00aa00; border-color: #aaffaa; box-shadow: 0 0 35px #00ff00; }
+    .answer-btn.wrong { background: #550000; border-color: #ff7777; opacity: 0.8; }
+    .leaderboard-bar { background: rgba(0,0,0,0.8); backdrop-filter: blur(30px); border: 2px solid #ff1a1a; border-radius: 25px; padding: 14px 16px; margin-bottom: 16px; }
+    .leaderboard-title { font-size: 1.3rem; font-weight: 800; border-bottom: 1.5px solid #ff5e5e; padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .leaderboard-list { list-style: none; max-height: 200px; overflow-y: auto; }
+    .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 6px; border-bottom: 1px solid #700; font-weight: 700; }
+    .player-badge { background: #1f0000; border: 1.5px solid #ff3333; border-radius: 40px; padding: 10px 18px; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; margin: 4px; }
+    .kick-btn, .exit-btn { background: #550000; border: 1px solid #ff5555; color: white; border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; cursor: pointer; margin-right: 8px; }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    #questionText { font-size: 1.5rem; line-height: 1.5; margin: 15px 0; font-weight: 700; }
+    .slider-label { font-size: 1.3rem; display: block; margin-bottom: 10px; font-weight: 600; }
+    input[type="range"] { width: 100%; accent-color: #ff2a2a; height: 8px; margin-bottom: 25px; }
+    .status-text { color: #ffb0b0; margin-top: 15px; font-size: 1rem; text-align: center; }
+    .room-info { background: #1a0000; border-radius: 20px; padding: 12px; margin: 10px 0; border: 1px solid #ff4444; }
   </style>
 </head>
 <body>
 
 <div class="game-wrapper">
-  <!-- شريط المتصدرين (يظهر دائمًا بعد اللوبي) -->
   <div class="leaderboard-bar" id="leaderboardBar">
     <div class="leaderboard-title">
       <span>🏆 المتصدرون</span>
       <span id="onlineCount" style="font-size:0.9rem; margin-right:auto;">👤 0</span>
+      <button class="exit-btn" id="exitRoomBtn" style="display:none;">🚪 خروج</button>
     </div>
-    <ul class="leaderboard-list" id="leaderboardList">
-      <li class="leaderboard-item"><span>في انتظار اللاعبين...</span><span></span></li>
-    </ul>
+    <ul class="leaderboard-list" id="leaderboardList"></ul>
   </div>
 
   <div class="game-container">
-    <!-- الإعدادات -->
-    <div id="setupScreen" class="screen active">
+    <!-- شاشة البداية: اختيار إنشاء أو انضمام -->
+    <div id="entryScreen" class="screen active">
+      <div class="glass-panel">
+        <h1>🎮 كَلاك</h1>
+        <button class="neon-btn" id="createRoomBtn">✨ إنشاء غرفة جديدة</button>
+        <div style="margin: 20px 0; text-align: center; color: #ff9999;">ــــ أو ــــ</div>
+        <input type="text" id="roomIdInput" placeholder="أدخل معرف الغرفة..." style="text-align: center;">
+        <button class="neon-btn" id="joinRoomBtn">🔗 انضمام للغرفة</button>
+        <div id="entryStatus" class="status-text"></div>
+      </div>
+    </div>
+
+    <!-- شاشة الإعدادات (للمنشئ فقط) -->
+    <div id="setupScreen" class="screen">
       <div class="glass-panel">
         <h1>⚙️ إعدادات الجولة</h1>
-        <div>
-          <label class="slider-label">🔴 عدد الجولات: <span id="roundsValue">15</span></label>
-          <input type="range" id="roundsSlider" min="10" max="20" value="15" step="1">
+        <div class="room-info">
+          <p>🔑 معرف الغرفة: <strong id="displayRoomId"></strong></p>
+          <p style="font-size:0.9rem;">(شاركه مع أصدقائك للانضمام)</p>
         </div>
-        <div>
-          <label class="slider-label">⏳ وقت التفكير: <span id="thinkTimeValue">15</span> ث</label>
-          <input type="range" id="thinkSlider" min="5" max="30" value="15" step="1">
-        </div>
-        <div>
-          <label class="slider-label">🕒 عرض الإجابة: <span id="answerViewValue">3</span> ث</label>
-          <input type="range" id="answerViewSlider" min="2" max="5" value="3" step="1">
-        </div>
-        <button class="neon-btn" id="applySettingsBtn">💾 حفظ و متابعة</button>
+        <div><label class="slider-label">🔴 عدد الجولات: <span id="roundsValue">15</span></label><input type="range" id="roundsSlider" min="10" max="20" value="15" step="1"></div>
+        <div><label class="slider-label">⏳ وقت التفكير: <span id="thinkTimeValue">15</span> ث</label><input type="range" id="thinkSlider" min="5" max="30" value="15" step="1"></div>
+        <div><label class="slider-label">🕒 عرض الإجابة: <span id="answerViewValue">3</span> ث</label><input type="range" id="answerViewSlider" min="2" max="5" value="3" step="1"></div>
+        <button class="neon-btn" id="saveSettingsBtn">💾 حفظ وفتح اللوبي</button>
       </div>
     </div>
 
     <!-- اللوبي -->
     <div id="lobbyScreen" class="screen">
       <div class="glass-panel">
-        <h2 style="font-size:1.8rem;">🎮 اسم المتسابق</h2>
-        <input type="text" id="playerNameInput" placeholder="أدخل اسمك..." maxlength="20" enterkeyhint="done">
-        <div style="margin:15px 0;">
-          <p style="font-size:1.2rem;">👥 اللاعبين: <span id="playerCountDisplay">0</span></p>
-          <div id="playersList" class="players-container"></div>
+        <h2>👥 غرفة الانتظار</h2>
+        <div class="room-info">
+          <p>🔑 معرف الغرفة: <strong id="lobbyRoomId"></strong></p>
+          <p>👑 المضيف: <span id="hostName"></span></p>
         </div>
+        <input type="text" id="playerNameInput" placeholder="أدخل اسمك..." maxlength="20">
+        <div><p style="font-size:1.2rem;">👥 اللاعبين (<span id="playerCountDisplay">0</span>):</p><div id="playersList" style="margin:10px 0;"></div></div>
         <button class="neon-btn" id="readyBtn" disabled>✅ أنا جاهز</button>
-        <button class="neon-btn" id="startGameBtn" disabled>🔥 ابدأ اللعب</button>
+        <button class="neon-btn" id="hostStartBtn" disabled style="display:none;">🔥 ابدأ اللعب (للمضيف)</button>
         <div id="lobbyStatus" class="status-text"></div>
-        <button class="back-btn" id="backToSetupBtn">↩️ الرجوع للإعدادات</button>
       </div>
     </div>
 
     <!-- اللعب -->
     <div id="gameScreen" class="screen">
       <div class="glass-panel">
-        <div class="game-header">
-          <span id="roundIndicator">جولة 1/15</span>
-          <span id="scoreDisplay">🏅 0</span>
-        </div>
-        <div class="progress-bar-container">
-          <div id="progressBar" class="progress-fill" style="width:100%"></div>
-        </div>
-        <div id="questionText">تحميل السؤال...</div>
+        <div class="game-header"><span id="roundIndicator">جولة 1/15</span><span id="scoreDisplay">🏅 0</span></div>
+        <div class="progress-bar-container"><div id="progressBar" class="progress-fill" style="width:100%"></div></div>
+        <div id="questionText">تحميل...</div>
         <div class="answers-grid" id="answersContainer"></div>
         <div id="gameMessage" class="status-text"></div>
       </div>
@@ -423,8 +121,8 @@
     <div id="endScreen" class="screen">
       <div class="glass-panel" style="text-align:center;">
         <h1>🏁 انتهت المسابقة</h1>
-        <h2 id="finalCongrats" style="margin:20px 0; font-size:1.6rem;"></h2>
-        <div id="finalLeaderboard" style="margin:20px 0; font-size:1.2rem;"></div>
+        <h2 id="finalCongrats"></h2>
+        <div id="finalLeaderboard"></div>
         <button class="neon-btn" id="playAgainBtn">🔄 العب مجدداً</button>
       </div>
     </div>
@@ -432,7 +130,7 @@
 </div>
 
 <script>
-  // ==================== Firebase (متوافق مع الملف المحلي) ====================
+  // ==================== Firebase ====================
   const firebaseConfig = {
     apiKey: "AIzaSyBKs24sqojKX51Q4HAPv3amY1oTGo3YcyA",
     authDomain: "myquiz-314f9.firebaseapp.com",
@@ -443,360 +141,333 @@
     appId: "1:86590365416:web:0d37b3695ec028103ff35d"
   };
   
-  // تهيئة Firebase
-  let db = null;
-  let firebaseReady = false;
-  try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    firebaseReady = true;
-    console.log("✅ Firebase connected");
-  } catch(e) {
-    console.warn("⚠️ Firebase offline mode (local file)");
-    // وضع احتياطي بدون Firebase
-    firebaseReady = false;
-  }
-
-  // ==================== بنك الأسئلة (1000 لغز) ====================
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  
+  // ==================== 1000 سؤال فريد ====================
   const riddlesBank = [];
-  (function generateRiddles() {
-    const base = [
-      { q: "ما هي السورة التي تسمى قلب القرآن؟", opts: ["يس", "الرحمن", "الإخلاص", "البقرة"], ans: "يس", cat: "دينية" },
-      { q: "كم عدد آيات سورة البقرة؟", opts: ["286", "200", "255", "300"], ans: "286", cat: "دينية" },
-      { q: "ما هي عاصمة السنغال؟", opts: ["داكار", "باماكو", "أبيدجان", "نواكشوط"], ans: "داكار", cat: "خرائط ودول" },
-      { q: "أين يقع نهر الأمازون؟", opts: ["أمريكا الجنوبية", "أفريقيا", "آسيا", "أوروبا"], ans: "أمريكا الجنوبية", cat: "خرائط ودول" },
-      { q: "من هو مخرج فيلم 'المصير'؟", opts: ["يوسف شاهين", "عاطف الطيب", "محمد خان", "خالد يوسف"], ans: "يوسف شاهين", cat: "أفلام ومشاهير" },
-      { q: "أسرع حيوان بري؟", opts: ["الفهد", "الغزال", "الأسد", "الحصان"], ans: "الفهد", cat: "معلومات عامة" },
-      { q: "عدد إذا ضربته في نفسه = 64؟", opts: ["8", "6", "7", "9"], ans: "8", cat: "ألغاز ذكاء" },
-      { q: "كم عدد ألوان قوس قزح؟", opts: ["7", "6", "8", "5"], ans: "7", cat: "معلومات عامة" },
-      { q: "ما هو الكوكب الأحمر؟", opts: ["المريخ", "المشتري", "الزهرة", "عطارد"], ans: "المريخ", cat: "معلومات عامة" }
+  
+  (function generate1000UniqueRiddles() {
+    const religious = [
+      { q: "ما هي السورة التي تسمى قلب القرآن؟", opts: ["يس", "الرحمن", "الإخلاص", "البقرة"], ans: "يس" },
+      { q: "كم عدد آيات سورة البقرة؟", opts: ["286", "200", "255", "300"], ans: "286" },
+      { q: "ما هي أول صلاة فرضت على النبي؟", opts: ["الظهر", "العصر", "الفجر", "المغرب"], ans: "الظهر" },
+      { q: "كم عدد الأنبياء المذكورين في القرآن؟", opts: ["25", "30", "20", "35"], ans: "25" },
+      { q: "ما هي السورة التي تعدل ثلث القرآن؟", opts: ["الإخلاص", "الفلق", "الناس", "الكافرون"], ans: "الإخلاص" },
+      { q: "في أي سنة هجرية فرض الصيام؟", opts: ["2", "1", "3", "4"], ans: "2" },
+      { q: "ما هو الحج الأصغر؟", opts: ["العمرة", "الطواف", "السعي", "الوقوف بعرفة"], ans: "العمرة" },
+      { q: "كم عدد أركان الإسلام؟", opts: ["5", "4", "6", "7"], ans: "5" },
+      { q: "ما هي ليلة القدر؟", opts: ["خير من ألف شهر", "ليلة الإسراء", "ليلة النصف", "ليلة الجمعة"], ans: "خير من ألف شهر" },
+      { q: "من هو أول الخلفاء الراشدين؟", opts: ["أبو بكر", "عمر", "عثمان", "علي"], ans: "أبو بكر" }
     ];
-    for(let i=0; i<1000; i++){
-      let idx = i % base.length;
-      let qObj = {...base[idx]};
-      qObj.q = qObj.q + (i>0 ? ` (${i+1})` : '');
-      riddlesBank.push(qObj);
+    
+    const geography = [
+      { q: "ما هي عاصمة السنغال؟", opts: ["داكار", "باماكو", "أبيدجان", "نواكشوط"], ans: "داكار" },
+      { q: "أين يقع نهر الأمازون؟", opts: ["أمريكا الجنوبية", "أفريقيا", "آسيا", "أوروبا"], ans: "أمريكا الجنوبية" },
+      { q: "ما هي أكبر دولة عربية مساحة؟", opts: ["الجزائر", "السعودية", "السودان", "مصر"], ans: "الجزائر" },
+      { q: "ما هي عاصمة أستراليا؟", opts: ["كانبرا", "سيدني", "ملبورن", "برث"], ans: "كانبرا" },
+      { q: "أين يقع جبل طارق؟", opts: ["بين إسبانيا والمغرب", "إيطاليا", "اليونان", "تركيا"], ans: "بين إسبانيا والمغرب" },
+      { q: "ما هو أطول نهر في العالم؟", opts: ["النيل", "الأمازون", "المسيسيبي", "اليانغتسي"], ans: "النيل" },
+      { q: "كم عدد الدول العربية؟", opts: ["22", "20", "25", "18"], ans: "22" },
+      { q: "ما هي عاصمة كندا؟", opts: ["أوتاوا", "تورونتو", "فانكوفر", "مونتريال"], ans: "أوتاوا" },
+      { q: "أين يقع البحر الميت؟", opts: ["بين الأردن وفلسطين", "مصر", "السعودية", "العراق"], ans: "بين الأردن وفلسطين" },
+      { q: "ما هي أكبر قارة؟", opts: ["آسيا", "أفريقيا", "أمريكا", "أوروبا"], ans: "آسيا" }
+    ];
+    
+    const movies = [
+      { q: "من هو مخرج فيلم 'المصير'؟", opts: ["يوسف شاهين", "عاطف الطيب", "محمد خان", "خالد يوسف"], ans: "يوسف شاهين" },
+      { q: "من هو بطل فيلم 'إشاعة حب'؟", opts: ["عمر الشريف", "رشدي أباظة", "صلاح ذو الفقار", "شكري سرحان"], ans: "عمر الشريف" },
+      { q: "ما هو الفيلم الذي فاز بأوسكار أفضل فيلم 2020؟", opts: ["باراسايت", "1917", "جوكر", "حدث ذات مرة"], ans: "باراسايت" },
+      { q: "من هي 'سندريلا الشاشة العربية'؟", opts: ["سعاد حسني", "فاتن حمامة", "شادية", "مريم فخر الدين"], ans: "سعاد حسني" },
+      { q: "ما هي السلسلة الأعلى دخلاً في السينما؟", opts: ["أفنجرز", "هاري بوتر", "ستار وورز", "جيمس بوند"], ans: "أفنجرز" },
+      { q: "من هو بطل 'تيتانيك'؟", opts: ["ليوناردو دي كابريو", "براد بيت", "توم كروز", "جوني ديب"], ans: "ليوناردو دي كابريو" },
+      { q: "فيلم 'العراب' من إخراج؟", opts: ["فرانسيس فورد كوبولا", "مارتن سكورسيزي", "سبيلبيرغ", "تارانتينو"], ans: "فرانسيس فورد كوبولا" },
+      { q: "من هو 'تشارلي شابلن'؟", opts: ["ممثل كوميدي", "مخرج رعب", "كاتب", "رسام"], ans: "ممثل كوميدي" }
+    ];
+    
+    const general = [
+      { q: "ما هو أسرع حيوان بري؟", opts: ["الفهد", "الغزال", "الأسد", "الحصان"], ans: "الفهد" },
+      { q: "كم عدد ألوان قوس قزح؟", opts: ["7", "6", "8", "5"], ans: "7" },
+      { q: "ما هو الكوكب الأحمر؟", opts: ["المريخ", "المشتري", "الزهرة", "عطارد"], ans: "المريخ" },
+      { q: "ما هو أكبر محيط؟", opts: ["الهادئ", "الأطلسي", "الهندي", "المتجمد"], ans: "الهادئ" },
+      { q: "من اخترع المصباح الكهربائي؟", opts: ["إديسون", "تسلا", "بيل", "ماركوني"], ans: "إديسون" },
+      { q: "ما هو العنصر الكيميائي للذهب؟", opts: ["Au", "Ag", "Fe", "Cu"], ans: "Au" },
+      { q: "كم عدد عظام الإنسان البالغ؟", opts: ["206", "200", "210", "195"], ans: "206" },
+      { q: "ما هي عاصمة اليابان؟", opts: ["طوكيو", "أوساكا", "كيوتو", "هيروشيما"], ans: "طوكيو" }
+    ];
+    
+    const puzzles = [
+      { q: "ما هو العدد الذي إذا ضربته في نفسه كان الناتج 64؟", opts: ["8", "6", "7", "9"], ans: "8" },
+      { q: "ما هو الشيء الذي كلما أخذت منه كبر؟", opts: ["الحفرة", "العمر", "المال", "الوقت"], ans: "الحفرة" },
+      { q: "له أوراق وما هو بنبات، له جلد وما هو بحيوان، ما هو؟", opts: ["الكتاب", "الشجرة", "الحقيبة", "البيت"], ans: "الكتاب" },
+      { q: "ما هو الشيء الذي يسمع بلا أذن ويتكلم بلا لسان؟", opts: ["الهاتف", "الراديو", "التلفاز", "الصدى"], ans: "الهاتف" },
+      { q: "ما هو الباب الذي لا يمكن فتحه؟", opts: ["الباب المفتوح", "باب السماء", "باب القدر", "باب السيارة"], ans: "الباب المفتوح" },
+      { q: "أخت خالك وليست خالتك، من هي؟", opts: ["أمك", "خالتك", "عمتك", "جدتك"], ans: "أمك" }
+    ];
+    
+    const allCategories = [...religious, ...geography, ...movies, ...general, ...puzzles];
+    const baseCount = allCategories.length;
+    
+    for(let i = 0; i < 1000; i++) {
+      let base = allCategories[i % baseCount];
+      let uniqueQuestion = {
+        q: `${base.q} (${i + 1})`,
+        opts: [...base.opts],
+        ans: base.ans,
+        cat: i % 5 === 0 ? "دينية" : i % 5 === 1 ? "خرائط" : i % 5 === 2 ? "أفلام" : i % 5 === 3 ? "عامة" : "ألغاز"
+      };
+      riddlesBank.push(uniqueQuestion);
     }
   })();
+  
+  function shuffleArray(arr) { for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+  function playSound(type) { try { const ctx = new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state==='suspended') ctx.resume(); const osc=ctx.createOscillator(), g=ctx.createGain(); osc.connect(g); g.connect(ctx.destination); osc.frequency.value = type==='correct'?880:(type==='wrong'?330:440); g.gain.setValueAtTime(0.1,ctx.currentTime); osc.start(); osc.stop(ctx.currentTime+0.15); } catch(e) {} }
 
-  function shuffleArray(arr) { 
-    for(let i=arr.length-1;i>0;i--){ 
-      const j=Math.floor(Math.random()*(i+1)); 
-      [arr[i],arr[j]]=[arr[j],arr[i]]; 
-    } 
-    return arr; 
-  }
-
-  // مؤثرات صوتية بسيطة (تعمل على الجوال)
-  function playSound(type) {
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if(!AudioContext) return;
-      const ctx = new AudioContext();
-      if(ctx.state === 'suspended') ctx.resume();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = type==='correct'? 880 : (type==='wrong'? 330 : 440);
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.2);
-      osc.start(); osc.stop(ctx.currentTime+0.2);
-    } catch(e) {}
-  }
-
-  // ==================== الحالة العامة ====================
+  // ==================== متغيرات عامة ====================
   let gameSettings = { rounds: 15, thinkTime: 15, answerViewTime: 3 };
-  let currentScreen = 'setup';
-  let playerName = '', playerId = '';
+  let currentScreen = 'entry';
+  let playerName = '', playerId = '', roomId = '';
+  let isHost = false;
   let myReady = false;
   let gameActive = false;
-  let questions = [];
-  let currentRound = 0;
-  let score = 0;
-  let timerInterval = null, answerLock = false, correctAnswer = '';
-  let playersData = {}; // { id: { name, ready, score } }
+  let questions = [], currentRound = 0, score = 0, timerInterval = null, answerLock = false, correctAnswer = '';
+  let playersData = {};
   
-  // DOM
   const screens = {
+    entry: document.getElementById('entryScreen'),
     setup: document.getElementById('setupScreen'),
     lobby: document.getElementById('lobbyScreen'),
     game: document.getElementById('gameScreen'),
     end: document.getElementById('endScreen')
   };
   
-  function showScreen(id) {
-    Object.keys(screens).forEach(s => screens[s].classList.remove('active'));
-    screens[id].classList.add('active');
-    currentScreen = id;
-  }
-
-  // ==================== الإعدادات ====================
-  const roundsSlider = document.getElementById('roundsSlider');
-  const thinkSlider = document.getElementById('thinkSlider');
-  const answerViewSlider = document.getElementById('answerViewSlider');
+  function showScreen(id) { Object.keys(screens).forEach(s => screens[s].classList.remove('active')); screens[id].classList.add('active'); currentScreen = id; }
   
-  document.getElementById('roundsValue').innerText = roundsSlider.value;
-  document.getElementById('thinkTimeValue').innerText = thinkSlider.value;
-  document.getElementById('answerViewValue').innerText = answerViewSlider.value;
+  // ==================== نظام الغرف ====================
+  function generateRoomId() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
   
-  roundsSlider.oninput = ()=> document.getElementById('roundsValue').innerText = roundsSlider.value;
-  thinkSlider.oninput = ()=> document.getElementById('thinkTimeValue').innerText = thinkSlider.value;
-  answerViewSlider.oninput = ()=> document.getElementById('answerViewValue').innerText = answerViewSlider.value;
-  
-  document.getElementById('applySettingsBtn').onclick = ()=>{
-    gameSettings.rounds = +roundsSlider.value;
-    gameSettings.thinkTime = +thinkSlider.value;
-    gameSettings.answerViewTime = +answerViewSlider.value;
-    showScreen('lobby');
-    resetLobby();
-  };
-
-  document.getElementById('backToSetupBtn').onclick = ()=>{
-    if(playerId && firebaseReady) {
-      firebase.database().ref(`rooms/mainRoom/players/${playerId}`).remove();
-    }
+  document.getElementById('createRoomBtn').onclick = () => {
+    roomId = generateRoomId();
+    isHost = true;
     showScreen('setup');
+    document.getElementById('displayRoomId').innerText = roomId;
+    
+    // إعدادات slider
+    const rs = document.getElementById('roundsSlider'), ts = document.getElementById('thinkSlider'), av = document.getElementById('answerViewSlider');
+    document.getElementById('roundsValue').innerText = rs.value;
+    document.getElementById('thinkTimeValue').innerText = ts.value;
+    document.getElementById('answerViewValue').innerText = av.value;
+    rs.oninput = ()=> document.getElementById('roundsValue').innerText = rs.value;
+    ts.oninput = ()=> document.getElementById('thinkTimeValue').innerText = ts.value;
+    av.oninput = ()=> document.getElementById('answerViewValue').innerText = av.value;
   };
-
-  function resetLobby() {
-    document.getElementById('playerNameInput').value = '';
-    document.getElementById('readyBtn').disabled = true;
-    document.getElementById('startGameBtn').disabled = true;
-    myReady = false;
-    playerName = ''; playerId = '';
-    document.getElementById('lobbyStatus').innerText = '';
-  }
-
-  // ==================== إدارة اللاعبين (Firebase مع احتياط) ====================
-  function updateLeaderboardUI() {
-    const list = document.getElementById('leaderboardList');
-    const onlineSpan = document.getElementById('onlineCount');
-    const arr = Object.entries(playersData).map(([id,p]) => ({ name:p.name, score:p.score||0 }));
-    arr.sort((a,b) => b.score - a.score);
-    list.innerHTML = '';
-    if(arr.length === 0) {
-      list.innerHTML = '<li class="leaderboard-item"><span>لا يوجد لاعبين</span><span></span></li>';
-    } else {
-      arr.forEach(p => {
-        const li = document.createElement('li');
-        li.className = 'leaderboard-item';
-        li.innerHTML = `<span>${p.name}</span><span>${p.score}</span>`;
-        list.appendChild(li);
-      });
-    }
-    onlineSpan.innerText = `👤 ${arr.length}`;
-  }
-
-  function syncPlayersFromFB() {
-    if(!firebaseReady) return;
-    const playersRef = firebase.database().ref('rooms/mainRoom/players');
-    playersRef.on('value', (snap) => {
+  
+  document.getElementById('saveSettingsBtn').onclick = () => {
+    gameSettings = {
+      rounds: +document.getElementById('roundsSlider').value,
+      thinkTime: +document.getElementById('thinkSlider').value,
+      answerViewTime: +document.getElementById('answerViewSlider').value
+    };
+    
+    db.ref(`rooms/${roomId}/settings`).set(gameSettings);
+    db.ref(`rooms/${roomId}/host`).set({ id: 'host', name: '' });
+    
+    showScreen('lobby');
+    document.getElementById('lobbyRoomId').innerText = roomId;
+    initLobbyAsHost();
+  };
+  
+  document.getElementById('joinRoomBtn').onclick = () => {
+    const inputRoom = document.getElementById('roomIdInput').value.trim().toUpperCase();
+    if(!inputRoom) return alert('أدخل معرف الغرفة');
+    roomId = inputRoom;
+    isHost = false;
+    
+    db.ref(`rooms/${roomId}`).once('value', (snap) => {
+      if(snap.exists()) {
+        showScreen('lobby');
+        document.getElementById('lobbyRoomId').innerText = roomId;
+        initLobbyAsGuest();
+      } else {
+        alert('الغرفة غير موجودة!');
+      }
+    });
+  };
+  
+  function initLobbyAsHost() {
+    document.getElementById('hostStartBtn').style.display = 'block';
+    document.getElementById('readyBtn').style.display = 'block';
+    document.getElementById('playerNameInput').oninput = function() {
+      playerName = this.value.trim();
+      document.getElementById('readyBtn').disabled = !playerName;
+    };
+    
+    db.ref(`rooms/${roomId}/players`).on('value', (snap) => {
       playersData = snap.val() || {};
       updateLobbyUI();
       updateLeaderboardUI();
     });
-  }
-
-  function updateLobbyUI() {
-    const playerCount = Object.keys(playersData).length;
-    document.getElementById('playerCountDisplay').innerText = playerCount;
-    const listDiv = document.getElementById('playersList');
-    listDiv.innerHTML = '';
-    let allReady = playerCount > 0;
-    for(let id in playersData) {
-      const p = playersData[id];
-      listDiv.innerHTML += `<span class="player-badge">${p.name} ${p.ready?'✅':'⏳'}</span>`;
-      if(!p.ready) allReady = false;
-    }
-    const canStart = (playerCount >= 2) && allReady;
-    document.getElementById('startGameBtn').disabled = !canStart;
     
-    if(playerCount < 2) {
-      document.getElementById('lobbyStatus').innerText = '⏳ في انتظار لاعب آخر على الأقل...';
-    } else if(!allReady) {
-      document.getElementById('lobbyStatus').innerText = '⏳ في انتظار جاهزية الجميع...';
-    } else {
-      document.getElementById('lobbyStatus').innerText = '✅ الجميع جاهز! يمكن البدء.';
-    }
-  }
-
-  // مستمع Firebase للعبة
-  function listenToGameStart() {
-    if(!firebaseReady) return;
-    const gameStateRef = firebase.database().ref('rooms/mainRoom/gameState');
-    gameStateRef.on('value', (snap) => {
-      const state = snap.val();
-      if(state && state.started && currentScreen === 'lobby' && !gameActive) {
-        startGameForAll(state.settings, state.questions);
-      }
-    });
-  }
-
-  // ==================== أحداث اللوبي ====================
-  document.getElementById('playerNameInput').oninput = function() {
-    playerName = this.value.trim();
-    document.getElementById('readyBtn').disabled = !playerName;
-  };
-
-  document.getElementById('readyBtn').onclick = function() {
-    if(!playerName) return;
-    myReady = true;
-    playerId = playerName + '_' + Date.now() + '_' + Math.floor(Math.random()*1000);
-    
-    if(firebaseReady) {
-      const playerRef = firebase.database().ref(`rooms/mainRoom/players/${playerId}`);
-      playerRef.set({ name: playerName, ready: true, score: 0 });
+    document.getElementById('readyBtn').onclick = () => {
+      if(!playerName) return;
+      myReady = true;
+      playerId = 'host_' + Date.now();
+      const playerRef = db.ref(`rooms/${roomId}/players/${playerId}`);
+      playerRef.set({ name: playerName, ready: true, score: 0, isHost: true });
       playerRef.onDisconnect().remove();
-    } else {
-      // وضع offline احتياطي
-      playersData[playerId] = { name: playerName, ready: true, score: 0 };
+      document.getElementById('readyBtn').disabled = true;
+    };
+    
+    document.getElementById('hostStartBtn').onclick = () => {
+      const allReady = Object.values(playersData).every(p => p.ready);
+      const playerCount = Object.keys(playersData).length;
+      if(playerCount >= 2 && allReady) {
+        const shuffled = shuffleArray([...riddlesBank]);
+        const selected = shuffled.slice(0, gameSettings.rounds);
+        db.ref(`rooms/${roomId}/gameState`).set({
+          started: true,
+          questions: selected,
+          currentRound: 0
+        });
+      }
+    };
+  }
+  
+  function initLobbyAsGuest() {
+    document.getElementById('hostStartBtn').style.display = 'none';
+    document.getElementById('playerNameInput').oninput = function() {
+      playerName = this.value.trim();
+      document.getElementById('readyBtn').disabled = !playerName;
+    };
+    
+    db.ref(`rooms/${roomId}/players`).on('value', (snap) => {
+      playersData = snap.val() || {};
       updateLobbyUI();
       updateLeaderboardUI();
-    }
-    document.getElementById('readyBtn').disabled = true;
-  };
-
-  document.getElementById('startGameBtn').onclick = function() {
-    if(!myReady) return;
-    const playerCount = Object.keys(playersData).length;
-    if(playerCount < 2) { alert('يجب وجود لاعبين اثنين على الأقل'); return; }
+    });
     
-    const shuffled = shuffleArray([...riddlesBank]);
-    const selected = shuffled.slice(0, gameSettings.rounds);
+    document.getElementById('readyBtn').onclick = () => {
+      if(!playerName) return;
+      myReady = true;
+      playerId = 'guest_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+      const playerRef = db.ref(`rooms/${roomId}/players/${playerId}`);
+      playerRef.set({ name: playerName, ready: true, score: 0, isHost: false });
+      playerRef.onDisconnect().remove();
+      document.getElementById('readyBtn').disabled = true;
+    };
     
-    if(firebaseReady) {
-      firebase.database().ref('rooms/mainRoom/gameState').set({
-        started: true,
-        settings: gameSettings,
-        questions: selected,
-        currentRound: 0
-      });
-    } else {
-      // وضع offline
-      startGameForAll(gameSettings, selected);
-    }
-  };
-
-  function startGameForAll(settings, qs) {
-    gameSettings = settings;
-    questions = qs;
-    currentRound = 0;
-    score = 0;
-    gameActive = true;
-    showScreen('game');
-    document.getElementById('scoreDisplay').innerText = '🏅 0';
-    startRound();
+    db.ref(`rooms/${roomId}/gameState`).on('value', (snap) => {
+      const state = snap.val();
+      if(state && state.started && currentScreen === 'lobby') {
+        gameSettings = state.settings || gameSettings;
+        questions = state.questions;
+        startGameForAll();
+      }
+    });
   }
-
-  // ==================== آليات اللعبة ====================
-  function startRound() {
-    if(currentRound >= gameSettings.rounds) {
-      endGame();
-      return;
-    }
-    answerLock = false;
-    const q = questions[currentRound];
-    correctAnswer = q.ans;
-    document.getElementById('roundIndicator').innerText = `جولة ${currentRound+1}/${gameSettings.rounds}`;
-    document.getElementById('questionText').innerText = q.q;
-    
-    const opts = shuffleArray([...q.opts]);
-    const container = document.getElementById('answersContainer');
+  
+  function updateLobbyUI() {
+    const players = Object.entries(playersData);
+    const count = players.length;
+    document.getElementById('playerCountDisplay').innerText = count;
+    const container = document.getElementById('playersList');
     container.innerHTML = '';
-    opts.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'answer-btn';
-      btn.innerText = opt;
-      btn.onclick = (e) => handleAnswer(opt, btn);
-      container.appendChild(btn);
-    });
     
-    document.getElementById('gameMessage').innerText = '';
-    let timeLeft = gameSettings.thinkTime;
-    const progressBar = document.getElementById('progressBar');
-    progressBar.style.width = '100%';
-    
-    if(timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      timeLeft -= 0.1;
-      progressBar.style.width = Math.max(0, (timeLeft/gameSettings.thinkTime)*100) + '%';
-      if(timeLeft <= 0) {
-        clearInterval(timerInterval);
-        if(!answerLock) { answerLock = true; playSound('timeout'); showCorrectAnswer(); }
-      }
-    }, 100);
-  }
-
-  function handleAnswer(selected, btn) {
-    if(answerLock) return;
-    answerLock = true;
-    clearInterval(timerInterval);
-    
-    const isCorrect = (selected === correctAnswer);
-    if(isCorrect) {
-      playSound('correct');
-      score += 10;
-      document.getElementById('scoreDisplay').innerText = `🏅 ${score}`;
-      btn.classList.add('correct');
+    let hostName = '';
+    players.forEach(([id, p]) => {
+      if(p.isHost) hostName = p.name;
+      const badge = document.createElement('span');
+      badge.className = 'player-badge';
+      badge.innerHTML = `${p.name} ${p.ready ? '✅' : '⏳'} ${p.isHost ? '👑' : ''}`;
       
-      if(firebaseReady && playerId) {
-        firebase.database().ref(`rooms/mainRoom/players/${playerId}/score`).set(score);
-      } else if(playerId) {
-        if(playersData[playerId]) playersData[playerId].score = score;
-        updateLeaderboardUI();
+      if(isHost && !p.isHost) {
+        const kickBtn = document.createElement('button');
+        kickBtn.className = 'kick-btn';
+        kickBtn.innerText = '✖ طرد';
+        kickBtn.onclick = () => db.ref(`rooms/${roomId}/players/${id}`).remove();
+        badge.appendChild(kickBtn);
       }
-    } else {
-      playSound('wrong');
-      btn.classList.add('wrong');
-    }
-    
-    document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
-    setTimeout(() => showCorrectAnswer(), gameSettings.answerViewTime * 1000);
-  }
-
-  function showCorrectAnswer() {
-    document.querySelectorAll('.answer-btn').forEach(b => {
-      if(b.innerText === correctAnswer) b.classList.add('correct');
+      
+      container.appendChild(badge);
     });
-    setTimeout(() => {
-      currentRound++;
-      startRound();
-    }, gameSettings.answerViewTime * 1000);
-  }
-
-  function endGame() {
-    gameActive = false;
-    showScreen('end');
-    confetti({particleCount:200, spread:100, origin:{y:0.6}});
-    document.getElementById('finalCongrats').innerText = `${playerName} · ${score} نقطة`;
     
-    const lb = document.getElementById('finalLeaderboard');
-    lb.innerHTML = '<h3>🏆 الترتيب النهائي</h3>';
+    document.getElementById('hostName').innerText = hostName || '...';
+    
+    const allReady = players.every(([id, p]) => p.ready);
+    const canStart = count >= 2 && allReady;
+    document.getElementById('hostStartBtn').disabled = !canStart;
+    document.getElementById('lobbyStatus').innerText = count < 2 ? '⏳ انتظار لاعبين...' : (allReady ? '✅ الجميع جاهز!' : '⏳ انتظار الجاهزية...');
+  }
+  
+  function updateLeaderboardUI() {
+    const list = document.getElementById('leaderboardList');
     const arr = Object.entries(playersData).map(([id,p]) => ({ name:p.name, score:p.score||0 }));
     arr.sort((a,b) => b.score - a.score);
-    arr.forEach(p => { lb.innerHTML += `<p>${p.name} : ${p.score}</p>`; });
+    list.innerHTML = arr.length ? '' : '<li class="leaderboard-item"><span>لا يوجد لاعبين</span></li>';
+    arr.forEach(p => {
+      const li = document.createElement('li'); li.className = 'leaderboard-item';
+      li.innerHTML = `<span>${p.name}</span><span>${p.score}</span>`; list.appendChild(li);
+    });
+    document.getElementById('onlineCount').innerText = `👤 ${arr.length}`;
+  }
+  
+  // خروج
+  document.getElementById('exitRoomBtn').onclick = () => {
+    if(playerId) db.ref(`rooms/${roomId}/players/${playerId}`).remove();
+    location.reload();
+  };
+  
+  function startGameForAll() {
+    gameActive = true; currentRound = 0; score = 0;
+    showScreen('game');
+    document.getElementById('exitRoomBtn').style.display = 'inline-block';
+    startRound();
+  }
+  
+  function startRound() {
+    if(currentRound >= gameSettings.rounds) { endGame(); return; }
+    answerLock = false;
+    const q = questions[currentRound]; correctAnswer = q.ans;
+    document.getElementById('roundIndicator').innerText = `جولة ${currentRound+1}/${gameSettings.rounds}`;
+    document.getElementById('questionText').innerText = q.q;
+    const container = document.getElementById('answersContainer'); container.innerHTML = '';
+    shuffleArray([...q.opts]).forEach(opt => {
+      const btn = document.createElement('button'); btn.className = 'answer-btn'; btn.innerText = opt;
+      btn.onclick = (e) => handleAnswer(opt, btn); container.appendChild(btn);
+    });
     
-    if(firebaseReady) {
-      firebase.database().ref('rooms/mainRoom/gameState').set({ started: false });
-    }
+    let timeLeft = gameSettings.thinkTime;
+    const bar = document.getElementById('progressBar'); bar.style.width = '100%';
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft -= 0.1; bar.style.width = Math.max(0, (timeLeft/gameSettings.thinkTime)*100) + '%';
+      if(timeLeft <= 0) { clearInterval(timerInterval); if(!answerLock) { answerLock=true; playSound('timeout'); showCorrectAnswer(); } }
+    }, 100);
   }
-
+  
+  function handleAnswer(selected, btn) {
+    if(answerLock) return; answerLock = true; clearInterval(timerInterval);
+    const isCorrect = (selected === correctAnswer);
+    if(isCorrect) { playSound('correct'); score += 10; document.getElementById('scoreDisplay').innerText = `🏅 ${score}`; btn.classList.add('correct'); db.ref(`rooms/${roomId}/players/${playerId}/score`).set(score); }
+    else { playSound('wrong'); btn.classList.add('wrong'); }
+    document.querySelectorAll('.answer-btn').forEach(b=>b.disabled=true);
+    setTimeout(() => showCorrectAnswer(), gameSettings.answerViewTime*1000);
+  }
+  
+  function showCorrectAnswer() {
+    document.querySelectorAll('.answer-btn').forEach(b => { if(b.innerText === correctAnswer) b.classList.add('correct'); });
+    setTimeout(() => { currentRound++; startRound(); }, gameSettings.answerViewTime*1000);
+  }
+  
+  function endGame() {
+    gameActive = false; showScreen('end');
+    confetti({particleCount:200, spread:100});
+    document.getElementById('finalCongrats').innerText = `${playerName} · ${score} نقطة`;
+    const lb = document.getElementById('finalLeaderboard'); lb.innerHTML = '<h3>🏆 الترتيب النهائي</h3>';
+    Object.entries(playersData).sort((a,b) => b[1].score - a[1].score).forEach(([id,p]) => lb.innerHTML += `<p>${p.name} : ${p.score||0}</p>`);
+  }
+  
   document.getElementById('playAgainBtn').onclick = () => location.reload();
-
-  // ==================== بدء التشغيل ====================
-  if(firebaseReady) {
-    syncPlayersFromFB();
-    listenToGameStart();
-  }
-  
-  // تحسين الصوت للجوال (يحتاج تفعيل من لمسة)
-  document.body.addEventListener('touchstart', function resumeAudio() {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if(ctx.state === 'suspended') ctx.resume();
-  }, {once: true});
-  
-  // إظهار المتصدرين الأولي
-  updateLeaderboardUI();
 </script>
 </body>
 </html>
