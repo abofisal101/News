@@ -229,7 +229,7 @@ footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration
     <div class="logo-icon">م</div>
     <div class="logo-text">
       <div class="t1">مرصد الأخبار العالمية</div>
-      <div class="t2">World News Observatory · أخبار مباشرة من X</div>
+      <div class="t2">World News Observatory · أخبار مباشرة</div>
     </div>
   </a>
   <div class="hdr-right">
@@ -242,7 +242,7 @@ footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration
 
 <!-- TICKER -->
 <div class="ticker">
-  <div class="ticker-label"><i class="fab fa-twitter"></i>عاجل</div>
+  <div class="ticker-label"><i class="fas fa-rss"></i>عاجل</div>
   <div class="ticker-wrap">
     <div class="ticker-inner" id="tickerInner"><span>جاري تحميل آخر الأخبار...</span></div>
   </div>
@@ -254,15 +254,27 @@ footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration
   <button class="fbtn on" onclick="setFilter('all',this)">🌐 الكل</button>
   <button class="fbtn" onclick="setFilter('arabic',this)">🟢 عربي</button>
   <button class="fbtn" onclick="setFilter('intl',this)">🌍 دولي</button>
-  <button class="fbtn" onclick="setFilter('special',this)">🎯 متخصصة</button>
-  <button class="fbtn" onclick="setFilter('local',this)">🇸🇦 محلي</button>
   <button class="fbtn" onclick="setFilter('tr',this)">🔤 مترجم</button>
+  <button class="fbtn" onclick="setSrc('aljazeera',this)">الجزيرة</button>
+  <button class="fbtn" onclick="setSrc('skynews',this)">سكاي نيوز</button>
+  <button class="fbtn" onclick="setSrc('bbc',this)">BBC</button>
+  <button class="fbtn" onclick="setSrc('cnn',this)">CNN</button>
+  <button class="fbtn" onclick="setSrc('alarabiya',this)">العربية</button>
+  <button class="fbtn" onclick="setSrc('france24',this)">فرانس24</button>
+  <button class="fbtn" onclick="setSrc('reuters',this)">Reuters</button>
+  <button class="fbtn" onclick="setSrc('apnews',this)">AP</button>
+  <button class="fbtn" onclick="setSrc('nytimes',this)">NYT</button>
+  <button class="fbtn" onclick="setSrc('guardian',this)">Guardian</button>
+  <button class="fbtn" onclick="setSrc('bloomberg',this)">Bloomberg</button>
+  <button class="fbtn" onclick="setSrc('wsj',this)">WSJ</button>
+  <button class="fbtn" onclick="setSrc('foxnews',this)">Fox News</button>
+  <button class="fbtn" onclick="setSrc('nbcnews',this)">NBC News</button>
 </nav>
 
 <!-- MAIN -->
 <main>
   <div class="stats">
-    <div class="stat"><i class="fab fa-twitter"></i>حسابات X: <strong>28</strong></div>
+    <div class="stat"><i class="fas fa-newspaper"></i>مصادر: <strong>18</strong></div>
     <div class="stat"><i class="fas fa-globe"></i>أخبار: <strong id="sCount">جاري التحميل</strong></div>
     <div class="stat"><i class="fas fa-language"></i>مترجمة: <strong id="sTr">0</strong></div>
     <div class="stat"><i class="fas fa-clock" style="color:var(--gold)"></i>آخر تحديث: <strong id="sTime">—</strong></div>
@@ -282,28 +294,16 @@ footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration
     </div>
   </div>
 
-  <!-- Arabic Section -->
+  <!-- Arabic -->
   <div id="arSec" class="sec">
     <div class="sec-hd"><div class="bar"></div><i class="fas fa-satellite-dish"></i>المصادر العربية<span class="cnt" id="arCnt">0</span></div>
     <div class="grid" id="arGrid"></div>
   </div>
 
-  <!-- International Section -->
+  <!-- International -->
   <div id="intlSec" class="sec">
-    <div class="sec-hd"><div class="bar" style="background:var(--gold)"></div><i class="fas fa-globe-americas" style="color:var(--gold)"></i>المصادر الدولية<span class="cnt" id="intlCnt">0</span></div>
+    <div class="sec-hd"><div class="bar" style="background:var(--gold)"></div><i class="fas fa-globe-americas" style="color:var(--gold)"></i>المصادر الدولية — مترجمة تلقائياً<span class="cnt" id="intlCnt">0</span></div>
     <div class="grid" id="intlGrid"></div>
-  </div>
-
-  <!-- Specialized Section -->
-  <div id="specialSec" class="sec">
-    <div class="sec-hd"><div class="bar" style="background:var(--cyan)"></div><i class="fas fa-shield-alt" style="color:var(--cyan)"></i>حسابات متخصصة (دفاع / استخبارات)<span class="cnt" id="specialCnt">0</span></div>
-    <div class="grid" id="specialGrid"></div>
-  </div>
-
-  <!-- Local Saudi Section -->
-  <div id="localSec" class="sec">
-    <div class="sec-hd"><div class="bar" style="background:var(--orange)"></div><i class="fas fa-flag" style="color:var(--orange)"></i>أخبار محلية - السعودية<span class="cnt" id="localCnt">0</span></div>
-    <div class="grid" id="localGrid"></div>
   </div>
 
   <!-- Tools -->
@@ -333,7 +333,7 @@ footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration
     <h3 id="mTitle"></h3>
     <p id="mDesc"></p>
     <div class="mact">
-      <a id="mLink" href="#" target="_blank" rel="noopener" class="btn-r"><i class="fab fa-twitter"></i>مشاهدة التغريدة الأصلية</a>
+      <a id="mLink" href="#" target="_blank" rel="noopener" class="btn-r"><i class="fas fa-external-link-alt"></i>اقرأ الخبر من المصدر</a>
       <button class="btn-g" onclick="closeModal()">إغلاق</button>
     </div>
   </div>
@@ -343,157 +343,164 @@ footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration
 <div class="toast" id="toast"><i class="fas fa-spinner fa-spin"></i><span id="toastTxt">جاري التحميل...</span></div>
 
 <footer>
-  <strong style="color:var(--txt)">مرصد الأخبار العالمية</strong> — مصادر X (Twitter):
-  <a href="https://twitter.com/AP" target="_blank">@AP</a> •
-  <a href="https://twitter.com/Bloomberg" target="_blank">@Bloomberg</a> •
-  <a href="https://twitter.com/ABC" target="_blank">@ABC</a> •
-  <a href="https://twitter.com/FT" target="_blank">@FT</a> •
-  <a href="https://twitter.com/Independent" target="_blank">@Independent</a> •
-  <a href="https://twitter.com/NBCNews" target="_blank">@NBCNews</a> •
-  <a href="https://twitter.com/thetimes" target="_blank">@thetimes</a> •
-  <a href="https://twitter.com/TheEconomist" target="_blank">@TheEconomist</a> •
-  <a href="https://twitter.com/WSJ" target="_blank">@WSJ</a> •
-  <a href="https://twitter.com/nytimes" target="_blank">@nytimes</a> •
-  <a href="https://twitter.com/cnnbrk" target="_blank">@cnnbrk</a> •
-  <a href="https://twitter.com/BNONews" target="_blank">@BNONews</a> •
-  <a href="https://twitter.com/axios" target="_blank">@axios</a>
-  <br>قنوات عربية • متخصصة • محلية • يتم جلب التغريدات مباشرة وتحديثها تلقائياً
+  <strong style="color:var(--txt)">مرصد الأخبار العالمية</strong> — مصادر RSS رسمية:
+  <a href="https://aljazeera.net" target="_blank">الجزيرة</a> •
+  <a href="https://skynewsarabia.com" target="_blank">سكاي نيوز</a> •
+  <a href="https://bbc.com/arabic" target="_blank">BBC عربي</a> •
+  <a href="https://arabic.cnn.com" target="_blank">CNN عربي</a> •
+  <a href="https://alarabiya.net" target="_blank">العربية</a> •
+  <a href="https://france24.com/ar" target="_blank">فرانس24</a> •
+  <a href="https://reuters.com" target="_blank">Reuters</a> •
+  <a href="https://apnews.com" target="_blank">AP</a> •
+  <a href="https://nytimes.com" target="_blank">NYT</a> •
+  <a href="https://theguardian.com" target="_blank">Guardian</a> •
+  <a href="https://bloomberg.com" target="_blank">Bloomberg</a> •
+  <a href="https://wsj.com" target="_blank">WSJ</a>
+  <br>يتم تحديث الأخبار تلقائياً كل 5 دقائق • الأخبار الإنجليزية تُترجم فوراً
 </footer>
 
 <script>
 // ============================================================
-//  ALL TWITTER/X SOURCES - COMPLETE LIST
+//  RSS SOURCES - OFFICIAL AND STABLE
 // ============================================================
 const SOURCES = [
-  // International News Agencies
-  {id:'ap', name:'Associated Press', color:'#d10000', cat:'intl', lang:'en', twitter:'AP', site:'https://twitter.com/AP'},
-  {id:'bloomberg', name:'Bloomberg', color:'#1a1a1a', cat:'intl', lang:'en', twitter:'Bloomberg', site:'https://twitter.com/Bloomberg'},
-  {id:'abc', name:'ABC News', color:'#003b6f', cat:'intl', lang:'en', twitter:'ABC', site:'https://twitter.com/ABC'},
-  {id:'ft', name:'Financial Times', color:'#990000', cat:'intl', lang:'en', twitter:'FT', site:'https://twitter.com/FT'},
-  {id:'independent', name:'The Independent', color:'#cc0000', cat:'intl', lang:'en', twitter:'Independent', site:'https://twitter.com/Independent'},
-  {id:'nbc', name:'NBC News', color:'#003b6f', cat:'intl', lang:'en', twitter:'NBCNews', site:'https://twitter.com/NBCNews'},
-  {id:'thetimes', name:'The Times', color:'#1a1a1a', cat:'intl', lang:'en', twitter:'thetimes', site:'https://twitter.com/thetimes'},
-  {id:'economist', name:'The Economist', color:'#cc0000', cat:'intl', lang:'en', twitter:'TheEconomist', site:'https://twitter.com/TheEconomist'},
-  {id:'wsj', name:'Wall Street Journal', color:'#1d477b', cat:'intl', lang:'en', twitter:'WSJ', site:'https://twitter.com/WSJ'},
-  {id:'nytimes', name:'New York Times', color:'#333', cat:'intl', lang:'en', twitter:'nytimes', site:'https://twitter.com/nytimes'},
-  {id:'cnnbrk', name:'CNN Breaking', color:'#cc0000', cat:'intl', lang:'en', twitter:'cnnbrk', site:'https://twitter.com/cnnbrk'},
-  {id:'bnonews', name:'BNO News', color:'#0055a5', cat:'intl', lang:'en', twitter:'BNONews', site:'https://twitter.com/BNONews'},
-  {id:'axios', name:'Axios', color:'#663399', cat:'intl', lang:'en', twitter:'axios', site:'https://twitter.com/axios'},
+  // Arabic Sources
+  {id:'aljazeera', name:'الجزيرة نت', color:'#e8282b', cat:'arabic', lang:'ar', 
+   feeds:['https://www.aljazeera.net/xml/rss2.0.xml'], site:'https://www.aljazeera.net'},
+  {id:'skynews', name:'سكاي نيوز عربية', color:'#00a3e0', cat:'arabic', lang:'ar',
+   feeds:['https://www.skynewsarabia.com/rss.xml'], site:'https://www.skynewsarabia.com'},
+  {id:'bbc', name:'BBC عربي', color:'#bb1919', cat:'arabic', lang:'ar',
+   feeds:['https://feeds.bbci.co.uk/arabic/rss.xml'], site:'https://www.bbc.com/arabic'},
+  {id:'cnn', name:'CNN بالعربية', color:'#cc0000', cat:'arabic', lang:'ar',
+   feeds:['https://arabic.cnn.com/api/v1/rss/rss.xml'], site:'https://arabic.cnn.com'},
+  {id:'alarabiya', name:'العربية نت', color:'#005ea5', cat:'arabic', lang:'ar',
+   feeds:['https://www.alarabiya.net/rss.xml'], site:'https://www.alarabiya.net'},
+  {id:'france24', name:'فرانس 24', color:'#003082', cat:'arabic', lang:'ar',
+   feeds:['https://www.france24.com/ar/rss'], site:'https://www.france24.com/ar'},
   
-  // Arabic News Channels
-  {id:'alarabiya', name:'العربية', color:'#005ea5', cat:'arabic', lang:'ar', twitter:'AlArabiya', site:'https://twitter.com/AlArabiya'},
-  {id:'cnnarabic', name:'CNN بالعربية', color:'#cc0000', cat:'arabic', lang:'ar', twitter:'cnnarabic', site:'https://twitter.com/cnnarabic'},
-  {id:'arareuters', name:'رويترز العربية', color:'#ff671f', cat:'arabic', lang:'ar', twitter:'araReuters', site:'https://twitter.com/araReuters'},
-  {id:'afpar', name:'فرانس برس بالعربية', color:'#003082', cat:'arabic', lang:'ar', twitter:'AFPar', site:'https://twitter.com/AFPar'},
-  {id:'iraninarabic', name:'إيران بالعربية', color:'#008000', cat:'arabic', lang:'ar', twitter:'iraninarabic_ir', site:'https://twitter.com/iraninarabic_ir'},
-  {id:'skynewsarabia', name:'سكاي نيوز عربية', color:'#00a3e0', cat:'arabic', lang:'ar', twitter:'skynewsarabia', site:'https://twitter.com/skynewsarabia'},
-  {id:'ajabreaking', name:'الجزيرة - عاجل', color:'#e8282b', cat:'arabic', lang:'ar', twitter:'AJABreaking', site:'https://twitter.com/AJABreaking'},
-  
-  // Specialized Accounts (Defense, Intelligence, Maps)
-  {id:'osintdefender', name:'OSINTdefender', color:'#c8102e', cat:'special', lang:'en', twitter:'sentdefender', site:'https://twitter.com/sentdefender'},
-  {id:'intelsky', name:'IntelSky', color:'#c8102e', cat:'special', lang:'en', twitter:'Intel_Sky', site:'https://twitter.com/Intel_Sky'},
-  {id:'warzone', name:'The War Zone', color:'#c8102e', cat:'special', lang:'en', twitter:'thewarzonewire', site:'https://twitter.com/thewarzonewire'},
-  {id:'clashreport', name:'Clash Report', color:'#c8102e', cat:'special', lang:'en', twitter:'clashreport', site:'https://twitter.com/clashreport'},
-  {id:'liveuamap', name:'Liveuamap', color:'#c8102e', cat:'special', lang:'en', twitter:'Liveuamap', site:'https://twitter.com/Liveuamap'},
-  
-  // Local Saudi Accounts
-  {id:'ksa24', name:'موجز الأخبار 🇸🇦', color:'#00843d', cat:'local', lang:'ar', twitter:'KSA24', site:'https://twitter.com/KSA24'},
-  {id:'saudinews50', name:'أخبار السعودية', color:'#00843d', cat:'local', lang:'ar', twitter:'SaudiNews50', site:'https://twitter.com/SaudiNews50'},
-  {id:'ajelnews24', name:'خبر عاجل', color:'#00843d', cat:'local', lang:'ar', twitter:'AJELNEWS24', site:'https://twitter.com/AJELNEWS24'},
-  
-  // Technical/Service Account
-  {id:'apgms', name:'AP GMS', color:'#d10000', cat:'intl', lang:'en', twitter:'AP_GMS', site:'https://twitter.com/AP_GMS'},
+  // International Sources
+  {id:'reuters', name:'رويترز', color:'#ff671f', cat:'intl', lang:'en',
+   feeds:['https://feeds.reuters.com/reuters/topNews'], site:'https://www.reuters.com'},
+  {id:'apnews', name:'أسوشيتد برس', color:'#d10000', cat:'intl', lang:'en',
+   feeds:['https://apnews.com/index.rss'], site:'https://apnews.com'},
+  {id:'nytimes', name:'نيويورك تايمز', color:'#333', cat:'intl', lang:'en',
+   feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml'], site:'https://www.nytimes.com'},
+  {id:'guardian', name:'ذا غارديان', color:'#052962', cat:'intl', lang:'en',
+   feeds:['https://www.theguardian.com/world/rss'], site:'https://www.theguardian.com'},
+  {id:'bloomberg', name:'بلومبيرغ', color:'#1a1a1a', cat:'intl', lang:'en',
+   feeds:['https://feeds.bloomberg.com/markets/news.rss'], site:'https://www.bloomberg.com'},
+  {id:'wsj', name:'وول ستريت جورنال', color:'#1d477b', cat:'intl', lang:'en',
+   feeds:['https://feeds.a.dj.com/rss/RSSWorldNews.xml'], site:'https://www.wsj.com'},
+  {id:'foxnews', name:'Fox News', color:'#003399', cat:'intl', lang:'en',
+   feeds:['https://moxie.foxnews.com/google-publisher/latest.xml'], site:'https://www.foxnews.com'},
+  {id:'nbcnews', name:'NBC News', color:'#003b6f', cat:'intl', lang:'en',
+   feeds:['https://feeds.nbcnews.com/nbcnews/public/news'], site:'https://www.nbcnews.com'},
 ];
 
 // ============================================================
-//  FETCH FROM TWITTER VIA NITTER (Free, no API key)
+//  PROXY SERVICES FOR FETCHING RSS (CORS bypass)
 // ============================================================
-const NITTER_SERVERS = [
-  'https://nitter.net',
-  'https://nitter.poast.org',
-  'https://nitter.unixfox.eu',
-  'https://nitter.lacontrevoie.fr',
-  'https://nitter.woodland.cafe'
+const PROXY_SERVICES = [
+  { name: 'rss2json', url: (url) => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&count=15`,
+    handler: async (response) => { const data = await response.json(); if(data.status === 'ok' && data.items?.length > 0) return {type:'json', data:data}; return null; } },
+  { name: 'allorigins', url: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    handler: async (response) => { const data = await response.json(); if(data.contents && data.contents.length > 200) return {type:'xml', data:data.contents}; return null; } },
+  { name: 'corsproxy', url: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    handler: async (response) => { const text = await response.text(); if(text && text.length > 200) return {type:'xml', data:text}; return null; } },
+  { name: 'corsbridge', url: (url) => `https://cors.bridged.cc/${url}`,
+    handler: async (response) => { const text = await response.text(); if(text && text.length > 200) return {type:'xml', data:text}; return null; } },
 ];
 
-async function fetchTwitterFeed(username){
-  for(const server of NITTER_SERVERS) {
+async function fetchRSSFeed(feedUrl){
+  for(const proxy of PROXY_SERVICES) {
     try {
-      const url = `${server}/${username}/rss`;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
-      const response = await fetch(url, { signal: controller.signal });
+      const response = await fetch(proxy.url(feedUrl), { signal: controller.signal });
       clearTimeout(timeoutId);
-      
       if(response.ok) {
-        const xmlText = await response.text();
-        const items = parseTwitterRSS(xmlText, username);
-        if(items.length > 0) return items;
+        const result = await proxy.handler(response);
+        if(result) return result;
       }
-    } catch(e) {
-      console.log(`Nitter ${server} failed for ${username}:`, e.message);
-    }
+    } catch(e) {}
   }
-  return [];
+  return null;
 }
 
-function parseTwitterRSS(xmlText, username){
+function parseRSSItems(result, source){
   try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlText, 'application/xml');
-    const items = Array.from(doc.querySelectorAll('item')).slice(0, 10);
-    
-    const source = SOURCES.find(s => s.twitter === username);
-    if(!source) return [];
-    
-    return items.map((item, idx) => {
-      let title = item.querySelector('title')?.textContent?.trim() || '';
-      const link = item.querySelector('link')?.textContent?.trim() || '';
-      const description = item.querySelector('description')?.textContent?.trim() || '';
-      const pubDate = item.querySelector('pubDate')?.textContent?.trim() || '';
+    if(result.type === 'json') {
+      return (result.data.items || []).slice(0, 12).map((item, idx) => {
+        const title = item.title?.trim() || '';
+        const link = item.link || '';
+        const description = stripHtml(item.description || item.content || '').substring(0, 300);
+        const pubDate = item.pubDate || '';
+        let image = item.enclosure?.link || item.thumbnail || '';
+        if(!image) image = extractFirstImage(item.description || item.content || '');
+        
+        const parsedDate = new Date(pubDate);
+        if(!title || !link || !pubDate || isNaN(parsedDate.getTime())) return null;
+        
+        return createNewsItem(source, idx, title, link, description, image, pubDate);
+      }).filter(Boolean);
+    }
+    else if(result.type === 'xml') {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(result.data, 'application/xml');
+      const items = Array.from(doc.querySelectorAll('item')).slice(0, 12);
       
-      // Extract image from description
-      let image = '';
-      const imgMatch = description.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if(imgMatch) image = imgMatch[1];
-      
-      // Clean title (remove @username prefix if exists)
-      title = title.replace(/^@?\w+:\s*/, '').replace(/^.*?:\s*/, '');
-      
-      const cleanDesc = stripHtml(description).substring(0, 280);
-      
-      // Validate date
-      const parsedDate = new Date(pubDate);
-      if(!pubDate || isNaN(parsedDate.getTime())) return null;
-      if(!title || !link) return null;
-      
-      return {
-        id: `${source.id}_${idx}_${Date.now()}_${Math.random()}`,
-        title: title,
-        titleAr: source.lang === 'ar' ? title : null,
-        link: link,
-        description: cleanDesc,
-        descriptionAr: source.lang === 'ar' ? cleanDesc : null,
-        image: image,
-        pubDate: pubDate,
-        source: source.id,
-        sourceName: source.name,
-        sourceColor: source.color,
-        cat: source.cat,
-        lang: source.lang,
-        translated: false,
-      };
-    }).filter(Boolean);
+      return items.map((item, idx) => {
+        const title = item.querySelector('title')?.textContent?.trim() || '';
+        const link = item.querySelector('link')?.textContent?.trim() || '';
+        const description = item.querySelector('description')?.textContent?.trim() || '';
+        const pubDate = item.querySelector('pubDate')?.textContent?.trim() || '';
+        let image = '';
+        const enclosure = item.querySelector('enclosure');
+        if(enclosure?.getAttribute('type')?.startsWith('image')) image = enclosure.getAttribute('url') || '';
+        if(!image) image = extractFirstImage(description);
+        
+        const cleanDesc = stripHtml(description).substring(0, 300);
+        const parsedDate = new Date(pubDate);
+        if(!title || !link || !pubDate || isNaN(parsedDate.getTime())) return null;
+        
+        return createNewsItem(source, idx, title, link, cleanDesc, image, pubDate);
+      }).filter(Boolean);
+    }
+    return [];
   } catch(e) {
-    console.error(`Error parsing RSS for ${username}:`, e);
+    console.error(`Parse error for ${source.name}:`, e);
     return [];
   }
+}
+
+function createNewsItem(source, idx, title, link, description, image, pubDate){
+  return {
+    id: `${source.id}_${idx}_${Date.now()}_${Math.random()}`,
+    title: title,
+    titleAr: source.lang === 'ar' ? title : null,
+    link: link,
+    description: description,
+    descriptionAr: source.lang === 'ar' ? description : null,
+    image: image,
+    pubDate: pubDate,
+    source: source.id,
+    sourceName: source.name,
+    sourceColor: source.color,
+    cat: source.cat,
+    lang: source.lang,
+    translated: false,
+  };
 }
 
 function stripHtml(html){
   const div = document.createElement('div');
   div.innerHTML = html;
   return div.textContent || div.innerText || '';
+}
+
+function extractFirstImage(html){
+  const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return imgMatch ? imgMatch[1] : '';
 }
 
 // ============================================================
@@ -580,8 +587,8 @@ function renderCard(item){
   const title = item.titleAr || item.title;
   const desc = item.descriptionAr || item.description;
   const imgHtml = item.image 
-    ? `<img src="${escapeHtml(item.image)}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'no-img\'><i class=\'fab fa-twitter\'></i></div>'" />`
-    : `<div class="no-img"><i class="fab fa-twitter"></i></div>`;
+    ? `<img src="${escapeHtml(item.image)}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'no-img\'><i class=\'fas fa-newspaper\'></i></div>'" />`
+    : `<div class="no-img"><i class="fas fa-newspaper"></i></div>`;
   
   return `
     <a class="card" id="c_${item.id}" data-src="${item.source}" data-cat="${item.cat}">
@@ -595,7 +602,7 @@ function renderCard(item){
         ${desc ? `<div class="cdesc">${escapeHtml(desc)}</div>` : ''}
         <div class="cfoot">
           <span class="csrc">${escapeHtml(item.sourceName)}</span>
-          <span class="ctime"><i class="fab fa-twitter"></i> ${formatTimeAgo(item.pubDate)}</span>
+          <span class="ctime"><i class="fas fa-clock"></i> ${formatTimeAgo(item.pubDate)}</span>
         </div>
       </div>
     </a>
@@ -612,7 +619,7 @@ function renderFeaturedMain(item){
         <div class="feat-src" style="background:${item.sourceColor}">${escapeHtml(item.sourceName)}</div>
         <h2>${escapeHtml(title)}</h2>
         <div class="feat-meta">
-          <span><i class="fab fa-twitter"></i> ${formatTimeAgo(item.pubDate)}</span>
+          <span><i class="fas fa-clock"></i> ${formatTimeAgo(item.pubDate)}</span>
           <span>•</span>
           <span><i class="fas fa-mouse-pointer"></i> اضغط للقراءة</span>
         </div>
@@ -626,7 +633,7 @@ function renderFeaturedSide(item){
   const img = item.image || '';
   return `
     <a class="side-card" id="c_${item.id}" data-src="${item.source}" data-cat="${item.cat}">
-      <div class="sc-img">${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'" />` : '<i class="fab fa-twitter" style="font-size:2rem;color:var(--muted)"></i>'}</div>
+      <div class="sc-img">${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.style.display='none'" />` : '<i class="fas fa-newspaper" style="font-size:2rem;color:var(--muted)"></i>'}</div>
       <div class="sc-body">
         <div class="sc-title">${escapeHtml(title)}</div>
         <div class="sc-foot">
@@ -646,37 +653,23 @@ function renderAllNews(){
     if(selectedSource && item.source !== selectedSource) return false;
     if(selectedFilter === 'arabic' && item.cat !== 'arabic') return false;
     if(selectedFilter === 'intl' && item.cat !== 'intl') return false;
-    if(selectedFilter === 'special' && item.cat !== 'special') return false;
-    if(selectedFilter === 'local' && item.cat !== 'local') return false;
     if(selectedFilter === 'tr' && !item.translated) return false;
     return true;
   });
   
   const arabicItems = filtered.filter(i => i.cat === 'arabic');
   const intlItems = filtered.filter(i => i.cat === 'intl');
-  const specialItems = filtered.filter(i => i.cat === 'special');
-  const localItems = filtered.filter(i => i.cat === 'local');
   
   document.getElementById('arCnt').textContent = arabicItems.length;
   document.getElementById('intlCnt').textContent = intlItems.length;
-  document.getElementById('specialCnt').textContent = specialItems.length;
-  document.getElementById('localCnt').textContent = localItems.length;
   
   document.getElementById('arGrid').innerHTML = arabicItems.length 
     ? arabicItems.map(renderCard).join('')
-    : '<div class="empty"><i class="fab fa-twitter"></i><p>لا توجد أخبار عربية حالياً</p></div>';
+    : '<div class="empty"><i class="fas fa-newspaper"></i><p>لا توجد أخبار عربية حالياً</p></div>';
     
   document.getElementById('intlGrid').innerHTML = intlItems.length 
     ? intlItems.map(renderCard).join('')
-    : '<div class="empty"><i class="fab fa-twitter"></i><p>لا توجد أخبار دولية حالياً</p></div>';
-    
-  document.getElementById('specialGrid').innerHTML = specialItems.length 
-    ? specialItems.map(renderCard).join('')
-    : '<div class="empty"><i class="fas fa-shield-alt"></i><p>لا توجد تغريدات متخصصة حالياً</p></div>';
-    
-  document.getElementById('localGrid').innerHTML = localItems.length 
-    ? localItems.map(renderCard).join('')
-    : '<div class="empty"><i class="fas fa-flag"></i><p>لا توجد أخبار محلية حالياً</p></div>';
+    : '<div class="empty"><i class="fas fa-newspaper"></i><p>لا توجد أخبار دولية حالياً</p></div>';
   
   const showFeatured = selectedFilter === 'all' && !selectedSource && !searchTerm;
   document.getElementById('featSec').style.display = showFeatured ? 'block' : 'none';
@@ -687,10 +680,22 @@ function renderAllNews(){
     const sideItems = featured.slice(1, 4).map(renderFeaturedSide).join('');
     html += `<div class="feat-side">${sideItems}</div>`;
     document.getElementById('featGrid').innerHTML = html;
+    
+    // Attach click handlers for featured items
+    document.querySelectorAll('.feat-main, .side-card').forEach(el => {
+      const itemId = el.id.replace('c_', '');
+      const item = allNews.find(n => n.id === itemId);
+      if(item) {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          showModal(item);
+        });
+      }
+    });
   }
   
-  // Attach click handlers
-  document.querySelectorAll('.card, .feat-main, .side-card').forEach(el => {
+  // Attach click handlers for grid cards
+  document.querySelectorAll('.card').forEach(el => {
     const itemId = el.id.replace('c_', '');
     const item = allNews.find(n => n.id === itemId);
     if(item) {
@@ -714,7 +719,7 @@ function updateTicker(){
 // ============================================================
 function showModal(item){
   const title = item.titleAr || item.title;
-  const desc = item.descriptionAr || item.description || 'اضغط على الزر لمشاهدة التغريدة الأصلية';
+  const desc = item.descriptionAr || item.description || 'اضغط على زر القراءة للاطلاع على الخبر كاملاً';
   document.getElementById('mTitle').textContent = title;
   document.getElementById('mDesc').textContent = desc;
   document.getElementById('mLink').href = item.link;
@@ -765,7 +770,7 @@ function setFilter(filter, btn){
   renderAllNews();
 }
 
-function setSource(sourceId, btn){
+function setSrc(sourceId, btn){
   if(selectedSource === sourceId) {
     selectedSource = null;
     document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
@@ -819,21 +824,30 @@ async function loadAllNews(){
   document.getElementById('sCount').textContent = 'جاري التحميل...';
   document.getElementById('sTime').textContent = '—';
   document.getElementById('rfBtn').classList.add('spin');
-  showToast('جاري جلب آخر التغريدات من 28 حساباً...', 'fa-spinner fa-spin');
+  showToast('جاري تحميل الأخبار من 18 مصدراً...', 'fa-spinner fa-spin');
   
-  const results = await Promise.allSettled(SOURCES.map(src => fetchTwitterFeed(src.twitter)));
-  
-  results.forEach((result) => {
-    if(result.status === 'fulfilled' && result.value.length > 0) {
-      allNews.push(...result.value);
+  // Load all sources concurrently
+  const promises = SOURCES.map(async (source) => {
+    for(const feedUrl of source.feeds) {
+      const result = await fetchRSSFeed(feedUrl);
+      if(result) {
+        const items = parseRSSItems(result, source);
+        if(items.length > 0) return items;
+      }
     }
+    return [];
   });
   
-  // Remove duplicates
+  const results = await Promise.all(promises);
+  results.forEach(items => {
+    if(items.length > 0) allNews.push(...items);
+  });
+  
+  // Remove duplicates based on title
   const unique = [];
   const seen = new Set();
   for(const news of allNews) {
-    const key = `${news.title}_${news.link}`;
+    const key = news.title.substring(0, 100);
     if(!seen.has(key)) {
       seen.add(key);
       unique.push(news);
@@ -851,10 +865,10 @@ async function loadAllNews(){
   updateTicker();
   document.getElementById('rfBtn').classList.remove('spin');
   
-  // Translate English tweets
+  // Translate English news
   const englishItems = allNews.filter(i => i.lang === 'en');
   if(englishItems.length) {
-    showToast(`جاري ترجمة ${englishItems.length} تغريدة إنجليزية...`, 'fa-language');
+    showToast(`جاري ترجمة ${englishItems.length} خبر إنجليزي...`, 'fa-language');
     for(let i = 0; i < englishItems.length; i += 3) {
       await Promise.allSettled([
         translateNewsItem(englishItems[i]),
