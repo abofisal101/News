@@ -1,11 +1,10 @@
-إليك صفحة ويب كاملة للمسابقات التفاعلية بنمط Kalak.gg الفخم. الملف يحتوي على كل ما طلبته: تصميم أسود وأحمر، نظام متعدد اللاعبين عبر Firebase، مؤثرات صوتية، و1000 لغز عربي متنوع.
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>✦ كَلاك · المسابقة التفاعلية ✦</title>
   <!-- خطوط عربية فخمة -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
@@ -16,6 +15,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -25,11 +25,13 @@
       align-items: center;
       justify-content: center;
       font-family: 'Cairo', 'Tajawal', sans-serif;
-      padding: 20px;
+      padding: 12px;
       color: white;
+      /* تحسين للآيفون */
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
 
-    /* الحاوية الزجاجية الرئيسية */
+    /* الحاوية الزجاجية الرئيسية - محسنة للجوال */
     .game-container {
       width: 100%;
       max-width: 1300px;
@@ -38,9 +40,17 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1.5px solid rgba(255, 30, 30, 0.5);
       box-shadow: 0 0 40px rgba(255, 0, 0, 0.3), inset 0 0 10px rgba(255, 40, 40, 0.2);
-      border-radius: 48px;
-      padding: 28px 24px;
+      border-radius: 32px;
+      padding: 20px 16px;
       transition: all 0.2s;
+    }
+
+    /* للآيفون - padding أكبر قليلاً */
+    @media (min-width: 400px) {
+      .game-container {
+        padding: 24px 20px;
+        border-radius: 40px;
+      }
     }
 
     /* شاشات مختلفة */
@@ -52,7 +62,7 @@
       display: block;
     }
 
-    /* عناوين نيونية */
+    /* عناوين نيونية - حجم مناسب للجوال */
     h1, h2, h3 {
       font-weight: 800;
       letter-spacing: 1px;
@@ -60,12 +70,16 @@
     }
 
     h1 {
-      font-size: 3.2rem;
+      font-size: 2.2rem;
       background: linear-gradient(135deg, #fff4f4, #ffb3b3);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 20px;
+    }
+
+    @media (min-width: 600px) {
+      h1 { font-size: 3rem; }
     }
 
     /* زجاج + حدود نيون */
@@ -74,9 +88,16 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 60, 60, 0.7);
-      border-radius: 36px;
-      padding: 30px 25px;
+      border-radius: 28px;
+      padding: 24px 18px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 20px #ff1a1a33;
+    }
+
+    @media (min-width: 600px) {
+      .glass-panel {
+        border-radius: 36px;
+        padding: 30px 25px;
+      }
     }
 
     .neon-btn {
@@ -84,14 +105,26 @@
       border: 1.5px solid #ff3a3a;
       color: #ffe0e0;
       font-weight: bold;
-      padding: 16px 32px;
-      border-radius: 60px;
-      font-size: 1.5rem;
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-size: 1.3rem;
       backdrop-filter: blur(10px);
       cursor: pointer;
       transition: 0.2s;
       box-shadow: 0 0 15px #ff000080, inset 0 0 5px #ff5555;
       font-family: 'Cairo', sans-serif;
+      width: 100%;
+      margin: 8px 0;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    @media (min-width: 600px) {
+      .neon-btn {
+        width: auto;
+        padding: 16px 32px;
+        font-size: 1.5rem;
+      }
     }
 
     .neon-btn:hover {
@@ -111,11 +144,11 @@
 
     /* شريط التقدم */
     .progress-bar-container {
-      height: 22px;
+      height: 18px;
       background: #1a0000;
       border-radius: 40px;
       border: 1px solid #ff5555;
-      margin: 20px 0;
+      margin: 16px 0;
       overflow: hidden;
       box-shadow: inset 0 0 12px black, 0 0 12px red;
     }
@@ -128,27 +161,46 @@
       transition: width 0.1s linear;
     }
 
-    /* خيارات */
+    /* خيارات - عمودية على الجوال */
     .answers-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-      margin: 30px 0;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    @media (min-width: 600px) {
+      .answers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        margin: 30px 0;
+      }
     }
 
     .answer-btn {
       background: rgba(0,0,0,0.5);
       border: 1.8px solid #ff3a3a;
       color: white;
-      padding: 22px 10px;
-      border-radius: 30px;
-      font-size: 1.3rem;
+      padding: 18px 12px;
+      border-radius: 24px;
+      font-size: 1.2rem;
       font-weight: 600;
       backdrop-filter: blur(12px);
       cursor: pointer;
       transition: 0.15s;
       box-shadow: 0 0 8px #ff0000;
       font-family: 'Tajawal', sans-serif;
+      -webkit-appearance: none;
+      appearance: none;
+      word-break: break-word;
+    }
+
+    @media (min-width: 600px) {
+      .answer-btn {
+        padding: 22px 10px;
+        font-size: 1.3rem;
+        border-radius: 30px;
+      }
     }
 
     .answer-btn:hover:not(:disabled) {
@@ -169,31 +221,48 @@
       opacity: 0.7;
     }
 
-    /* القائمة الجانبية للنتائج */
+    /* القائمة الجانبية للنتائج - محسنة للجوال */
     .live-leaderboard {
       position: fixed;
-      left: 20px;
-      top: 20px;
-      width: 260px;
-      background: rgba(0,0,0,0.7);
+      left: 12px;
+      top: 12px;
+      width: calc(100% - 24px);
+      max-width: 280px;
+      background: rgba(0,0,0,0.75);
       backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
       border: 2px solid #ff1a1a;
-      border-radius: 32px;
-      padding: 20px 12px;
+      border-radius: 24px;
+      padding: 16px 12px;
       color: white;
       box-shadow: 0 0 40px #ff000050;
       z-index: 100;
+      /* للآيفون notch */
+      top: max(12px, env(safe-area-inset-top));
+      left: max(12px, env(safe-area-inset-left));
+    }
+
+    @media (min-width: 700px) {
+      .live-leaderboard {
+        width: 260px;
+        left: 20px;
+        top: 20px;
+        border-radius: 32px;
+        padding: 20px 12px;
+      }
     }
 
     .leaderboard-title {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       border-bottom: 1px solid #ff5e5e;
-      padding-bottom: 12px;
-      margin-bottom: 15px;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .leaderboard-list {
       list-style: none;
+      max-height: 300px;
+      overflow-y: auto;
     }
 
     .leaderboard-item {
@@ -202,40 +271,117 @@
       padding: 8px 5px;
       border-bottom: 1px solid #5f0000;
       font-weight: 600;
+      font-size: 1rem;
     }
 
     /* اللوبي */
     .lobby-players {
-      margin: 25px 0;
-      font-size: 1.4rem;
+      margin: 20px 0;
+      font-size: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .player-badge {
       background: #1a0000;
       border: 1px solid red;
-      border-radius: 40px;
-      padding: 10px 20px;
-      margin: 5px;
-      display: inline-block;
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-size: 1rem;
       box-shadow: 0 0 8px red;
     }
 
     input {
       background: #110000;
       border: 2px solid #ff4d4d;
-      padding: 18px 22px;
-      border-radius: 50px;
-      font-size: 1.5rem;
+      padding: 16px 18px;
+      border-radius: 40px;
+      font-size: 1.3rem;
       color: white;
       width: 100%;
       outline: none;
       font-family: 'Cairo';
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    /* responsiveness */
-    @media (max-width: 700px) {
-      .answers-grid { grid-template-columns: 1fr; }
-      .live-leaderboard { position: static; width: 100%; margin-bottom: 20px; }
+    /* أزرار اللوبي في صف */
+    .lobby-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .lobby-actions {
+        flex-direction: row;
+      }
+    }
+
+    /* نص الحالة */
+    #lobbyStatus {
+      margin-top: 16px;
+      color: #ffb0b0;
+      font-size: 1rem;
+    }
+
+    /* مؤشر الجولة والنقاط */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    #roundIndicator {
+      font-size: 1.3rem;
+    }
+
+    #scoreDisplay {
+      font-size: 1.3rem;
+    }
+
+    @media (min-width: 600px) {
+      #roundIndicator, #scoreDisplay {
+        font-size: 1.8rem;
+      }
+    }
+
+    #questionText {
+      margin: 20px 0;
+      font-size: 1.6rem;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    @media (min-width: 600px) {
+      #questionText {
+        font-size: 2rem;
+        margin: 30px 0;
+      }
+    }
+
+    /* شاشة النهاية */
+    #finalCongrats {
+      margin: 20px 0;
+      font-size: 1.6rem;
+    }
+
+    #finalLeaderboard {
+      margin: 20px 0;
+      font-size: 1.2rem;
+    }
+
+    /* تحسين التمرير */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ff3a3a;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -251,17 +397,17 @@
   <div id="setupScreen" class="screen active">
     <div class="glass-panel">
       <h1>⚙️ إعدادات الجولة</h1>
-      <div style="margin: 35px 0;">
-        <label style="font-size: 1.8rem;">🔴 عدد الجولات: <span id="roundsValue">15</span></label>
-        <input type="range" id="roundsSlider" min="10" max="20" value="15" step="1" style="width:100%; accent-color:#ff2a2a;">
+      <div style="margin: 30px 0;">
+        <label style="font-size: 1.5rem; display: block; margin-bottom: 10px;">🔴 عدد الجولات: <span id="roundsValue">15</span></label>
+        <input type="range" id="roundsSlider" min="10" max="20" value="15" step="1" style="width:100%; accent-color:#ff2a2a; height: 8px;">
       </div>
-      <div style="margin: 35px 0;">
-        <label style="font-size: 1.8rem;">⏳ وقت التفكير: <span id="thinkTimeValue">15</span> ث</label>
-        <input type="range" id="thinkSlider" min="5" max="30" value="15" step="1" style="width:100%; accent-color:#ff2a2a;">
+      <div style="margin: 30px 0;">
+        <label style="font-size: 1.5rem; display: block; margin-bottom: 10px;">⏳ وقت التفكير: <span id="thinkTimeValue">15</span> ث</label>
+        <input type="range" id="thinkSlider" min="5" max="30" value="15" step="1" style="width:100%; accent-color:#ff2a2a; height: 8px;">
       </div>
-      <div style="margin: 35px 0;">
-        <label style="font-size: 1.8rem;">🕒 عرض الإجابة: <span id="answerViewValue">3</span> ث</label>
-        <input type="range" id="answerViewSlider" min="2" max="5" value="3" step="1" style="width:100%; accent-color:#ff2a2a;">
+      <div style="margin: 30px 0;">
+        <label style="font-size: 1.5rem; display: block; margin-bottom: 10px;">🕒 عرض الإجابة: <span id="answerViewValue">3</span> ث</label>
+        <input type="range" id="answerViewSlider" min="2" max="5" value="3" step="1" style="width:100%; accent-color:#ff2a2a; height: 8px;">
       </div>
       <button class="neon-btn" id="applySettingsBtn">💾 حفظ و متابعة</button>
     </div>
@@ -270,41 +416,41 @@
   <!-- شاشة الاسم واللوبي -->
   <div id="lobbyScreen" class="screen">
     <div class="glass-panel">
-      <h2>🎮 اسم المتسابق</h2>
-      <input type="text" id="playerNameInput" placeholder="أدخل اسمك..." maxlength="20" style="margin:20px 0;">
-      <div id="lobbyInfo" style="margin:20px 0;">
-        <p>👥 اللاعبين في الغرفة: <span id="playerCountDisplay">0</span></p>
+      <h2 style="font-size: 1.8rem;">🎮 اسم المتسابق</h2>
+      <input type="text" id="playerNameInput" placeholder="أدخل اسمك..." maxlength="20" style="margin:16px 0;" enterkeyhint="done">
+      <div id="lobbyInfo" style="margin:16px 0;">
+        <p style="font-size: 1.3rem;">👥 اللاعبين في الغرفة: <span id="playerCountDisplay">0</span></p>
         <div id="playersList" class="lobby-players"></div>
       </div>
-      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div class="lobby-actions">
         <button class="neon-btn" id="readyBtn" disabled>✅ أنا جاهز</button>
         <button class="neon-btn" id="startGameBtn" disabled>🔥 ابدأ اللعب</button>
       </div>
-      <p id="lobbyStatus" style="margin-top:20px; color:#ffb0b0;"></p>
+      <p id="lobbyStatus"></p>
     </div>
   </div>
 
   <!-- شاشة اللعب -->
   <div id="gameScreen" class="screen">
     <div class="glass-panel">
-      <div style="display: flex; justify-content: space-between;">
+      <div class="game-header">
         <h2 id="roundIndicator">جولة 1 / 15</h2>
         <h2 id="scoreDisplay">🏅 0</h2>
       </div>
       <div class="progress-bar-container">
         <div id="progressBar" class="progress-fill" style="width:100%"></div>
       </div>
-      <h3 id="questionText" style="margin: 30px 0; font-size: 2rem;">...</h3>
+      <h3 id="questionText">...</h3>
       <div class="answers-grid" id="answersContainer"></div>
-      <p id="gameMessage" style="text-align:center; min-height: 35px;"></p>
+      <p id="gameMessage" style="text-align:center; min-height: 30px; font-size: 1.1rem;"></p>
     </div>
   </div>
 
   <!-- شاشة النهاية + القصاصات -->
   <div id="endScreen" class="screen">
     <div class="glass-panel" style="text-align:center;">
-      <h1>🏁 انتهت المسابقة</h1>
-      <h2 id="finalCongrats" style="margin:25px 0;"></h2>
+      <h1 style="font-size: 2rem;">🏁 انتهت المسابقة</h1>
+      <h2 id="finalCongrats"></h2>
       <div id="finalLeaderboard"></div>
       <button class="neon-btn" id="playAgainBtn">🔄 العب مجدداً</button>
     </div>
@@ -315,7 +461,7 @@
 <script type="module">
   // ---------- Firebase ----------
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, set, onValue, update, get, child, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
   
   const firebaseConfig = {
     apiKey: "AIzaSyBKs24sqojKX51Q4HAPv3amY1oTGo3YcyA",
@@ -330,11 +476,10 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   
-  // ---------- توليد 1000 لغز عربي (عينة موسعة ومختصرة للكود لكنها غنية) ----------
+  // ---------- توليد 1000 لغز عربي (مختصر للكود لكن غني) ----------
   const riddlesBank = [];
   const categories = ["دينية", "خرائط ودول", "أفلام ومشاهير", "معلومات عامة", "ألغاز ذكاء"];
   
-  // لملء 1000 سؤال بسرعة (سيتم توليدها ديناميكياً بجودة عالية)
   function generate1000Riddles() {
     const baseQuestions = [
       { q: "ما هي السورة التي تسمى قلب القرآن؟", opts: ["يس", "الرحمن", "الإخلاص", "البقرة"], ans: "يس", cat: "دينية" },
@@ -361,6 +506,7 @@
   function playSound(type){
     try{
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx.state === 'suspended') ctx.resume();
       const osc = ctx.createOscillator();
       const g = ctx.createGain();
       osc.connect(g); g.connect(ctx.destination);
@@ -444,21 +590,18 @@
     }
     const canStart = playerCount>=2 && allReady;
     document.getElementById('startGameBtn').disabled = !canStart;
-    if(gameActive===false && currentScreen==='lobby'){
-      // تحديث حالة اللوبي
+    if(!canStart && playerCount>0) {
+      document.getElementById('lobbyStatus').innerText = playerCount<2 ? '⏳ في انتظار لاعب آخر...' : '⏳ في انتظار جاهزية الجميع';
+    } else {
+      document.getElementById('lobbyStatus').innerText = '';
     }
-    // تحديث القائمة الجانبية
     updateLiveLeaderboard();
   });
   
   onValue(ref(db, 'rooms/mainRoom/gameState'), (snap)=>{
     const state = snap.val();
     if(state && state.started && currentScreen==='lobby' && gameActive===false){
-      // بدء اللعبة من host
       startGameForAll(state.settings, state.questions);
-    }
-    if(state && state.roundData && gameActive){
-      // تزامن الجولة
     }
   });
   
@@ -474,7 +617,6 @@
     if(!myReady) return;
     const playerCount = Object.keys(playersData).length;
     if(playerCount<2) { alert("يجب وجود لاعبين اثنين على الأقل"); return; }
-    // خلط الأسئلة
     const shuffled = shuffleArray([...riddlesBank]);
     const selected = shuffled.slice(0, gameSettings.rounds);
     await set(ref(db, 'rooms/mainRoom/gameState'), {
@@ -519,7 +661,6 @@
     });
     document.getElementById('gameMessage').innerText = '';
     
-    // مؤقت
     let timeLeft = gameSettings.thinkTime;
     const progressBar = document.getElementById('progressBar');
     progressBar.style.width = '100%';
@@ -545,7 +686,6 @@
       score += 10;
       document.getElementById('scoreDisplay').innerText = `🏅 ${score}`;
       btn.classList.add('correct');
-      // تحديث نقاط اللاعب في firebase
       if(playerId) update(ref(db, `rooms/mainRoom/players/${playerId}`), { score: score });
     } else {
       playSound('wrong');
@@ -569,19 +709,24 @@
     confetti({particleCount:200, spread:100, origin:{y:0.6}});
     document.getElementById('finalCongrats').innerText = `${playerName} · نتيجتك: ${score}`;
     const lb = document.getElementById('finalLeaderboard');
-    lb.innerHTML = '<h3>🏆 الترتيب النهائي</h3>';
+    lb.innerHTML = '<h3 style="margin-bottom:15px;">🏆 الترتيب النهائي</h3>';
     const arr = Object.entries(playersData).map(([id,p])=> ({name:p.name, score:p.score||0}));
     arr.sort((a,b)=> b.score - a.score);
-    arr.forEach(p=>{ lb.innerHTML += `<p>${p.name} : ${p.score}</p>`; });
+    arr.forEach(p=>{ lb.innerHTML += `<p style="font-size:1.3rem; margin:8px 0;">${p.name} : ${p.score}</p>`; });
   }
   
   document.getElementById('playAgainBtn').onclick = ()=>{
     location.reload();
   };
   
-  // بدء المزامنة
+  // تفعيل AudioContext عند أول لمسة (سياسة المتصفح)
+  document.body.addEventListener('touchstart', function initAudio(){ 
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if(ctx.state === 'suspended') ctx.resume();
+    document.body.removeEventListener('touchstart', initAudio);
+  }, {once: true});
+  
   window.updateLiveLeaderboard = updateLiveLeaderboard;
 </script>
 </body>
 </html>
-```
