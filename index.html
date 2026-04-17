@@ -492,21 +492,25 @@ function extractImg(html){const m=html.match(/<img[^>]+src=["']([^"']+)["']/i);r
 function strip(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent||d.innerText||'';}
 
 // ============================================================
-//  TRANSLATION (MyMemory free API)
+//  IMPROVED TRANSLATION (Using Google Translate via free API)
 // ============================================================
 const trCache={};
 async function trText(text){
   if(!text||text.length<4) return text;
   const k=text.substring(0,80);
   if(trCache[k]) return trCache[k];
-  const chunk=text.substring(0,480);
+  const chunk=text.substring(0,500);
   try{
-    const u=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=en|ar`;
+    // Using a free Google Translate API proxy
+    const u=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(chunk)}`;
     const r=await fetch(u,{signal:AbortSignal.timeout(8000)});
     const d=await r.json();
-    if(d.responseStatus===200&&d.responseData?.translatedText){
-      const t=d.responseData.translatedText;
-      if(!t.includes('MYMEMORY')&&t.length>3){trCache[k]=t;return t;}
+    if(d && d[0]){
+      const translated = d[0].map(item => item[0]).join('');
+      if(translated && translated.length > 3){
+        trCache[k]=translated;
+        return translated;
+      }
     }
   }catch(e){}
   return text;
@@ -712,7 +716,7 @@ function toast(msg,icon='fa-spinner fa-spin'){
 function hideToast(){document.getElementById('toast').classList.remove('up');}
 
 // ============================================================
-//  MAIN FETCH
+//  IMPROVED MAIN FETCH - No more static fallback unless absolutely necessary
 // ============================================================
 let allNews=[],trCount=0,busy=false;
 let autoRefreshInterval = null;
@@ -736,7 +740,6 @@ function startAutoRefreshTimer() {
     
     autoRefreshInterval = setInterval(() => {
         if (!busy && secondsLeft <= 1) {
-            // Time to refresh
             refreshAll();
         } else if (secondsLeft > 0) {
             secondsLeft--;
@@ -756,56 +759,25 @@ async function loadSource(src){
       if(items.length>0) return items;
     }catch(e){}
   }
-  // Return fallback placeholder for this source
-  return getFallback(src);
+  // Return empty array instead of fallback to avoid static news
+  return [];
 }
 
-function getFallback(src){
+// Improved fallback only as last resort if source has no news at all
+function getEmergencyFallback(src){
   const now=new Date().toISOString();
-  const fallbacks={
-    aljazeera:[
-      {t:'أخبار الجزيرة نت - تصفح المصدر مباشرةً',l:'https://www.aljazeera.net',d:'اضغط لزيارة موقع الجزيرة نت والاطلاع على آخر الأخبار العربية والعالمية',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Al_Jazeera_English_Logo.svg/320px-Al_Jazeera_English_Logo.svg.png'},
-      {t:'تابع آخر المستجدات والتحليلات السياسية',l:'https://www.aljazeera.net/news',d:'أخبار عاجلة وتغطيات مستمرة من الجزيرة نت',img:''},
-    ],
-    skynews:[
-      {t:'سكاي نيوز عربية - الأخبار العاجلة',l:'https://www.skynewsarabia.com',d:'تابع آخر الأخبار من سكاي نيوز عربية',img:''},
-    ],
-    bbc:[
-      {t:'BBC عربي - أخبار العالم والمنطقة',l:'https://www.bbc.com/arabic',d:'اقرأ آخر الأخبار من BBC عربي',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/BBC_World_Service_2022_%28Boxed%29.svg/320px-BBC_World_Service_2022_%28Boxed%29.svg.png'},
-    ],
-    cnn:[
-      {t:'CNN بالعربية - آخر الأخبار',l:'https://arabic.cnn.com',d:'تابع الأخبار الدولية والعربية من CNN بالعربية',img:''},
-    ],
-    alarabiya:[
-      {t:'العربية نت - الأخبار العاجلة',l:'https://www.alarabiya.net',d:'أخبار عربية ودولية من قناة العربية',img:''},
-    ],
-    rt:[
-      {t:'روسيا اليوم - أخبار عالمية',l:'https://arabic.rt.com',d:'تغطية شاملة للأحداث الدولية من RT بالعربية',img:''},
-    ],
-    france24:[
-      {t:'فرانس 24 عربي - أحدث الأخبار',l:'https://www.france24.com/ar',d:'تابع آخر الأخبار والتقارير من فرانس 24',img:''},
-    ],
-    reuters:[
-      {t:'Reuters - Top World News',l:'https://www.reuters.com',d:'Breaking news and top stories from Reuters news agency',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Reuters_Logo.svg/320px-Reuters_Logo.svg.png'},
-    ],
-    apnews:[
-      {t:'AP News - Breaking International News',l:'https://apnews.com',d:'Latest world news from the Associated Press',img:''},
-    ],
-    nytimes:[
-      {t:'New York Times - World News',l:'https://www.nytimes.com/section/world',d:'International coverage from The New York Times',img:''},
-    ],
-    wsj:[
-      {t:'Wall Street Journal - World & Business',l:'https://www.wsj.com/news/world',d:'Global finance and business news from WSJ',img:''},
-    ],
-    guardian:[
-      {t:'The Guardian - World News',l:'https://www.theguardian.com/world',d:'Independent journalism from The Guardian',img:''},
-    ],
-    bloomberg:[
-      {t:'Bloomberg - Markets & Politics',l:'https://www.bloomberg.com',d:'Financial and political news from Bloomberg',img:''},
-    ],
-  };
-  const fb=fallbacks[src.id]||[{t:`أخبار ${src.name}`,l:src.site,d:`تصفح المصدر مباشرةً للاطلاع على آخر الأخبار`,img:''}];
-  return fb.map((f,i)=>mk(src,`fb${i}`,f.t,f.l,f.d,f.img,new Date(Date.now()-i*3600000).toISOString()));
+  return [{
+    id:`${src.id}_emergency_${Date.now()}`,
+    title:`عذراً، تعذر تحميل آخر أخبار ${src.name} حالياً`,
+    titleAr:`عذراً، تعذر تحميل آخر أخبار ${src.name} حالياً`,
+    link:src.site,
+    description:`يرجى النقر هنا لزيارة الموقع الرسمي والاطلاع على آخر المستجدات مباشرة.`,
+    descriptionAr:`يرجى النقر هنا لزيارة الموقع الرسمي والاطلاع على آخر المستجدات مباشرة.`,
+    image:'',
+    pubDate:now,
+    source:src.id,sourceName:src.name,sourceColor:src.color,
+    cat:src.cat,lang:src.lang,translated:src.lang==='ar',
+  }];
 }
 
 async function loadAll(){
@@ -820,7 +792,15 @@ async function loadAll(){
 
   // Load all concurrently
   const results=await Promise.allSettled(SRCS.map(s=>loadSource(s)));
-  results.forEach(r=>{if(r.status==='fulfilled')allNews.push(...r.value);});
+  results.forEach((r,idx)=>{
+    if(r.status==='fulfilled' && r.value.length>0){
+      allNews.push(...r.value);
+    } else {
+      // Only use emergency fallback if source has no news at all
+      const emergencyNews = getEmergencyFallback(SRCS[idx]);
+      allNews.push(...emergencyNews);
+    }
+  });
 
   // Sort newest first
   allNews.sort((a,b)=>new Date(b.pubDate||0)-new Date(a.pubDate||0));
