@@ -8,7 +8,9 @@
   <link rel="apple-touch-icon" href="https://www.genspark.ai/api/files/s/mGxb1TCU" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="مرصد الأخبار" />
   <meta name="theme-color" content="#0a1628" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" />
 <style>
@@ -19,65 +21,211 @@
   --h:68px;--ticker:30px;--filter:52px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direction:rtl;min-height:100vh}
-header{position:fixed;top:0;inset-inline:0;z-index:1000;height:var(--h);background:linear-gradient(135deg,#060e1a,#112240,#060e1a);border-bottom:2px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 2px 24px rgba(200,16,46,.35);}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px}
+/* HEADER */
+header{
+  position:fixed;top:0;inset-inline:0;z-index:1000;height:var(--h);
+  background:linear-gradient(135deg,#060e1a,#112240,#060e1a);
+  border-bottom:2px solid var(--red);
+  display:flex;align-items:center;justify-content:space-between;padding:0 18px;
+  box-shadow:0 2px 24px rgba(200,16,46,.35);
+}
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none}
 .logo img{width:44px;height:44px;border-radius:50%;border:2px solid var(--red);object-fit:cover}
-.logo-text .t1{font-size:1.1rem;font-weight:900;color:#fff;line-height:1.2}
-.logo-text .t2{font-size:.65rem;color:var(--orange);font-weight:600}
+.logo-text .t1{font-size:1.2rem;font-weight:900;color:#fff;line-height:1.2}
+.logo-text .t2{font-size:.68rem;color:var(--orange);font-weight:600}
 .hdr-right{display:flex;align-items:center;gap:10px}
-.live{background:var(--red);color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
+.live{background:var(--red);color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;
+  border-radius:20px;display:flex;align-items:center;gap:5px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite}
-.refresh-btn{background:var(--red);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
+.refresh-btn{background:var(--red);color:#fff;border:none;border-radius:8px;
+  padding:7px 14px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
+.refresh-btn:hover{background:#a00c26}
 .refresh-btn.spin i{animation:rotate 1s linear infinite}
-.ticker{position:fixed;top:var(--h);inset-inline:0;z-index:999;height:var(--ticker);background:var(--red);display:flex;align-items:center;overflow:hidden;}
-.ticker-label{background:#7a0018;color:#fff;font-size:.72rem;font-weight:800;padding:0 14px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;}
+/* TICKER */
+.ticker{
+  position:fixed;top:var(--h);inset-inline:0;z-index:999;
+  height:var(--ticker);background:var(--red);display:flex;align-items:center;overflow:hidden;
+}
+.ticker-label{
+  background:#7a0018;color:#fff;font-size:.72rem;font-weight:800;
+  padding:0 14px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;gap:6px;
+}
 .ticker-wrap{flex:1;overflow:hidden;position:relative}
 .ticker-inner{display:inline-flex;white-space:nowrap;animation:scroll 90s linear infinite}
-.ticker-inner span{font-size:.75rem;color:#fff;font-weight:600;padding:0 18px;}
-.filters{position:fixed;top:calc(var(--h) + var(--ticker));inset-inline:0;z-index:998;height:var(--filter);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;padding:0 14px;overflow-x:auto;}
+.ticker-inner span{font-size:.75rem;color:#fff;font-weight:600;padding:0 18px;cursor:pointer}
+.ticker-inner span:hover{text-decoration:underline}
+.ticker-dot{color:rgba(255,255,255,.4);padding:0 4px}
+/* FILTERS */
+.filters{
+  position:fixed;top:calc(var(--h) + var(--ticker));inset-inline:0;z-index:998;
+  height:var(--filter);background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:7px;padding:0 14px;overflow-x:auto;scrollbar-width:none;
+}
+.filters::-webkit-scrollbar{display:none}
 .srch{position:relative;flex-shrink:0}
 .srch i{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem}
-.srch input{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--txt);font-family:'Cairo',sans-serif;font-size:.8rem;padding:6px 28px 6px 10px;width:160px;outline:none;}
-.fbtn{background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;}
+.srch input{
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  color:var(--txt);font-family:'Cairo',sans-serif;font-size:.8rem;
+  padding:6px 28px 6px 10px;width:180px;outline:none;transition:border .2s;
+}
+.srch input:focus{border-color:var(--red)}
+.srch input::placeholder{color:var(--muted)}
+.fbtn{
+  background:var(--bg);border:1px solid var(--border);color:var(--muted);
+  border-radius:20px;padding:4px 12px;font-family:'Cairo',sans-serif;
+  font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0;
+}
+.fbtn:hover{border-color:var(--red);color:var(--txt)}
 .fbtn.on{background:var(--red);border-color:var(--red);color:#fff}
-main{max-width:1380px;margin:0 auto;padding:calc(var(--h) + var(--ticker) + var(--filter) + 16px) 14px 40px;}
-.stats{display:flex;align-items:center;gap:16px;padding:8px 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap;}
-.stat{font-size:.74rem;color:var(--muted)}
-.stat strong{color:var(--txt)}
+/* MAIN */
+main{
+  max-width:1380px;margin:0 auto;
+  padding:calc(var(--h) + var(--ticker) + var(--filter) + 16px) 14px 40px;
+}
+/* STATS */
+.stats{display:flex;align-items:center;gap:16px;padding:8px 0 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;margin-bottom:14px}
+.stat{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--muted)}
+.stat i{color:var(--red);font-size:.75rem}.stat strong{color:var(--txt)}
+/* SECTION */
+.sec{margin-bottom:34px}
 .sec-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px;margin-top:20px;font-size:1rem;font-weight:800}
 .bar{width:4px;height:20px;border-radius:2px;background:var(--red)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:.25s;text-decoration:none;color:inherit;}
-.card:hover{transform:translateY(-4px);border-color:var(--red);box-shadow:0 10px 20px rgba(0,0,0,0.4)}
-.cimg{position:relative;height:170px;background:#060e1a}
-.cimg img{width:100%;height:100%;object-fit:cover}
-.src-tag{position:absolute;top:9px;right:9px;color:#fff;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:4px;z-index:2}
-.tr-tag{position:absolute;top:9px;left:9px;background:var(--gold);color:#000;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:4px;}
-.cbody{padding:12px;flex:1;}
-.ctitle{font-size:.9rem;font-weight:700;line-height:1.5;margin-bottom:8px;}
-.cfoot{display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);border-top:1px solid rgba(255,255,255,0.05);padding-top:8px}
+.cnt{background:var(--card);color:var(--muted);font-size:.68rem;padding:2px 8px;border-radius:12px;border:1px solid var(--border)}
+/* FEATURED */
+.feat-wrap{display:grid;grid-template-columns:2fr 1fr;gap:13px;margin-bottom:26px}
+.feat-main{
+  position:relative;border-radius:var(--r);overflow:hidden;min-height:350px;
+  border:1px solid var(--border);cursor:pointer;text-decoration:none;color:inherit;
+  display:block;transition:transform .3s;background:var(--card);
+}
+.feat-main:hover{transform:translateY(-3px);box-shadow:0 6px 28px rgba(0,0,0,.5)}
+.feat-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.feat-overlay{
+  position:absolute;bottom:0;inset-inline:0;
+  background:linear-gradient(to top,rgba(0,0,0,.95),rgba(0,0,0,.45) 65%,transparent);
+  padding:22px 18px 16px;
+}
+.feat-src{display:inline-block;color:#fff;font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:4px;margin-bottom:7px}
+.feat-main h2{font-size:1.1rem;font-weight:800;line-height:1.5;color:#fff;margin-bottom:5px}
+.feat-meta{font-size:.68rem;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px}
+.feat-side{display:flex;flex-direction:column;gap:9px}
+/* SIDE CARD */
+.side-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;
+  display:flex;gap:10px;padding:10px;transition:.25s;flex:1;
+}
+.side-card:hover{border-color:var(--red);transform:translateX(3px)}
+.sc-img{width:84px;height:68px;border-radius:7px;overflow:hidden;flex-shrink:0;background:var(--bg2)}
+.sc-img img{width:100%;height:100%;object-fit:cover}
+.sc-body{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.sc-title{font-size:.78rem;font-weight:700;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
+.sc-src{font-size:.63rem;font-weight:700}
+.sc-time{font-size:.6rem;color:var(--muted)}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:13px}
+/* CARD */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;transition:.25s;animation:fadeIn .4s ease;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 6px 28px rgba(0,0,0,.5);border-color:var(--red)}
+.card:hover .cimg img{transform:scale(1.05)}
+.cimg{position:relative;height:172px;overflow:hidden;background:linear-gradient(135deg,var(--bg),var(--bg2))}
+.cimg img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg2)}
+.no-img i{font-size:2.5rem;color:var(--border)}
+.src-tag{position:absolute;top:9px;right:9px;color:#fff;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:4px;z-index:2;box-shadow:0 2px 5px rgba(0,0,0,.4)}
+.tr-tag{position:absolute;top:9px;left:9px;background:rgba(212,175,55,.9);color:#000;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:4px;z-index:2}
+.cbody{padding:12px;flex:1;display:flex;flex-direction:column}
+.ctitle{font-size:.88rem;font-weight:700;line-height:1.55;color:var(--txt);margin-bottom:8px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cdesc{font-size:.74rem;color:var(--muted);line-height:1.5;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cfoot{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
+.csrc{font-size:.68rem;font-weight:700;color:var(--orange)}
+.ctime{font-size:.62rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+/* TOOLS */
 .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tool{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;text-align:center;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.tool:hover{border-color:var(--orange)}
-.sk-card{height:300px;background:var(--card);border-radius:var(--r);animation:shimmer 1.5s infinite linear;background: linear-gradient(90deg, #112240 25%, #1e3a5f 50%, #112240 75%);background-size: 200% 100%;}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-@keyframes rotate{to{transform:rotate(360deg)}}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tool{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px;text-align:center;cursor:pointer;text-decoration:none;color:inherit;
+  transition:.3s;display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.tool:hover{border-color:var(--orange);transform:translateY(-3px);box-shadow:0 6px 22px rgba(0,0,0,.4)}
+.tool-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.tool-name{font-size:.88rem;font-weight:800}
+.tool-desc{font-size:.7rem;color:var(--muted);line-height:1.5}
+/* SKELETON */
+.sk{background:linear-gradient(90deg,var(--bg2) 25%,var(--border) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+.sk-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.sk-img{height:172px}.sk-line{height:13px;margin:8px 12px}.sk-line.s{width:55%}.sk-line.m{width:78%}
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;color:var(--muted);text-align:center;gap:10px;grid-column:1/-1}
+.empty i{font-size:2.5rem;color:var(--border)}.empty p{font-size:.86rem}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);max-width:580px;width:92%;max-height:88vh;overflow-y:auto;padding:22px;position:relative;animation:fadeIn .3s ease}
+.modal-x{position:absolute;top:11px;left:11px;background:var(--red);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.modal img{width:100%;border-radius:8px;margin-bottom:11px;max-height:200px;object-fit:cover}
+.modal h3{font-size:.98rem;font-weight:800;margin-bottom:9px;line-height:1.55}
+.modal p{font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:14px}
+.mact{display:flex;gap:9px;flex-wrap:wrap}
+.btn-r{background:var(--red);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;text-decoration:none;transition:.2s}
+.btn-r:hover{background:#a00c26}
+.btn-g{background:var(--card);color:var(--txt);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-family:'Cairo',sans-serif;font-size:.82rem;cursor:pointer;transition:.2s}
+.btn-g:hover{border-color:var(--red)}
+/* TOAST */
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:9px 18px;display:flex;align-items:center;gap:9px;
+  font-size:.8rem;color:var(--txt);z-index:4000;transition:transform .35s ease;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:220px;justify-content:center;
+}
+.toast.up{transform:translateX(-50%) translateY(0)}
+.toast i{color:var(--gold)}
+/* footer */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:16px;text-align:center;color:var(--muted);font-size:.73rem;line-height:1.9}
+footer a{color:var(--orange);text-decoration:none}footer a:hover{text-decoration:underline}
+/* ANIMATIONS */
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:5000;display:none;align-items:center;justify-content:center}
-.modal{background:var(--bg2);padding:20px;border-radius:var(--r);max-width:500px;width:90%;position:relative}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--red);padding:10px 20px;border-radius:30px;font-size:.8rem;z-index:9999;display:none}
+@keyframes rotate{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .feat-wrap{grid-template-columns:1fr}
+  .feat-main{min-height:250px}
+  .feat-side{flex-direction:row;overflow-x:auto;gap:8px}
+  .feat-side .side-card{min-width:230px}
+}
+@media(max-width:600px){
+  header{padding:0 10px}
+  .logo-text .t1{font-size:1rem}
+  .refresh-btn span{display:none}
+  .grid{grid-template-columns:1fr}
+  .tools-grid{grid-template-columns:1fr}
+  main{padding-inline:10px}
+  .srch input{width:148px}
+}
 </style>
 </head>
 <body>
 
 <header>
   <a href="#" class="logo">
-    <img src="https://www.genspark.ai/api/files/s/mGxb1TCU" alt="logo" />
+    <img src="https://www.genspark.ai/api/files/s/mGxb1TCU" alt="logo" onerror="this.style.display='none'" />
     <div class="logo-text">
       <div class="t1">مرصد الأخبار العالمية</div>
-      <div class="t2">تغطية حية وشاملة للأحداث</div>
+      <div class="t2">World News Observatory · أخبار مباشرة</div>
     </div>
   </a>
   <div class="hdr-right">
@@ -89,56 +237,115 @@ main{max-width:1380px;margin:0 auto;padding:calc(var(--h) + var(--ticker) + var(
 </header>
 
 <div class="ticker">
-  <div class="ticker-label"><i class="fas fa-rss"></i> عاجل</div>
-  <div class="ticker-wrap"><div class="ticker-inner" id="tickerInner"><span>جاري جلب العواجل...</span></div></div>
+  <div class="ticker-label"><i class="fas fa-rss"></i>عاجل</div>
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="tickerInner"><span>جاري تحميل آخر الأخبار...</span></div>
+  </div>
 </div>
 
-<nav class="filters">
-  <div class="srch"><i class="fas fa-search"></i><input type="text" id="q" placeholder="ابحث..." oninput="renderGrids()" /></div>
+<nav class="filters" id="filters">
+  <div class="srch"><i class="fas fa-search"></i><input type="text" id="q" placeholder="ابحث في الأخبار..." oninput="doFilter()" /></div>
   <button class="fbtn on" onclick="setFilter('all',this)">🌐 الكل</button>
   <button class="fbtn" onclick="setFilter('arabic',this)">🟢 عربي</button>
   <button class="fbtn" onclick="setFilter('intl',this)">🌍 دولي</button>
+  <button class="fbtn" onclick="setFilter('tr',this)">🔤 مترجم</button>
+  <button class="fbtn" onclick="setSrc('aljazeera',this)">الجزيرة</button>
+  <button class="fbtn" onclick="setSrc('skynews',this)">سكاي نيوز</button>
+  <button class="fbtn" onclick="setSrc('bbc',this)">BBC</button>
+  <button class="fbtn" onclick="setSrc('cnn',this)">CNN</button>
+  <button class="fbtn" onclick="setSrc('alarabiya',this)">العربية</button>
+  <button class="fbtn" onclick="setSrc('rt',this)">RT</button>
+  <button class="fbtn" onclick="setSrc('france24',this)">فرانس24</button>
+  <button class="fbtn" onclick="setSrc('reuters',this)">Reuters</button>
+  <button class="fbtn" onclick="setSrc('apnews',this)">AP News</button>
+  <button class="fbtn" onclick="setSrc('nytimes',this)">NYT</button>
+  <button class="fbtn" onclick="setSrc('guardian',this)">Guardian</button>
+  <button class="fbtn" onclick="setSrc('bloomberg',this)">Bloomberg</button>
 </nav>
 
 <main>
   <div class="stats">
-    <div class="stat"><i class="fas fa-newspaper"></i> أخبار: <strong id="sCount">0</strong></div>
-    <div class="stat"><i class="fas fa-language"></i> مترجمة: <strong id="sTr">0</strong></div>
-    <div class="stat"><i class="fas fa-clock"></i> آخر تحديث: <strong id="sTime">—</strong></div>
+    <div class="stat"><i class="fas fa-newspaper"></i>مصادر: <strong>14</strong></div>
+    <div class="stat"><i class="fas fa-globe"></i>أخبار: <strong id="sCount">جاري التحميل</strong></div>
+    <div class="stat"><i class="fas fa-language"></i>مترجمة: <strong id="sTr">0</strong></div>
+    <div class="stat"><i class="fas fa-clock" style="color:var(--gold)"></i>آخر تحديث: <strong id="sTime">—</strong></div>
+  </div>
+
+  <div id="featSec" class="sec">
+    <div class="sec-hd"><div class="bar"></div><i class="fas fa-star" style="color:var(--gold)"></i>أبرز الأخبار</div>
+    <div class="feat-wrap" id="featGrid"></div>
+  </div>
+
+  <div id="arSec" class="sec">
+    <div class="sec-hd"><div class="bar"></div><i class="fas fa-satellite-dish"></i>المصادر العربية<span class="cnt" id="arCnt">0</span></div>
+    <div class="grid" id="arGrid"></div>
+  </div>
+
+  <div id="intlSec" class="sec">
+    <div class="sec-hd"><div class="bar" style="background:var(--gold)"></div><i class="fas fa-globe-americas" style="color:var(--gold)"></i>المصادر الدولية — مترجمة تلقائياً<span class="cnt" id="intlCnt">0</span></div>
+    <div class="grid" id="intlGrid"></div>
   </div>
 
   <div class="sec">
-    <div class="sec-hd"><div class="bar"></div>أحدث الأخبار</div>
-    <div class="grid" id="newsGrid"></div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-hd"><div class="bar" style="background:var(--cyan)"></div>أدوات الرصد</div>
+    <div class="sec-hd"><div class="bar" style="background:var(--cyan)"></div><i class="fas fa-satellite" style="color:var(--cyan)"></i>أدوات المتابعة التفاعلية</div>
     <div class="tools-grid">
-      <a href="https://www.flightradar24.com" target="_blank" class="tool"><i class="fas fa-plane"></i>Flightradar24</a>
-      <a href="https://liveuamap.com" target="_blank" class="tool"><i class="fas fa-map-marked-alt"></i>Liveuamap</a>
+      <a href="https://www.flightradar24.com" target="_blank" rel="noopener" class="tool">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-plane" style="color:#fff"></i></div>
+        <span class="tool-name">Flightradar24</span>
+        <span class="tool-desc">متابعة حركة الطيران العسكري والمدني لحظةً بلحظة حول العالم</span>
+      </a>
+      <a href="https://liveuamap.com" target="_blank" rel="noopener" class="tool">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#ef4444,#b91c1c)"><i class="fas fa-map-marked-alt" style="color:#fff"></i></div>
+        <span class="tool-name">Liveuamap</span>
+        <span class="tool-desc">خرائط تفاعلية حية لتغطية النزاعات والحروب والأحداث العسكرية</span>
+      </a>
     </div>
   </div>
 </main>
 
-<div class="toast" id="toast"></div>
+<div class="overlay" id="ov" onclick="ovClick(event)">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <img id="mImg" src="" alt="" style="display:none" />
+    <div id="mSrc"></div>
+    <h3 id="mTitle"></h3>
+    <p id="mDesc"></p>
+    <div class="mact">
+      <a id="mLink" href="#" target="_blank" rel="noopener" class="btn-r"><i class="fas fa-external-link-alt"></i>اقرأ الخبر من المصدر</a>
+      <button class="btn-g" onclick="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-spinner fa-spin"></i><span id="toastTxt">جاري التحميل...</span></div>
+
+<footer>
+  <strong style="color:var(--txt)">مرصد الأخبار العالمية</strong> — مصادر موثوقة تغطي الأحداث على مدار الساعة.
+</footer>
 
 <script>
 const SRCS=[
-  {id:'aljazeera',name:'الجزيرة',cat:'arabic',lang:'ar',feeds:['https://www.aljazeera.net/xml/rss2.0.xml'],color:'#e8282b'},
-  {id:'skynews',name:'سكاي نيوز',cat:'arabic',lang:'ar',feeds:['https://www.skynewsarabia.com/rss.xml'],color:'#00a3e0'},
-  {id:'alarabiya',name:'العربية',cat:'arabic',lang:'ar',feeds:['https://www.alarabiya.net/rss.xml'],color:'#005ea5'},
-  {id:'bbc',name:'BBC عربي',cat:'arabic',lang:'ar',feeds:['https://feeds.bbci.co.uk/arabic/rss.xml'],color:'#bb1919'},
-  {id:'reuters',name:'رويترز',cat:'intl',lang:'en',feeds:['https://www.reutersagency.com/feed/?post_type=best'],color:'#ff671f'},
-  {id:'apnews',name:'AP',cat:'intl',lang:'en',feeds:['https://apnews.com/index.rss'],color:'#ff0000'}
+  {id:'aljazeera',name:'الجزيرة نت',color:'#e8282b',cat:'arabic',lang:'ar',feeds:['https://www.aljazeera.net/xml/rss2.0.xml']},
+  {id:'skynews',name:'سكاي نيوز',color:'#00a3e0',cat:'arabic',lang:'ar',feeds:['https://www.skynewsarabia.com/rss.xml']},
+  {id:'bbc',name:'BBC عربي',color:'#bb1919',cat:'arabic',lang:'ar',feeds:['https://feeds.bbci.co.uk/arabic/rss.xml']},
+  {id:'cnn',name:'CNN بالعربية',color:'#cc0000',cat:'arabic',lang:'ar',feeds:['https://arabic.cnn.com/api/v1/rss/rss.xml']},
+  {id:'alarabiya',name:'العربية نت',color:'#005ea5',cat:'arabic',lang:'ar',feeds:['https://www.alarabiya.net/rss.xml']},
+  {id:'reuters',name:'رويترز',color:'#ff671f',cat:'intl',lang:'en',feeds:['https://www.reutersagency.com/feed/?post_type=best']},
+  {id:'apnews',name:'AP News',color:'#d10000',cat:'intl',lang:'en',feeds:['https://apnews.com/index.rss']},
+  {id:'nytimes',name:'NY Times',color:'#333',cat:'intl',lang:'en',feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml']},
+  {id:'bloomberg',name:'Bloomberg',color:'#1a1a1a',cat:'intl',lang:'en',feeds:['https://feeds.bloomberg.com/politics/news.rss']}
 ];
 
-let allNews=[], curFilt='all', busy=false, trCount=0;
+let allNews=[], trCount=0, busy=false, curFilt='all', curSrc=null, searchQuery='';
+
+// --- التقنيات الجديدة لحل المشاكل ---
 
 async function fetchFeed(url){
-  const cacheBuster = `&_cb=${Date.now()}`;
+  // إضافة معامل عشوائي لمنع الكاش وضمان أحدث الأخبار
+  const antiCache = `&_cb=${Date.now()}`;
+  const proxy = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url + antiCache)}&count=15`;
   try {
-    const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url + cacheBuster)}&count=10`);
+    const r = await fetch(proxy);
     const d = await r.json();
     return (d.status==='ok') ? d.items : [];
   } catch(e) { return []; }
@@ -147,23 +354,22 @@ async function fetchFeed(url){
 async function loadAll(){
   if(busy) return;
   busy=true;
-  trCount=0;
-  allNews=[];
-  document.getElementById('newsGrid').innerHTML = '<div class="sk-card"></div>'.repeat(6);
+  allNews=[]; trCount=0;
   document.getElementById('rfBtn').classList.add('spin');
-  showToast("جاري تحديث البيانات من المصادر...");
+  toast('جاري جلب العواجل الآن...');
 
   const promises = SRCS.map(async src => {
     const items = await fetchFeed(src.feeds[0]);
-    return items.map((it, idx) => ({
-      id: src.id + idx + Date.now(),
+    return items.map(it => ({
+      id: btoa(it.link).substring(0,16), // ID ثابت مبني على الرابط
       title: it.title,
       titleAr: src.lang === 'ar' ? it.title : null,
       link: it.link,
       image: it.enclosure?.link || it.thumbnail || '',
       pubDate: it.pubDate,
-      source: src.name,
-      color: src.color,
+      source: src.id,
+      sourceName: src.name,
+      sourceColor: src.color,
       lang: src.lang,
       cat: src.cat,
       translated: false
@@ -171,81 +377,165 @@ async function loadAll(){
   });
 
   const results = await Promise.all(promises);
-  allNews = results.flat().sort((a,b)=> new Date(b.pubDate) - new Date(a.pubDate));
+  // منع التكرار باستخدام Map تعتمد على الرابط
+  const raw = results.flat();
+  const uniqueMap = new Map();
+  raw.forEach(item => { if(!uniqueMap.has(item.link)) uniqueMap.set(item.link, item); });
+  
+  allNews = Array.from(uniqueMap.values()).sort((a,b)=> new Date(b.pubDate) - new Date(a.pubDate));
+  
+  document.getElementById('sCount').textContent = allNews.length;
+  document.getElementById('sTime').textContent = new Date().toLocaleTimeString('ar-SA');
   
   renderGrids();
   buildTicker();
-  document.getElementById('sTime').textContent = new Date().toLocaleTimeString('ar-SA');
   document.getElementById('rfBtn').classList.remove('spin');
   hideToast();
   busy=false;
   
-  // ترجمة في الخلفية
-  startBackgroundTranslation();
+  // ترجمة خلفية سريعة
+  translateBackground();
 }
 
-function renderGrids(){
-  const q = document.getElementById('q').value.toLowerCase();
-  const filtered = allNews.filter(it => {
-    const matchSearch = it.title.toLowerCase().includes(q) || (it.titleAr && it.titleAr.includes(q));
-    const matchCat = curFilt === 'all' || it.cat === curFilt;
-    return matchSearch && matchCat;
-  });
-
-  document.getElementById('sCount').textContent = filtered.length;
-  document.getElementById('newsGrid').innerHTML = filtered.map(it => `
-    <a href="${it.link}" target="_blank" class="card">
-      <div class="cimg">
-        <div class="src-tag" style="background:${it.color}">${it.source}</div>
-        ${it.translated ? '<div class="tr-tag">مترجم</div>' : ''}
-        <img src="${it.image || 'https://via.placeholder.com/300x170/0d1e35/8892a4?text=News'}" onerror="this.src='https://via.placeholder.com/300x170/0d1e35/8892a4?text=No+Image'">
-      </div>
-      <div class="cbody">
-        <div class="ctitle">${it.titleAr || it.title}</div>
-        <div class="cfoot">
-          <span>${it.source}</span>
-          <span>${new Date(it.pubDate).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}</span>
-        </div>
-      </div>
-    </a>
-  `).join('');
-}
-
-async function startBackgroundTranslation(){
-  const toTr = allNews.filter(it => it.lang === 'en' && !it.translated);
+async function translateBackground(){
+  const toTr = allNews.filter(it => it.lang === 'en' && !it.translated).slice(0,10);
   for(let it of toTr){
-    if(busy) break; 
     try {
-      const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(it.title.substring(0,500))}&langpair=en|ar`);
+      const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(it.title)}&langpair=en|ar`);
       const d = await r.json();
       if(d.responseData.translatedText){
         it.titleAr = d.responseData.translatedText;
         it.translated = true;
         trCount++;
         document.getElementById('sTr').textContent = trCount;
-        if(trCount % 2 === 0) renderGrids(); // تحديث الواجهة كل خبرين مترجمين
       }
     } catch(e){}
-    await new Promise(r => setTimeout(r, 500)); // تأخير بسيط لتجنب الحظر
+  }
+  renderGrids();
+}
+
+// --- دوال العرض (نفس تصميمك السابق) ---
+
+function renderGrids(){
+  const q = searchQuery.toLowerCase();
+  const filtered = allNews.filter(it => {
+    const matchSearch = it.title.toLowerCase().includes(q) || (it.titleAr && it.titleAr.includes(q));
+    const matchCat = curFilt === 'all' || it.cat === curFilt || (curFilt==='tr' && it.translated);
+    const matchSrc = !curSrc || it.source === curSrc;
+    return matchSearch && matchCat && matchSrc;
+  });
+
+  const arGrid = document.getElementById('arGrid');
+  const intlGrid = document.getElementById('intlGrid');
+  
+  const arItems = filtered.filter(i => i.cat === 'arabic');
+  const intlItems = filtered.filter(i => i.cat === 'intl');
+
+  arGrid.innerHTML = arItems.map(it => cardHTML(it)).join('');
+  intlGrid.innerHTML = intlItems.map(it => cardHTML(it)).join('');
+  
+  document.getElementById('arCnt').textContent = arItems.length;
+  document.getElementById('intlCnt').textContent = intlItems.length;
+
+  if(curFilt==='all' && !curSrc) {
+    document.getElementById('featSec').style.display = 'block';
+    renderFeat(filtered.slice(0,4));
+  } else {
+    document.getElementById('featSec').style.display = 'none';
   }
 }
 
+function cardHTML(it){
+  return `
+    <a href="${it.link}" target="_blank" class="card" onclick="openModal(event, '${it.id}')">
+      <div class="cimg">
+        <img src="${it.image || 'https://via.placeholder.com/300x172/0d1e35/8892a4?text=News'}" onerror="this.src='https://via.placeholder.com/300x172/0d1e35/8892a4?text=No+Image'">
+        <div class="src-tag" style="background:${it.sourceColor}">${it.sourceName}</div>
+        ${it.translated ? '<div class="tr-tag">مترجم</div>' : ''}
+      </div>
+      <div class="cbody">
+        <div class="ctitle">${it.titleAr || it.title}</div>
+        <div class="cfoot">
+          <span class="csrc">${it.sourceName}</span>
+          <span class="ctime"><i class="fas fa-clock"></i> ${ago(it.pubDate)}</span>
+        </div>
+      </div>
+    </a>
+  `;
+}
+
+function renderFeat(items){
+  if(!items.length) return;
+  const main = items[0];
+  const side = items.slice(1,4);
+  const grid = document.getElementById('featGrid');
+  grid.innerHTML = `
+    <a href="${main.link}" class="feat-main" onclick="openModal(event, '${main.id}')">
+      <img src="${main.image || ''}">
+      <div class="feat-overlay">
+        <div class="feat-src" style="background:${main.sourceColor}">${main.sourceName}</div>
+        <h2>${main.titleAr || main.title}</h2>
+      </div>
+    </a>
+    <div class="feat-side">
+      ${side.map(s => `
+        <a href="${s.link}" class="side-card" onclick="openModal(event, '${s.id}')">
+          <div class="sc-img"><img src="${s.image}"></div>
+          <div class="sc-body"><div class="sc-title">${s.titleAr || s.title}</div></div>
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+function buildTicker(){
+  const inner = document.getElementById('tickerInner');
+  const txt = allNews.slice(0,10).map(i => `<span> ● ${i.titleAr || i.title}</span>`).join('');
+  inner.innerHTML = txt + txt;
+}
+
+function ago(date){
+  const sec = Math.floor((new Date() - new Date(date)) / 1000);
+  if(sec < 3600) return Math.floor(sec/60) + ' دقيقة';
+  if(sec < 86400) return Math.floor(sec/3600) + ' ساعة';
+  return Math.floor(sec/86400) + ' يوم';
+}
+
 function setFilter(f, btn){
-  curFilt = f;
+  curFilt = f; curSrc = null;
   document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   renderGrids();
 }
 
-function buildTicker(){
-  const inner = document.getElementById('tickerInner');
-  const txt = allNews.slice(0,10).map(it => `<span> ● ${it.titleAr || it.title}</span>`).join('');
-  inner.innerHTML = txt + txt;
+function setSrc(s, btn){
+  curSrc = s;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderGrids();
 }
 
+function doFilter(){
+  searchQuery = document.getElementById('q').value;
+  renderGrids();
+}
+
+function openModal(e, id){
+  e.preventDefault();
+  const it = allNews.find(n => n.id === id);
+  if(!it) return;
+  document.getElementById('mTitle').textContent = it.titleAr || it.title;
+  document.getElementById('mDesc').textContent = "جارٍ عرض التفاصيل من المصدر الأصلي... اضغط على الرابط بالأسفل للمتابعة.";
+  document.getElementById('mLink').href = it.link;
+  const img = document.getElementById('mImg');
+  if(it.image) { img.src = it.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
+  document.getElementById('ov').classList.add('open');
+}
+
+function closeModal(){ document.getElementById('ov').classList.remove('open'); }
 function refreshAll(){ loadAll(); }
-function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; }
-function hideToast(){ document.getElementById('toast').style.display='none'; }
+function toast(m){ document.getElementById('toastTxt').textContent = m; document.getElementById('toast').classList.add('up'); }
+function hideToast(){ document.getElementById('toast').classList.remove('up'); }
 
 document.addEventListener('DOMContentLoaded', loadAll);
 </script>
