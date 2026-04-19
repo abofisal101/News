@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a1628" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>لوحة التحكم - مرصد الأخبار العالمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Changa:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" />
+  <style>
+    :root{
+      --bg:#091321;--bg2:#0f1d31;--card:#112240;--card2:#132844;--border:#213d60;
+      --text:#ecf2ff;--muted:#90a1bc;--accent:#c8102e;--accent2:#d4af37;--ok:#22c55e;--warn:#f59e0b;
+      --radius:18px;--font:'Cairo',sans-serif;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);background:linear-gradient(180deg,#07111d,#0a1628);color:var(--text);min-height:100vh}
+    a{text-decoration:none;color:inherit}
+    input,select,textarea,button{font-family:var(--font)}
+    img{max-width:100%}
+    ::-webkit-scrollbar{width:7px;height:7px}
+    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px}
+
+    .page{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .sidebar{
+      position:sticky;top:0;height:100vh;padding:calc(18px + var(--safe-top)) 16px calc(18px + var(--safe-bottom));
+      background:rgba(7,16,28,.9);backdrop-filter:blur(14px);border-left:1px solid rgba(255,255,255,.06);overflow:auto
+    }
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .brand-logo{width:52px;height:52px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)}
+    .brand-logo img{width:100%;height:100%;object-fit:cover}
+    .brand-logo span{font-weight:900;font-size:1.35rem}
+    .brand h1{font-size:1rem;margin-bottom:4px}
+    .brand p{font-size:.72rem;color:var(--muted);line-height:1.7}
+
+    .nav{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+    .nav a{
+      padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid transparent;display:flex;align-items:center;gap:10px;font-weight:700;color:#d8e3f6
+    }
+    .nav a:hover,.nav a.active{background:rgba(200,16,46,.15);border-color:rgba(200,16,46,.35)}
+    .side-actions{display:grid;gap:10px;margin-top:20px}
+    .side-actions button,.side-actions a{
+      min-height:44px;border-radius:14px;border:none;cursor:pointer;padding:0 14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px
+    }
+    .btn-main{background:var(--accent);color:#fff}
+    .btn-soft{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#fff}
+    .btn-ok{background:rgba(34,197,94,.18);color:#bbf7d0;border:1px solid rgba(34,197,94,.25)}
+
+    .content{padding:calc(18px + var(--safe-top)) 18px calc(18px + var(--safe-bottom));display:grid;gap:18px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .topbar h2{font-size:1.35rem}
+    .topbar p{color:var(--muted);font-size:.85rem}
+    .status-pill{padding:10px 14px;border-radius:999px;background:rgba(34,197,94,.12);color:#bbf7d0;border:1px solid rgba(34,197,94,.24);font-size:.8rem;font-weight:800}
+
+    .panel{
+      background:linear-gradient(180deg,rgba(17,34,64,.96),rgba(15,29,49,.96));
+      border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.22)
+    }
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .panel-head h3{font-size:1.02rem}
+    .panel-head p{font-size:.8rem;color:var(--muted)}
+
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .full{grid-column:1/-1}
+
+    .field{display:flex;flex-direction:column;gap:8px}
+    .field label{font-size:.82rem;font-weight:700;color:#dbe4f4}
+    .field input,.field textarea,.field select{
+      width:100%;background:#0a1728;border:1px solid var(--border);color:var(--text);border-radius:14px;padding:12px 13px;outline:none
+    }
+    .field textarea{min-height:110px;resize:vertical}
+    .field small{font-size:.72rem;color:var(--muted);line-height:1.8}
+
+    .chip-row{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);font-size:.74rem}
+
+    .list{display:grid;gap:12px}
+    .item{
+      background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:14px;display:grid;gap:12px
+    }
+    .item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .item-title{display:flex;align-items:center;gap:10px}
+    .dot{width:14px;height:14px;border-radius:50%}
+    .item-title h4{font-size:.92rem}
+    .item-title p{font-size:.75rem;color:var(--muted);line-height:1.7}
+    .item-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .item-actions button{
+      min-height:38px;padding:0 12px;border-radius:12px;border:none;cursor:pointer;font-weight:800
+    }
+    .edit-btn{background:#1d4ed8;color:#fff}
+    .toggle-btn{background:rgba(245,158,11,.15);color:#fde68a;border:1px solid rgba(245,158,11,.2)}
+    .delete-btn{background:rgba(239,68,68,.14);color:#fecaca;border:1px solid rgba(239,68,68,.18)}
+    .mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+    .mini-box{padding:10px 12px;border-radius:14px;background:#0a1728;border:1px solid rgba(255,255,255,.05)}
+    .mini-box strong{display:block;font-size:.74rem;color:var(--muted);margin-bottom:6px}
+    .mini-box span{font-size:.8rem;word-break:break-word}
+
+    .preview-wrap{display:grid;grid-template-columns:1fr 340px;gap:18px}
+    .preview-card{
+      background:#08111f;border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:14px;overflow:hidden
+    }
+    .phone{
+      background:#091321;border:8px solid #111827;border-radius:34px;padding:12px;max-width:320px;margin:auto;box-shadow:0 18px 40px rgba(0,0,0,.35)
+    }
+    .phone-notch{width:120px;height:24px;border-radius:0 0 16px 16px;background:#111827;margin:-12px auto 12px}
+    .phone-screen{border-radius:24px;overflow:hidden;background:#0a1628;color:#fff}
+    .p-header{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid rgba(255,255,255,.07);background:#10223c}
+    .p-logo{width:38px;height:38px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .p-logo img{width:100%;height:100%;object-fit:cover}
+    .p-ticker{background:var(--accent);padding:7px 10px;font-size:.72rem}
+    .p-chip{padding:6px 10px;border-radius:999px;background:#10223c;border:1px solid rgba(255,255,255,.06);font-size:.68rem}
+    .p-content{padding:12px;display:grid;gap:10px}
+    .p-banner{height:110px;border-radius:16px;background:linear-gradient(135deg,#10223c,#1a3358);display:flex;align-items:end;padding:12px;font-weight:800}
+    .p-card{border-radius:14px;background:#112240;border:1px solid rgba(255,255,255,.06);padding:12px;display:grid;gap:8px}
+    .p-img{height:80px;border-radius:12px;background:#183055}
+
+    .inline-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .inline-actions button,.inline-actions label{min-height:44px;padding:0 14px;border-radius:14px;border:none;cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px}
+    .ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.08)}
+    .warn{background:rgba(245,158,11,.14);color:#fde68a;border:1px solid rgba(245,158,11,.22)}
+    .danger{background:rgba(239,68,68,.14);color:#fecaca;border:1px solid rgba(239,68,68,.22)}
+    .success{background:rgba(34,197,94,.14);color:#bbf7d0;border:1px solid rgba(34,197,94,.22)}
+
+    .hidden{display:none!important}
+
+    @media (max-width: 1100px){
+      .page{grid-template-columns:1fr}
+      .sidebar{position:static;height:auto}
+      .preview-wrap{grid-template-columns:1fr}
+      .phone{max-width:360px}
+    }
+    @media (max-width: 700px){
+      .grid-2,.grid-3{grid-template-columns:1fr}
+      .content{padding-inline:12px}
+      .sidebar{padding-inline:12px}
+      .topbar h2{font-size:1.15rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo" id="brandLogo"><span>م</span></div>
+        <div>
+          <h1 id="brandTitle">مرصد الأخبار العالمية</h1>
+          <p>لوحة تحكم كاملة للمصادر، الشريط، الهوية، البنرات، الروابط، والخطوط</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="#identity" class="active"><i class="fas fa-signature"></i> هوية الموقع</a>
+        <a href="#theme"><i class="fas fa-palette"></i> الألوان والخطوط</a>
+        <a href="#sources"><i class="fas fa-rss"></i> إدارة المصادر</a>
+        <a href="#ticker"><i class="fas fa-bullhorn"></i> شريط الأخبار</a>
+        <a href="#banners"><i class="fas fa-images"></i> البنرات</a>
+        <a href="#links"><i class="fas fa-link"></i> الروابط والأدوات</a>
+        <a href="#contacts"><i class="fas fa-address-book"></i> معلومات المتصلين</a>
+        <a href="#backup"><i class="fas fa-database"></i> نسخ واستعادة</a>
+      </nav>
+
+      <div class="side-actions">
+        <button class="btn-main" id="saveAllBtn"><i class="fas fa-save"></i> حفظ كل التعديلات</button>
+        <a class="btn-soft" href="index.html" target="_blank"><i class="fas fa-globe"></i> فتح الموقع</a>
+        <button class="btn-ok" id="syncPreviewBtn"><i class="fas fa-mobile-screen"></i> تحديث المعاينة</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div>
+          <h2>لوحة التحكم الشاملة</h2>
+          <p>كل التعديلات تحفظ محلياً في المتصفح وتنعكس مباشرة على الصفحة الرئيسية.</p>
+        </div>
+        <div class="status-pill" id="saveStatus">جاهز للتعديل</div>
+      </div>
+
+      <section class="panel" id="identity">
+        <div class="panel-head">
+          <div>
+            <h3>هوية الموقع</h3>
+            <p>تغيير الاسم، الوصف، الشعار، وصورة الهوية بجوار الاسم.</p>
+          </div>
+        </div>
+        <div class="preview-wrap">
+          <div class="grid-2">
+            <div class="field">
+              <label>اسم الموقع</label>
+              <input id="siteTitle" type="text" />
+            </div>
+            <div class="field">
+              <label>العنوان الفرعي</label>
+              <input id="siteSubtitle" type="text" />
+            </div>
+            <div class="field full">
+              <label>وصف الفوتر</label>
+              <textarea id="siteFooterText"></textarea>
+            </div>
+            <div class="field">
+              <label>رابط صورة الشعار</label>
+              <input id="siteLogoUrl" type="url" placeholder="https://..." />
+              <small>يمكن وضع رابط صورة خارجية، أو رفع صورة من جهازك بالزر أسفل الحقل.</small>
+            </div>
+            <div class="field">
+              <label>حرف بديل عند عدم وجود صورة</label>
+              <input id="siteFallbackLetter" type="text" maxlength="2" />
+            </div>
+            <div class="field full">
+              <label>رفع شعار من الجهاز</label>
+              <div class="inline-actions">
+                <label class="ghost" for="logoUploader"><i class="fas fa-upload"></i> اختيار صورة</label>
+                <input class="hidden" id="logoUploader" type="file" accept="image/*" />
+                <button class="warn" id="removeLogoBtn" type="button"><i class="fas fa-trash"></i> حذف الصورة الحالية</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>عنوان البنر الرئيسي</label>
+              <input id="heroTitle" type="text" />
+            </div>
+            <div class="field">
+              <label>وسم البنر</label>
+              <input id="heroLabel" type="text" />
+            </div>
+            <div class="field full">
+              <label>وصف البنر الرئيسي</label>
+              <textarea id="heroDescription"></textarea>
+            </div>
+            <div class="field">
+              <label>نص الزر الأساسي</label>
+              <input id="heroPrimaryText" type="text" />
+            </div>
+            <div class="field">
+              <label>رابط الزر الأساسي</label>
+              <input id="heroPrimaryUrl" type="text" />
+            </div>
+            <div class="field">
+              <label>نص الزر الثانوي</label>
+              <input id="heroSecondaryText" type="text" />
+            </div>
+            <div class="field">
+              <label>رابط الزر الثانوي</label>
+              <input id="heroSecondaryUrl" type="text" />
+            </div>
+          </div>
+
+          <div class="preview-card">
+            <div class="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="p-header">
+                  <div class="p-logo" id="previewLogo"></div>
+                  <div>
+                    <div style="font-weight:900;font-size:.88rem" id="previewTitle"></div>
+                    <div style="font-size:.68rem;color:#d4af37" id="previewSubtitle"></div>
+                  </div>
+                </div>
+                <div class="p-ticker" id="previewTicker">عاجل: معاينة شريط الأخبار</div>
+                <div class="p-content">
+                  <div class="chip-row">
+                    <span class="p-chip">الكل</span>
+                    <span class="p-chip">عربي</span>
+                    <span class="p-chip">دولي</span>
+                  </div>
+                  <div class="p-banner" id="previewHero">معاينة البنر الرئيسي</div>
+                  <div class="p-card">
+                    <div class="p-img"></div>
+                    <div style="font-weight:800;font-size:.78rem">بطاقة خبر في شكل متوافق مع iPhone</div>
+                    <div style="font-size:.68rem;color:#9db0ca;line-height:1.8">المعاينة تساعدك تشوف الشكل النهائي بسرعة قبل فتح الموقع.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="theme">
+        <div class="panel-head">
+          <div>
+            <h3>الألوان والخطوط</h3>
+            <p>تحكم كامل في ألوان الواجهة، الخط الرئيسي، وتباين العناصر.</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>لون الخلفية</label><input id="themeBg" type="color" /></div>
+          <div class="field"><label>الخلفية الثانوية</label><input id="themeBg2" type="color" /></div>
+          <div class="field"><label>لون البطاقات</label><input id="themeCard" type="color" /></div>
+          <div class="field"><label>لون الحدود</label><input id="themeBorder" type="color" /></div>
+          <div class="field"><label>اللون الأساسي</label><input id="themeAccent" type="color" /></div>
+          <div class="field"><label>اللون الذهبي/الثانوي</label><input id="themeAccent2" type="color" /></div>
+          <div class="field"><label>لون الإبراز</label><input id="themeHighlight" type="color" /></div>
+          <div class="field"><label>لون النص</label><input id="themeText" type="color" /></div>
+          <div class="field"><label>لون النصوص الثانوية</label><input id="themeMuted" type="color" /></div>
+          <div class="field full">
+            <label>الخط الرئيسي</label>
+            <select id="themeFont">
+              <option value="Cairo">Cairo</option>
+              <option value="Tajawal">Tajawal</option>
+              <option value="Changa">Changa</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="sources">
+        <div class="panel-head">
+          <div>
+            <h3>إدارة المصادر</h3>
+            <p>إضافة مصدر جديد، تعديل مصدر قائم، تعطيله أو حذفه نهائياً.</p>
+          </div>
+          <div class="chip-row"><span class="chip" id="sourcesCounter">0 مصدر</span></div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>معرّف المصدر ID</label><input id="srcId" type="text" placeholder="مثال: reuters" /></div>
+          <div class="field"><label>اسم المصدر</label><input id="srcName" type="text" /></div>
+          <div class="field"><label>لون المصدر</label><input id="srcColor" type="color" /></div>
+          <div class="field"><label>التصنيف</label><select id="srcCat"><option value="arabic">عربي</option><option value="intl">دولي</option></select></div>
+          <div class="field"><label>اللغة</label><select id="srcLang"><option value="ar">ar</option><option value="en">en</option></select></div>
+          <div class="field"><label>الحالة</label><select id="srcActive"><option value="true">مفعل</option><option value="false">متوقف</option></select></div>
+          <div class="field"><label>رابط الموقع</label><input id="srcSite" type="url" /></div>
+          <div class="field full"><label>روابط RSS</label><textarea id="srcFeeds" placeholder="ضع كل رابط في سطر مستقل"></textarea></div>
+        </div>
+        <div class="inline-actions" style="margin-top:14px">
+          <button class="btn-main" id="saveSourceBtn" type="button"><i class="fas fa-plus"></i> إضافة / تحديث المصدر</button>
+          <button class="ghost" id="resetSourceFormBtn" type="button"><i class="fas fa-rotate-left"></i> تفريغ الحقول</button>
+        </div>
+        <div class="list" id="sourcesList" style="margin-top:18px"></div>
+      </section>
+
+      <section class="panel" id="ticker">
+        <div class="panel-head">
+          <div>
+            <h3>شريط الأخبار</h3>
+            <p>التحكم في عنوان الشريط واختيار نمط العرض من الأخبار أو من عناصر يدوية.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>عنوان الشريط</label><input id="tickerLabelInput" type="text" /></div>
+          <div class="field"><label>نمط الشريط</label><select id="tickerMode"><option value="news">من الأخبار الحالية</option><option value="manual">يدوي</option></select></div>
+          <div class="field full"><label>العناصر اليدوية</label><textarea id="tickerItems" placeholder="كل عنصر في سطر منفصل"></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="banners">
+        <div class="panel-head">
+          <div>
+            <h3>إدارة البنرات</h3>
+            <p>إضافة بنرات جديدة مع صور وروابط، وتفعيل أو تعطيل أي بنر.</p>
+          </div>
+          <div class="chip-row"><span class="chip" id="bannersCounter">0 بنر</span></div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>عنوان البنر</label><input id="bannerTitle" type="text" /></div>
+          <div class="field"><label>رابط الصورة</label><input id="bannerImage" type="url" /></div>
+          <div class="field"><label>الرابط عند الضغط</label><input id="bannerUrl" type="text" /></div>
+          <div class="field"><label>الحالة</label><select id="bannerActive"><option value="true">مفعل</option><option value="false">متوقف</option></select></div>
+        </div>
+        <div class="inline-actions" style="margin-top:14px">
+          <button class="btn-main" id="saveBannerBtn" type="button"><i class="fas fa-image"></i> إضافة / تحديث البنر</button>
+          <button class="ghost" id="resetBannerFormBtn" type="button"><i class="fas fa-rotate-left"></i> تفريغ الحقول</button>
+        </div>
+        <div class="list" id="bannersList" style="margin-top:18px"></div>
+      </section>
+
+      <section class="panel" id="links">
+        <div class="panel-head">
+          <div>
+            <h3>الروابط والأدوات</h3>
+            <p>إدارة البطاقات التفاعلية مثل Flightradar24 أو أي روابط تريد إضافتها.</p>
+          </div>
+          <div class="chip-row"><span class="chip" id="toolsCounter">0 أداة</span></div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>اسم الرابط / الأداة</label><input id="toolTitle" type="text" /></div>
+          <div class="field"><label>الوصف</label><input id="toolDescription" type="text" /></div>
+          <div class="field"><label>الأيقونة FontAwesome</label><input id="toolIcon" type="text" placeholder="fa-link" /></div>
+          <div class="field"><label>الرابط</label><input id="toolUrl" type="url" /></div>
+          <div class="field"><label>الحالة</label><select id="toolActive"><option value="true">مفعل</option><option value="false">متوقف</option></select></div>
+        </div>
+        <div class="inline-actions" style="margin-top:14px">
+          <button class="btn-main" id="saveToolBtn" type="button"><i class="fas fa-link"></i> إضافة / تحديث الأداة</button>
+          <button class="ghost" id="resetToolFormBtn" type="button"><i class="fas fa-rotate-left"></i> تفريغ الحقول</button>
+        </div>
+        <div class="list" id="toolsList" style="margin-top:18px"></div>
+      </section>
+
+      <section class="panel" id="contacts">
+        <div class="panel-head">
+          <div>
+            <h3>معلومات المتصلين</h3>
+            <p>تحرير الهاتف، الواتساب، البريد الإلكتروني، والعنوان الظاهر في الموقع.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>رقم الهاتف</label><input id="contactPhone" type="text" /></div>
+          <div class="field"><label>رابط واتساب</label><input id="contactWhatsapp" type="text" /></div>
+          <div class="field"><label>البريد الإلكتروني</label><input id="contactEmail" type="email" /></div>
+          <div class="field"><label>العنوان</label><input id="contactAddress" type="text" /></div>
+        </div>
+      </section>
+
+      <section class="panel" id="backup">
+        <div class="panel-head">
+          <div>
+            <h3>نسخ احتياطي واستعادة</h3>
+            <p>تصدير إعدادات الموقع كملف JSON أو استيرادها مرة أخرى أو إعادة الضبط الافتراضي.</p>
+          </div>
+        </div>
+        <div class="inline-actions">
+          <button class="success" id="exportBtn" type="button"><i class="fas fa-file-export"></i> تصدير الإعدادات</button>
+          <label class="ghost" for="importInput"><i class="fas fa-file-import"></i> استيراد ملف إعدادات</label>
+          <input class="hidden" id="importInput" type="file" accept="application/json" />
+          <button class="danger" id="resetAllBtn" type="button"><i class="fas fa-trash-arrow-up"></i> إعادة الضبط الافتراضي</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'worldNewsDashboardConfig_v2';
+    const DEFAULT_CONFIG = {
+      site: { title:'مرصد الأخبار العالمية', subtitle:'World News Observatory · أخبار مباشرة', footerText:'منصة أخبار مرنة تدعم الإدارة الكاملة من خلال لوحة تحكم مستقلة.', logoUrl:'', fallbackLetter:'م' },
+      theme: { bg:'#0a1628', bg2:'#0d1e35', card:'#112240', border:'#1e3a5f', accent:'#c8102e', accent2:'#d4af37', highlight:'#00d4ff', text:'#e8eaf0', muted:'#8892a4', font:'Cairo' },
+      ticker: { label:'عاجل', mode:'news', manualItems:['مرحبا بك في مرصد الأخبار العالمية','يمكنك إدارة الشريط بالكامل من لوحة التحكم','التصميم متوافق مع شاشات الآيفون والأجهزة المحمولة'] },
+      hero: { label:'مركز المتابعة', title:'تابع الأخبار العالمية في واجهة سريعة ومرنة', description:'نسخة مطورة تدعم البنرات، لوحة التحكم، تغيير الهوية، وإدارة المصادر والروابط والألوان والخطوط بسهولة.', primaryText:'فتح لوحة التحكم', primaryUrl:'admin.html', secondaryText:'استعراض الأخبار', secondaryUrl:'#featuredSection' },
+      contacts: { phone:'+966500000000', whatsapp:'https://wa.me/966500000000', email:'news@example.com', address:'الرياض - المملكة العربية السعودية' },
+      tools: [
+        {title:'Flightradar24', description:'متابعة حركة الطيران لحظة بلحظة', icon:'fa-plane', url:'https://www.flightradar24.com', active:true},
+        {title:'Liveuamap', description:'خرائط حية للأحداث والنزاعات', icon:'fa-map-location-dot', url:'https://liveuamap.com', active:true}
+      ],
+      banners: [
+        {title:'لوحة تحكم شاملة', image:'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80', url:'admin.html', active:true},
+        {title:'إدارة الألوان والخطوط', image:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80', url:'admin.html#theme', active:true},
+        {title:'إدارة المصادر والروابط', image:'https://images.unsplash.com/photo-1504711331083-9c895941bf81?auto=format&fit=crop&w=1200&q=80', url:'admin.html#sources', active:true},
+        {title:'متوافق مع iPhone', image:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80', url:'admin.html', active:true}
+      ],
+      sources: [
+        {id:'aljazeera', name:'الجزيرة نت', color:'#e8282b', cat:'arabic', lang:'ar', active:true, feeds:['https://www.aljazeera.net/xml/rss2.0.xml'], site:'https://www.aljazeera.net'},
+        {id:'skynews', name:'سكاي نيوز عربية', color:'#00a3e0', cat:'arabic', lang:'ar', active:true, feeds:['https://www.skynewsarabia.com/rss.xml'], site:'https://www.skynewsarabia.com'},
+        {id:'bbc', name:'BBC عربي', color:'#bb1919', cat:'arabic', lang:'ar', active:true, feeds:['https://feeds.bbci.co.uk/arabic/rss.xml'], site:'https://www.bbc.com/arabic'},
+        {id:'cnn', name:'CNN بالعربية', color:'#cc0000', cat:'arabic', lang:'ar', active:true, feeds:['https://arabic.cnn.com/api/v1/rss/rss.xml'], site:'https://arabic.cnn.com'},
+        {id:'alarabiya', name:'العربية نت', color:'#005ea5', cat:'arabic', lang:'ar', active:true, feeds:['https://www.alarabiya.net/rss.xml'], site:'https://www.alarabiya.net'},
+        {id:'france24', name:'فرانس 24', color:'#003082', cat:'arabic', lang:'ar', active:true, feeds:['https://www.france24.com/ar/rss'], site:'https://www.france24.com/ar'},
+        {id:'reuters', name:'رويترز', color:'#ff671f', cat:'intl', lang:'en', active:true, feeds:['https://feeds.reuters.com/reuters/topNews'], site:'https://www.reuters.com'},
+        {id:'apnews', name:'أسوشيتد برس', color:'#d10000', cat:'intl', lang:'en', active:true, feeds:['https://apnews.com/index.rss'], site:'https://apnews.com'},
+        {id:'guardian', name:'ذا غارديان', color:'#052962', cat:'intl', lang:'en', active:true, feeds:['https://www.theguardian.com/world/rss'], site:'https://www.theguardian.com'},
+        {id:'bloomberg', name:'بلومبيرغ', color:'#1a1a1a', cat:'intl', lang:'en', active:true, feeds:['https://feeds.bloomberg.com/markets/news.rss'], site:'https://www.bloomberg.com'}
+      ]
+    };
+
+    function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+    function merge(base, custom){
+      for(const key in custom){
+        if(custom[key] && typeof custom[key] === 'object' && !Array.isArray(custom[key]) && base[key]) base[key] = merge(base[key], custom[key]);
+        else base[key] = custom[key];
+      }
+      return base;
+    }
+    function loadConfig(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return clone(DEFAULT_CONFIG);
+        return merge(clone(DEFAULT_CONFIG), JSON.parse(raw));
+      }catch(e){ return clone(DEFAULT_CONFIG); }
+    }
+    function saveConfig(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+      setStatus('تم حفظ التعديلات بنجاح', true);
+      renderPreview();
+      renderCollections();
+      renderBrand();
+    }
+
+    let config = loadConfig();
+    let editSourceIndex = null;
+    let editBannerIndex = null;
+    let editToolIndex = null;
+
+    function qs(id){ return document.getElementById(id); }
+    function setStatus(text, ok=false){
+      const el = qs('saveStatus');
+      el.textContent = text;
+      el.style.background = ok ? 'rgba(34,197,94,.12)' : 'rgba(245,158,11,.12)';
+      el.style.color = ok ? '#bbf7d0' : '#fde68a';
+      el.style.borderColor = ok ? 'rgba(34,197,94,.24)' : 'rgba(245,158,11,.24)';
+    }
+
+    function applyInputs(){
+      qs('siteTitle').value = config.site.title || '';
+      qs('siteSubtitle').value = config.site.subtitle || '';
+      qs('siteFooterText').value = config.site.footerText || '';
+      qs('siteLogoUrl').value = config.site.logoUrl || '';
+      qs('siteFallbackLetter').value = config.site.fallbackLetter || 'م';
+      qs('heroTitle').value = config.hero.title || '';
+      qs('heroLabel').value = config.hero.label || '';
+      qs('heroDescription').value = config.hero.description || '';
+      qs('heroPrimaryText').value = config.hero.primaryText || '';
+      qs('heroPrimaryUrl').value = config.hero.primaryUrl || '';
+      qs('heroSecondaryText').value = config.hero.secondaryText || '';
+      qs('heroSecondaryUrl').value = config.hero.secondaryUrl || '';
+
+      qs('themeBg').value = config.theme.bg;
+      qs('themeBg2').value = config.theme.bg2;
+      qs('themeCard').value = config.theme.card;
+      qs('themeBorder').value = config.theme.border;
+      qs('themeAccent').value = config.theme.accent;
+      qs('themeAccent2').value = config.theme.accent2;
+      qs('themeHighlight').value = config.theme.highlight;
+      qs('themeText').value = config.theme.text;
+      qs('themeMuted').value = config.theme.muted;
+      qs('themeFont').value = config.theme.font;
+
+      qs('tickerLabelInput').value = config.ticker.label || '';
+      qs('tickerMode').value = config.ticker.mode || 'news';
+      qs('tickerItems').value = (config.ticker.manualItems || []).join('\n');
+
+      qs('contactPhone').value = config.contacts.phone || '';
+      qs('contactWhatsapp').value = config.contacts.whatsapp || '';
+      qs('contactEmail').value = config.contacts.email || '';
+      qs('contactAddress').value = config.contacts.address || '';
+    }
+
+    function bindLiveInputs(){
+      [
+        'siteTitle','siteSubtitle','siteFooterText','siteLogoUrl','siteFallbackLetter',
+        'heroTitle','heroLabel','heroDescription','heroPrimaryText','heroPrimaryUrl','heroSecondaryText','heroSecondaryUrl',
+        'themeBg','themeBg2','themeCard','themeBorder','themeAccent','themeAccent2','themeHighlight','themeText','themeMuted','themeFont',
+        'tickerLabelInput','tickerMode','tickerItems','contactPhone','contactWhatsapp','contactEmail','contactAddress'
+      ].forEach(id => qs(id).addEventListener('input', syncFromInputs));
+      qs('tickerMode').addEventListener('change', syncFromInputs);
+      qs('themeFont').addEventListener('change', syncFromInputs);
+    }
+
+    function syncFromInputs(){
+      config.site.title = qs('siteTitle').value.trim();
+      config.site.subtitle = qs('siteSubtitle').value.trim();
+      config.site.footerText = qs('siteFooterText').value.trim();
+      config.site.logoUrl = qs('siteLogoUrl').value.trim();
+      config.site.fallbackLetter = qs('siteFallbackLetter').value.trim() || 'م';
+
+      config.hero.title = qs('heroTitle').value.trim();
+      config.hero.label = qs('heroLabel').value.trim();
+      config.hero.description = qs('heroDescription').value.trim();
+      config.hero.primaryText = qs('heroPrimaryText').value.trim();
+      config.hero.primaryUrl = qs('heroPrimaryUrl').value.trim();
+      config.hero.secondaryText = qs('heroSecondaryText').value.trim();
+      config.hero.secondaryUrl = qs('heroSecondaryUrl').value.trim();
+
+      config.theme.bg = qs('themeBg').value;
+      config.theme.bg2 = qs('themeBg2').value;
+      config.theme.card = qs('themeCard').value;
+      config.theme.border = qs('themeBorder').value;
+      config.theme.accent = qs('themeAccent').value;
+      config.theme.accent2 = qs('themeAccent2').value;
+      config.theme.highlight = qs('themeHighlight').value;
+      config.theme.text = qs('themeText').value;
+      config.theme.muted = qs('themeMuted').value;
+      config.theme.font = qs('themeFont').value;
+
+      config.ticker.label = qs('tickerLabelInput').value.trim();
+      config.ticker.mode = qs('tickerMode').value;
+      config.ticker.manualItems = qs('tickerItems').value.split('\n').map(v => v.trim()).filter(Boolean);
+
+      config.contacts.phone = qs('contactPhone').value.trim();
+      config.contacts.whatsapp = qs('contactWhatsapp').value.trim();
+      config.contacts.email = qs('contactEmail').value.trim();
+      config.contacts.address = qs('contactAddress').value.trim();
+
+      setStatus('هناك تعديلات غير محفوظة');
+      renderPreview();
+      renderBrand();
+    }
+
+    function renderBrand(){
+      qs('brandTitle').textContent = config.site.title || 'مرصد الأخبار العالمية';
+      const logo = qs('brandLogo');
+      logo.innerHTML = config.site.logoUrl
+        ? `<img src="${escape(config.site.logoUrl)}" alt="logo">`
+        : `<span>${escape(config.site.fallbackLetter || 'م')}</span>`;
+      document.title = `لوحة التحكم - ${config.site.title || 'مرصد الأخبار العالمية'}`;
+      document.documentElement.style.setProperty('--font', `'${config.theme.font}', sans-serif`);
+      document.documentElement.style.setProperty('--accent', config.theme.accent);
+      document.documentElement.style.setProperty('--accent2', config.theme.accent2);
+      document.documentElement.style.setProperty('--card', config.theme.card);
+      document.documentElement.style.setProperty('--bg2', config.theme.bg2);
+      document.documentElement.style.setProperty('--text', config.theme.text);
+      document.documentElement.style.setProperty('--muted', config.theme.muted);
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', config.theme.bg);
+    }
+
+    function renderPreview(){
+      qs('previewTitle').textContent = config.site.title || 'اسم الموقع';
+      qs('previewSubtitle').textContent = config.site.subtitle || 'الوصف';
+      qs('previewTicker').textContent = `${config.ticker.label || 'عاجل'}: ${(config.ticker.manualItems?.[0] || 'معاينة شريط الأخبار')}`;
+      qs('previewHero').textContent = config.hero.title || 'معاينة البنر الرئيسي';
+      const logo = qs('previewLogo');
+      logo.style.background = config.theme.accent;
+      logo.innerHTML = config.site.logoUrl ? `<img src="${escape(config.site.logoUrl)}" alt="logo">` : `<span style="font-weight:900">${escape(config.site.fallbackLetter || 'م')}</span>`;
+      document.querySelector('.phone-screen').style.background = config.theme.bg;
+      document.querySelector('.p-header').style.background = config.theme.bg2;
+      document.querySelector('.p-ticker').style.background = config.theme.accent;
+      document.querySelectorAll('.p-chip').forEach(chip => { chip.style.background = config.theme.bg2; chip.style.borderColor = config.theme.border; });
+      document.querySelector('.p-banner').style.background = `linear-gradient(135deg, ${config.theme.bg2}, ${config.theme.card})`;
+      document.querySelector('.p-card').style.background = config.theme.card;
+      document.querySelector('.p-card').style.borderColor = config.theme.border;
+      document.querySelectorAll('.phone-screen, .p-card, .p-banner, .p-chip, .p-header, .p-ticker').forEach(el => el.style.color = config.theme.text);
+    }
+
+    function renderCollections(){
+      renderSources();
+      renderBanners();
+      renderTools();
+    }
+
+    function renderSources(){
+      qs('sourcesCounter').textContent = `${config.sources.length} مصدر`;
+      qs('sourcesList').innerHTML = config.sources.map((src, idx) => `
+        <div class="item">
+          <div class="item-top">
+            <div class="item-title">
+              <span class="dot" style="background:${escape(src.color)}"></span>
+              <div>
+                <h4>${escape(src.name)}</h4>
+                <p>ID: ${escape(src.id)} • ${src.cat === 'arabic' ? 'عربي' : 'دولي'} • ${escape(src.lang)} • ${src.active ? 'مفعل' : 'متوقف'}</p>
+              </div>
+            </div>
+            <div class="item-actions">
+              <button class="edit-btn" data-action="edit-source" data-index="${idx}"><i class="fas fa-pen"></i> تعديل</button>
+              <button class="toggle-btn" data-action="toggle-source" data-index="${idx}">${src.active ? 'إيقاف' : 'تفعيل'}</button>
+              <button class="delete-btn" data-action="delete-source" data-index="${idx}">حذف</button>
+            </div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>الموقع</strong><span>${escape(src.site || '-')}</span></div>
+            <div class="mini-box"><strong>روابط RSS</strong><span>${escape((src.feeds || []).join(' | ') || '-')}</span></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBanners(){
+      qs('bannersCounter').textContent = `${config.banners.length} بنر`;
+      qs('bannersList').innerHTML = config.banners.map((banner, idx) => `
+        <div class="item">
+          <div class="item-top">
+            <div class="item-title">
+              <div>
+                <h4>${escape(banner.title)}</h4>
+                <p>${banner.active ? 'مفعل' : 'متوقف'} • ${escape(banner.url || '#')}</p>
+              </div>
+            </div>
+            <div class="item-actions">
+              <button class="edit-btn" data-action="edit-banner" data-index="${idx}">تعديل</button>
+              <button class="toggle-btn" data-action="toggle-banner" data-index="${idx}">${banner.active ? 'إيقاف' : 'تفعيل'}</button>
+              <button class="delete-btn" data-action="delete-banner" data-index="${idx}">حذف</button>
+            </div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>الصورة</strong><span>${escape(banner.image || '-')}</span></div>
+            <div class="mini-box"><strong>الرابط</strong><span>${escape(banner.url || '-')}</span></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTools(){
+      qs('toolsCounter').textContent = `${config.tools.length} أداة`;
+      qs('toolsList').innerHTML = config.tools.map((tool, idx) => `
+        <div class="item">
+          <div class="item-top">
+            <div class="item-title">
+              <div>
+                <h4>${escape(tool.title)}</h4>
+                <p>${escape(tool.description || '')} • ${tool.active ? 'مفعل' : 'متوقف'}</p>
+              </div>
+            </div>
+            <div class="item-actions">
+              <button class="edit-btn" data-action="edit-tool" data-index="${idx}">تعديل</button>
+              <button class="toggle-btn" data-action="toggle-tool" data-index="${idx}">${tool.active ? 'إيقاف' : 'تفعيل'}</button>
+              <button class="delete-btn" data-action="delete-tool" data-index="${idx}">حذف</button>
+            </div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>الأيقونة</strong><span>${escape(tool.icon || '-')}</span></div>
+            <div class="mini-box"><strong>الرابط</strong><span>${escape(tool.url || '-')}</span></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function resetSourceForm(){ editSourceIndex = null; qs('srcId').value=''; qs('srcName').value=''; qs('srcColor').value='#c8102e'; qs('srcCat').value='arabic'; qs('srcLang').value='ar'; qs('srcActive').value='true'; qs('srcSite').value=''; qs('srcFeeds').value=''; }
+    function resetBannerForm(){ editBannerIndex = null; qs('bannerTitle').value=''; qs('bannerImage').value=''; qs('bannerUrl').value=''; qs('bannerActive').value='true'; }
+    function resetToolForm(){ editToolIndex = null; qs('toolTitle').value=''; qs('toolDescription').value=''; qs('toolIcon').value='fa-link'; qs('toolUrl').value=''; qs('toolActive').value='true'; }
+
+    function upsertSource(){
+      const src = {
+        id: qs('srcId').value.trim(),
+        name: qs('srcName').value.trim(),
+        color: qs('srcColor').value,
+        cat: qs('srcCat').value,
+        lang: qs('srcLang').value,
+        active: qs('srcActive').value === 'true',
+        site: qs('srcSite').value.trim(),
+        feeds: qs('srcFeeds').value.split('\n').map(v => v.trim()).filter(Boolean)
+      };
+      if(!src.id || !src.name || !src.site || !src.feeds.length){ alert('من فضلك أكمل بيانات المصدر الأساسية'); return; }
+      const existingIndex = config.sources.findIndex((item, idx) => item.id === src.id && idx !== editSourceIndex);
+      if(existingIndex !== -1){ alert('هذا المعرّف مستخدم بالفعل'); return; }
+      if(editSourceIndex !== null) config.sources[editSourceIndex] = src;
+      else config.sources.push(src);
+      resetSourceForm(); renderSources(); setStatus('تم تعديل المصادر ولم يتم الحفظ بعد');
+    }
+
+    function upsertBanner(){
+      const banner = { title: qs('bannerTitle').value.trim(), image: qs('bannerImage').value.trim(), url: qs('bannerUrl').value.trim(), active: qs('bannerActive').value === 'true' };
+      if(!banner.title || !banner.image){ alert('العنوان ورابط الصورة مطلوبان'); return; }
+      if(editBannerIndex !== null) config.banners[editBannerIndex] = banner; else config.banners.push(banner);
+      resetBannerForm(); renderBanners(); setStatus('تم تعديل البنرات ولم يتم الحفظ بعد');
+    }
+
+    function upsertTool(){
+      const tool = { title: qs('toolTitle').value.trim(), description: qs('toolDescription').value.trim(), icon: qs('toolIcon').value.trim() || 'fa-link', url: qs('toolUrl').value.trim(), active: qs('toolActive').value === 'true' };
+      if(!tool.title || !tool.url){ alert('اسم الأداة والرابط مطلوبان'); return; }
+      if(editToolIndex !== null) config.tools[editToolIndex] = tool; else config.tools.push(tool);
+      resetToolForm(); renderTools(); setStatus('تم تعديل الروابط ولم يتم الحفظ بعد');
+    }
+
+    function attachListActions(){
+      document.body.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if(!btn) return;
+        const index = Number(btn.dataset.index);
+        const action = btn.dataset.action;
+
+        if(action === 'edit-source'){
+          const src = config.sources[index]; editSourceIndex = index;
+          qs('srcId').value=src.id; qs('srcName').value=src.name; qs('srcColor').value=src.color; qs('srcCat').value=src.cat; qs('srcLang').value=src.lang; qs('srcActive').value=String(src.active); qs('srcSite').value=src.site; qs('srcFeeds').value=(src.feeds||[]).join('\n');
+          location.hash = '#sources';
+        }
+        if(action === 'toggle-source'){ config.sources[index].active = !config.sources[index].active; renderSources(); setStatus('تم تعديل حالة مصدر ولم يتم الحفظ بعد'); }
+        if(action === 'delete-source'){ if(confirm('حذف هذا المصدر؟')){ config.sources.splice(index,1); renderSources(); setStatus('تم حذف مصدر ولم يتم الحفظ بعد'); } }
+
+        if(action === 'edit-banner'){
+          const banner = config.banners[index]; editBannerIndex = index;
+          qs('bannerTitle').value=banner.title; qs('bannerImage').value=banner.image; qs('bannerUrl').value=banner.url; qs('bannerActive').value=String(banner.active); location.hash = '#banners';
+        }
+        if(action === 'toggle-banner'){ config.banners[index].active = !config.banners[index].active; renderBanners(); setStatus('تم تعديل حالة بنر ولم يتم الحفظ بعد'); }
+        if(action === 'delete-banner'){ if(confirm('حذف هذا البنر؟')){ config.banners.splice(index,1); renderBanners(); setStatus('تم حذف بنر ولم يتم الحفظ بعد'); } }
+
+        if(action === 'edit-tool'){
+          const tool = config.tools[index]; editToolIndex = index;
+          qs('toolTitle').value=tool.title; qs('toolDescription').value=tool.description; qs('toolIcon').value=tool.icon; qs('toolUrl').value=tool.url; qs('toolActive').value=String(tool.active); location.hash = '#links';
+        }
+        if(action === 'toggle-tool'){ config.tools[index].active = !config.tools[index].active; renderTools(); setStatus('تم تعديل حالة أداة ولم يتم الحفظ بعد'); }
+        if(action === 'delete-tool'){ if(confirm('حذف هذه الأداة؟')){ config.tools.splice(index,1); renderTools(); setStatus('تم حذف أداة ولم يتم الحفظ بعد'); } }
+      });
+    }
+
+    function exportConfig(){
+      const blob = new Blob([JSON.stringify(config, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'news-dashboard-config.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importConfig(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const data = JSON.parse(reader.result);
+          config = merge(clone(DEFAULT_CONFIG), data);
+          applyInputs(); renderPreview(); renderCollections(); renderBrand(); saveConfig(); resetSourceForm(); resetBannerForm(); resetToolForm();
+        }catch(e){ alert('ملف غير صالح'); }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAll(){
+      if(!confirm('هل تريد إعادة جميع الإعدادات للوضع الافتراضي؟')) return;
+      config = clone(DEFAULT_CONFIG);
+      applyInputs(); renderPreview(); renderCollections(); renderBrand(); resetSourceForm(); resetBannerForm(); resetToolForm(); saveConfig();
+    }
+
+    function setupLogoUploader(){
+      qs('logoUploader').addEventListener('change', e => {
+        const file = e.target.files?.[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          config.site.logoUrl = reader.result;
+          qs('siteLogoUrl').value = reader.result;
+          renderBrand(); renderPreview(); setStatus('تم تحميل شعار جديد ولم يتم الحفظ بعد');
+        };
+        reader.readAsDataURL(file);
+      });
+      qs('removeLogoBtn').addEventListener('click', () => {
+        config.site.logoUrl = '';
+        qs('siteLogoUrl').value = '';
+        renderBrand(); renderPreview(); setStatus('تم حذف الشعار ولم يتم الحفظ بعد');
+      });
+    }
+
+    function syncNav(){
+      const links = [...document.querySelectorAll('.nav a')];
+      const sections = links.map(link => document.querySelector(link.getAttribute('href')));
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+          }
+        });
+      }, {threshold:.35});
+      sections.forEach(sec => sec && observer.observe(sec));
+    }
+
+    function escape(str){ return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+    qs('saveAllBtn').addEventListener('click', () => { syncFromInputs(); saveConfig(); });
+    qs('syncPreviewBtn').addEventListener('click', () => { syncFromInputs(); renderPreview(); renderBrand(); setStatus('تم تحديث المعاينة'); });
+    qs('saveSourceBtn').addEventListener('click', upsertSource);
+    qs('resetSourceFormBtn').addEventListener('click', resetSourceForm);
+    qs('saveBannerBtn').addEventListener('click', upsertBanner);
+    qs('resetBannerFormBtn').addEventListener('click', resetBannerForm);
+    qs('saveToolBtn').addEventListener('click', upsertTool);
+    qs('resetToolFormBtn').addEventListener('click', resetToolForm);
+    qs('exportBtn').addEventListener('click', exportConfig);
+    qs('importInput').addEventListener('change', e => e.target.files?.[0] && importConfig(e.target.files[0]));
+    qs('resetAllBtn').addEventListener('click', resetAll);
+
+    attachListActions();
+    setupLogoUploader();
+    bindLiveInputs();
+    applyInputs();
+    renderBrand();
+    renderPreview();
+    renderCollections();
+    resetSourceForm();
+    resetBannerForm();
+    resetToolForm();
+    syncNav();
+  </script>
+</body>
+</html>
