@@ -3,441 +3,510 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>مرصد الأخبار العالمية</title>
+  <meta name="description" content="منصة أخبار مرنة تغطي الأخبار العالمية في واجهة سريعة ومتوافقة مع الجوال." />
   <meta name="theme-color" content="#0a1628" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>لوحة التحكم - مرصد الأخبار العالمية</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Changa:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Changa:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
   <style>
     :root{
-      --bg:#091321;--bg2:#0f1d31;--card:#112240;--card2:#132844;--border:#213d60;
-      --text:#ecf2ff;--muted:#90a1bc;--accent:#c8102e;--accent2:#d4af37;--ok:#22c55e;--warn:#f59e0b;
-      --radius:18px;--font:'Cairo',sans-serif;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)
+      --bg:#0a1628;--bg2:#0d1e35;--card:#112240;--border:#1e3a5f;
+      --accent:#c8102e;--accent2:#d4af37;--highlight:#00d4ff;
+      --text:#e8eaf0;--muted:#8892a4;--radius:14px;
+      --header-h:74px;--ticker-h:34px;--filters-h:58px;
+      --font:'Cairo',sans-serif;
+      --safe-top:env(safe-area-inset-top,0px);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
     }
+
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:var(--font);background:linear-gradient(180deg,#07111d,#0a1628);color:var(--text);min-height:100vh}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden
+    }
     a{text-decoration:none;color:inherit}
-    input,select,textarea,button{font-family:var(--font)}
     img{max-width:100%}
-    ::-webkit-scrollbar{width:7px;height:7px}
+    button,input,select,textarea{font-family:var(--font)}
+    ::-webkit-scrollbar{width:6px;height:6px}
     ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px}
 
-    .page{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
-    .sidebar{
-      position:sticky;top:0;height:100vh;padding:calc(18px + var(--safe-top)) 16px calc(18px + var(--safe-bottom));
-      background:rgba(7,16,28,.9);backdrop-filter:blur(14px);border-left:1px solid rgba(255,255,255,.06);overflow:auto
+    header{
+      position:fixed;top:0;right:0;left:0;z-index:1100;
+      height:calc(var(--header-h) + var(--safe-top));
+      padding-top:var(--safe-top);
+      background:linear-gradient(135deg,#071120,#10223c,#071120);
+      border-bottom:2px solid var(--accent);
+      display:flex;align-items:center;justify-content:space-between;
+      padding-inline:18px;
+      box-shadow:0 8px 34px rgba(0,0,0,.35)
     }
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    .brand-logo{width:52px;height:52px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)}
-    .brand-logo img{width:100%;height:100%;object-fit:cover}
-    .brand-logo span{font-weight:900;font-size:1.35rem}
-    .brand h1{font-size:1rem;margin-bottom:4px}
-    .brand p{font-size:.72rem;color:var(--muted);line-height:1.7}
 
-    .nav{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-    .nav a{
-      padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid transparent;display:flex;align-items:center;gap:10px;font-weight:700;color:#d8e3f6
+    .logo{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo-media{
+      width:50px;height:50px;border-radius:16px;background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;
+      overflow:hidden;flex-shrink:0;box-shadow:0 6px 18px rgba(0,0,0,.25)
     }
-    .nav a:hover,.nav a.active{background:rgba(200,16,46,.15);border-color:rgba(200,16,46,.35)}
-    .side-actions{display:grid;gap:10px;margin-top:20px}
-    .side-actions button,.side-actions a{
-      min-height:44px;border-radius:14px;border:none;cursor:pointer;padding:0 14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px
+    .logo-media img{width:100%;height:100%;object-fit:cover}
+    .logo-fallback{font-size:1.4rem;font-weight:900;color:#fff}
+    .logo-text{min-width:0}
+    .logo-title{font-size:1.2rem;font-weight:900;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .logo-sub{font-size:.72rem;color:var(--accent2);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    .hdr-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .pill-live,.hdr-btn{
+      min-height:42px;padding:0 14px;border-radius:12px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:.82rem
     }
-    .btn-main{background:var(--accent);color:#fff}
-    .btn-soft{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#fff}
-    .btn-ok{background:rgba(34,197,94,.18);color:#bbf7d0;border:1px solid rgba(34,197,94,.25)}
+    .pill-live{background:rgba(200,16,46,.18);border:1px solid rgba(200,16,46,.4);color:#fff}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:#ff5b72;animation:blink 1s infinite}
+    .hdr-btn{background:var(--accent);border:none;color:#fff;cursor:pointer;transition:.2s}
+    .hdr-btn:hover{filter:brightness(1.05)}
+    .hdr-btn.spin i{animation:rotate 1s linear infinite}
 
-    .content{padding:calc(18px + var(--safe-top)) 18px calc(18px + var(--safe-bottom));display:grid;gap:18px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-    .topbar h2{font-size:1.35rem}
-    .topbar p{color:var(--muted);font-size:.85rem}
-    .status-pill{padding:10px 14px;border-radius:999px;background:rgba(34,197,94,.12);color:#bbf7d0;border:1px solid rgba(34,197,94,.24);font-size:.8rem;font-weight:800}
-
-    .panel{
-      background:linear-gradient(180deg,rgba(17,34,64,.96),rgba(15,29,49,.96));
-      border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.22)
+    .ticker{
+      position:fixed;top:calc(var(--header-h) + var(--safe-top));right:0;left:0;z-index:1090;
+      height:var(--ticker-h);background:var(--accent);display:flex;align-items:center;overflow:hidden
     }
-    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-    .panel-head h3{font-size:1.02rem}
-    .panel-head p{font-size:.8rem;color:var(--muted)}
-
-    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-    .full{grid-column:1/-1}
-
-    .field{display:flex;flex-direction:column;gap:8px}
-    .field label{font-size:.82rem;font-weight:700;color:#dbe4f4}
-    .field input,.field textarea,.field select{
-      width:100%;background:#0a1728;border:1px solid var(--border);color:var(--text);border-radius:14px;padding:12px 13px;outline:none
+    .ticker-label{
+      height:100%;padding:0 14px;background:rgba(0,0,0,.22);display:flex;align-items:center;gap:7px;
+      color:#fff;font-size:.75rem;font-weight:900;flex-shrink:0
     }
-    .field textarea{min-height:110px;resize:vertical}
-    .field small{font-size:.72rem;color:var(--muted);line-height:1.8}
+    .ticker-wrap{flex:1;overflow:hidden;position:relative}
+    .ticker-inner{display:inline-flex;white-space:nowrap;animation:scroll 90s linear infinite}
+    .ticker-inner span{padding:0 16px;color:#fff;font-size:.8rem;font-weight:700}
+    .ticker-dot{opacity:.55}
 
-    .chip-row{display:flex;flex-wrap:wrap;gap:8px}
-    .chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);font-size:.74rem}
-
-    .list{display:grid;gap:12px}
-    .item{
-      background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:14px;display:grid;gap:12px
+    .filters{
+      position:fixed;top:calc(var(--header-h) + var(--safe-top) + var(--ticker-h));right:0;left:0;z-index:1080;
+      min-height:var(--filters-h);background:var(--bg2);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:8px;padding:8px 14px;overflow-x:auto;scrollbar-width:none
     }
-    .item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .item-title{display:flex;align-items:center;gap:10px}
-    .dot{width:14px;height:14px;border-radius:50%}
-    .item-title h4{font-size:.92rem}
-    .item-title p{font-size:.75rem;color:var(--muted);line-height:1.7}
-    .item-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .item-actions button{
-      min-height:38px;padding:0 12px;border-radius:12px;border:none;cursor:pointer;font-weight:800
+    .filters::-webkit-scrollbar{display:none}
+    .search{position:relative;flex-shrink:0}
+    .search i{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.82rem}
+    .search input{
+      width:210px;padding:10px 36px 10px 12px;background:var(--bg);color:var(--text);border-radius:12px;border:1px solid var(--border);outline:none
     }
-    .edit-btn{background:#1d4ed8;color:#fff}
-    .toggle-btn{background:rgba(245,158,11,.15);color:#fde68a;border:1px solid rgba(245,158,11,.2)}
-    .delete-btn{background:rgba(239,68,68,.14);color:#fecaca;border:1px solid rgba(239,68,68,.18)}
-    .mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
-    .mini-box{padding:10px 12px;border-radius:14px;background:#0a1728;border:1px solid rgba(255,255,255,.05)}
-    .mini-box strong{display:block;font-size:.74rem;color:var(--muted);margin-bottom:6px}
-    .mini-box span{font-size:.8rem;word-break:break-word}
-
-    .preview-wrap{display:grid;grid-template-columns:1fr 340px;gap:18px}
-    .preview-card{
-      background:#08111f;border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:14px;overflow:hidden
+    .filter-btn{
+      border:1px solid var(--border);background:var(--bg);color:var(--muted);padding:9px 14px;border-radius:999px;
+      font-size:.77rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s
     }
-    .phone{
-      background:#091321;border:8px solid #111827;border-radius:34px;padding:12px;max-width:320px;margin:auto;box-shadow:0 18px 40px rgba(0,0,0,.35)
+    .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+    main{
+      max-width:1440px;
+      margin:auto;
+      padding:calc(var(--header-h) + var(--ticker-h) + var(--filters-h) + var(--safe-top) + 18px) 14px calc(36px + var(--safe-bottom))
     }
-    .phone-notch{width:120px;height:24px;border-radius:0 0 16px 16px;background:#111827;margin:-12px auto 12px}
-    .phone-screen{border-radius:24px;overflow:hidden;background:#0a1628;color:#fff}
-    .p-header{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid rgba(255,255,255,.07);background:#10223c}
-    .p-logo{width:38px;height:38px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .p-logo img{width:100%;height:100%;object-fit:cover}
-    .p-ticker{background:var(--accent);padding:7px 10px;font-size:.72rem}
-    .p-chip{padding:6px 10px;border-radius:999px;background:#10223c;border:1px solid rgba(255,255,255,.06);font-size:.68rem}
-    .p-content{padding:12px;display:grid;gap:10px}
-    .p-banner{height:110px;border-radius:16px;background:linear-gradient(135deg,#10223c,#1a3358);display:flex;align-items:end;padding:12px;font-weight:800}
-    .p-card{border-radius:14px;background:#112240;border:1px solid rgba(255,255,255,.06);padding:12px;display:grid;gap:8px}
-    .p-img{height:80px;border-radius:12px;background:#183055}
 
-    .inline-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .inline-actions button,.inline-actions label{min-height:44px;padding:0 14px;border-radius:14px;border:none;cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px}
-    .ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.08)}
-    .warn{background:rgba(245,158,11,.14);color:#fde68a;border:1px solid rgba(245,158,11,.22)}
-    .danger{background:rgba(239,68,68,.14);color:#fecaca;border:1px solid rgba(239,68,68,.22)}
-    .success{background:rgba(34,197,94,.14);color:#bbf7d0;border:1px solid rgba(34,197,94,.22)}
+    .hero-banner{
+      margin-top:10px;border:1px solid var(--border);background:linear-gradient(135deg,#0e1d34,#132946);border-radius:22px;padding:18px;
+      display:grid;grid-template-columns:1.35fr .95fr;gap:16px;overflow:hidden;position:relative
+    }
+    .hero-banner:before{
+      content:'';position:absolute;inset:-30% auto auto -10%;width:240px;height:240px;border-radius:50%;background:rgba(0,212,255,.09);filter:blur(20px)
+    }
+    .hero-copy{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;gap:12px}
+    .hero-kicker{
+      display:inline-flex;width:max-content;align-items:center;gap:8px;background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);padding:8px 12px;border-radius:999px;font-size:.75rem;font-weight:800;color:var(--accent2)
+    }
+    .hero-copy h1{font-size:1.55rem;line-height:1.5}
+    .hero-copy p{font-size:.92rem;line-height:1.9;color:#c9d3e3}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .hero-actions a{padding:11px 16px;border-radius:12px;font-weight:800;font-size:.84rem}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-secondary{background:rgba(255,255,255,.06);border:1px solid var(--border);color:#fff}
+    .hero-media{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;position:relative;z-index:1}
+    .mini-banner{
+      min-height:108px;border-radius:16px;border:1px solid rgba(255,255,255,.1);overflow:hidden;position:relative;background:#0e1c30
+    }
+    .mini-banner img{width:100%;height:100%;object-fit:cover}
+    .mini-banner .overlay-text{
+      position:absolute;inset:auto 0 0 0;padding:10px;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.15));
+      font-size:.76rem;font-weight:800
+    }
+    .banner-empty{
+      min-height:108px;border-radius:16px;border:1px dashed rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;
+      color:var(--muted);font-size:.8rem;padding:12px
+    }
 
-    .hidden{display:none!important}
+    .stats{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0 10px}
+    .stat{
+      min-width:170px;flex:1;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;
+      display:flex;align-items:center;gap:12px
+    }
+    .stat .icon{
+      width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.06);color:var(--accent)
+    }
+    .stat label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:4px}
+    .stat strong{font-size:1rem}
 
-    @media (max-width: 1100px){
-      .page{grid-template-columns:1fr}
-      .sidebar{position:static;height:auto}
-      .preview-wrap{grid-template-columns:1fr}
-      .phone{max-width:360px}
+    .section{margin-top:26px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+    .section-title{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:900}
+    .section-title .bar{width:5px;height:22px;border-radius:999px;background:var(--accent)}
+    .section-count{padding:4px 10px;border-radius:999px;border:1px solid var(--border);font-size:.74rem;color:var(--muted);background:var(--card)}
+
+    .featured{display:grid;grid-template-columns:1.6fr 1fr;gap:14px}
+    .featured-main,.side-card,.news-card,.tool-card,.contact-card{
+      background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:.25s
+    }
+    .featured-main:hover,.side-card:hover,.news-card:hover,.tool-card:hover,.contact-card:hover{
+      transform:translateY(-4px);border-color:var(--accent);box-shadow:0 14px 32px rgba(0,0,0,.28)
+    }
+    .featured-main{position:relative;min-height:360px;display:block;cursor:pointer}
+    .featured-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .featured-main .layer{position:absolute;inset:auto 0 0 0;padding:22px;background:linear-gradient(to top,rgba(0,0,0,.95),rgba(0,0,0,.48),transparent)}
+    .source-badge{
+      display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;color:#fff;font-size:.7rem;font-weight:800;margin-bottom:10px
+    }
+    .featured-main h2{font-size:1.12rem;line-height:1.7;margin-bottom:8px}
+    .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:rgba(255,255,255,.78);font-size:.72rem}
+    .featured-side{display:flex;flex-direction:column;gap:12px}
+    .side-card{display:flex;gap:12px;padding:12px;cursor:pointer}
+    .side-media{
+      width:96px;height:82px;border-radius:12px;overflow:hidden;flex-shrink:0;background:#0c1a2b;
+      display:flex;align-items:center;justify-content:center
+    }
+    .side-media img{width:100%;height:100%;object-fit:cover}
+    .side-title{
+      font-size:.82rem;font-weight:800;line-height:1.6;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+    }
+    .side-foot{display:flex;justify-content:space-between;gap:8px;font-size:.68rem;color:var(--muted)}
+
+    .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .news-card{display:flex;flex-direction:column;cursor:pointer}
+    .news-media{height:180px;background:#0b1a2d;position:relative;overflow:hidden}
+    .news-media img{width:100%;height:100%;object-fit:cover;transition:.35s}
+    .news-card:hover .news-media img{transform:scale(1.05)}
+    .no-media{height:100%;display:flex;align-items:center;justify-content:center;color:#445772;font-size:2rem}
+    .source-tag{
+      position:absolute;top:10px;right:10px;padding:5px 10px;border-radius:999px;color:#fff;font-size:.66rem;font-weight:800;box-shadow:0 5px 16px rgba(0,0,0,.2)
+    }
+    .trans-tag{
+      position:absolute;top:10px;left:10px;background:rgba(212,175,55,.95);color:#111;padding:5px 8px;border-radius:999px;font-size:.62rem;font-weight:900
+    }
+    .news-body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1}
+    .news-title{
+      font-size:.9rem;font-weight:800;line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden
+    }
+    .news-desc{
+      font-size:.75rem;line-height:1.7;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+    }
+    .news-foot{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);font-size:.68rem
+    }
+    .news-foot .name{font-weight:800;color:var(--accent2)}
+    .news-foot .time{color:var(--muted)}
+
+    .tool-grid,.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+    .tool-card,.contact-card{padding:16px;display:flex;align-items:flex-start;gap:12px}
+    .tool-card{cursor:pointer}
+    .tool-icon,.contact-icon{
+      width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+      font-size:1.2rem;flex-shrink:0;background:rgba(255,255,255,.06);color:var(--highlight)
+    }
+    .tool-body h3,.contact-body h3{font-size:.92rem;margin-bottom:6px}
+    .tool-body p,.contact-body p{font-size:.76rem;line-height:1.8;color:var(--muted)}
+
+    .empty{
+      background:var(--card);border:1px dashed var(--border);border-radius:18px;padding:30px;text-align:center;color:var(--muted)
+    }
+
+    .modal-wrap{
+      position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:20px;
+      opacity:0;pointer-events:none;z-index:3000;transition:.25s
+    }
+    .modal-wrap.open{opacity:1;pointer-events:auto}
+    .modal{
+      width:min(780px,100%);max-height:90vh;overflow:auto;background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:18px;position:relative
+    }
+    .modal-close{position:absolute;left:14px;top:14px;border:none;background:var(--accent);color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer}
+    .modal img{width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin-bottom:14px}
+    .modal h3{font-size:1.05rem;line-height:1.7;margin-bottom:10px;padding-left:42px}
+    .modal p{font-size:.86rem;line-height:1.95;color:#d3dae8;margin-bottom:15px}
+    .modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .modal-actions a,.modal-actions button{padding:11px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:800}
+    .modal-actions a{background:var(--accent);color:#fff}
+    .modal-actions button{background:rgba(255,255,255,.06);border:1px solid var(--border);color:#fff}
+
+    footer{margin-top:30px;padding:20px 16px calc(26px + var(--safe-bottom));background:var(--bg2);border-top:1px solid var(--border);border-radius:20px 20px 0 0}
+    .footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px}
+    .footer-block h4{font-size:.9rem;margin-bottom:8px}
+    .footer-block p,.footer-block li,.footer-block a{font-size:.76rem;line-height:1.9;color:var(--muted)}
+    .footer-block ul{list-style:none}
+    .footer-sources{display:flex;flex-wrap:wrap;gap:8px}
+    .footer-sources span{padding:6px 10px;background:rgba(255,255,255,.05);border-radius:999px;border:1px solid rgba(255,255,255,.06);font-size:.7rem}
+
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+    @keyframes rotate{to{transform:rotate(360deg)}}
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    @media (max-width: 1024px){
+      .hero-banner,.featured,.footer-grid{grid-template-columns:1fr}
     }
     @media (max-width: 700px){
-      .grid-2,.grid-3{grid-template-columns:1fr}
-      .content{padding-inline:12px}
-      .sidebar{padding-inline:12px}
-      .topbar h2{font-size:1.15rem}
+      :root{--header-h:78px;--ticker-h:32px;--filters-h:62px}
+      header{padding-inline:12px}
+      .logo-title{font-size:1rem}
+      .logo-sub{font-size:.66rem}
+      .hdr-right .pill-live span{display:none}
+      .hdr-btn span{display:none}
+      .search input{width:165px}
+      .featured-main{min-height:280px}
+      .featured-side{overflow:auto}
+      .featured-side .side-card{min-width:260px}
+      .hero-copy h1{font-size:1.2rem}
+    }
+    @media (max-width: 520px){
+      .news-grid,.tool-grid,.contact-grid{grid-template-columns:1fr}
+      .stat{min-width:100%}
+      .hero-media{grid-template-columns:1fr}
+      .logo-media{width:46px;height:46px}
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-logo" id="brandLogo"><span>م</span></div>
-        <div>
-          <h1 id="brandTitle">مرصد الأخبار العالمية</h1>
-          <p>لوحة تحكم كاملة للمصادر، الشريط، الهوية، البنرات، الروابط، والخطوط</p>
-        </div>
+
+  <header>
+    <div class="logo">
+      <div class="logo-media" id="siteLogoWrap">
+        <div class="logo-fallback">م</div>
       </div>
-
-      <nav class="nav">
-        <a href="#identity" class="active"><i class="fas fa-signature"></i> هوية الموقع</a>
-        <a href="#theme"><i class="fas fa-palette"></i> الألوان والخطوط</a>
-        <a href="#sources"><i class="fas fa-rss"></i> إدارة المصادر</a>
-        <a href="#ticker"><i class="fas fa-bullhorn"></i> شريط الأخبار</a>
-        <a href="#banners"><i class="fas fa-images"></i> البنرات</a>
-        <a href="#links"><i class="fas fa-link"></i> الروابط والأدوات</a>
-        <a href="#contacts"><i class="fas fa-address-book"></i> معلومات المتصلين</a>
-        <a href="#backup"><i class="fas fa-database"></i> نسخ واستعادة</a>
-      </nav>
-
-      <div class="side-actions">
-        <button class="btn-main" id="saveAllBtn"><i class="fas fa-save"></i> حفظ كل التعديلات</button>
-        <a class="btn-soft" href="index.html" target="_blank"><i class="fas fa-globe"></i> فتح الموقع</a>
-        <button class="btn-ok" id="syncPreviewBtn"><i class="fas fa-mobile-screen"></i> تحديث المعاينة</button>
+      <div class="logo-text">
+        <div class="logo-title" id="siteTitle">مرصد الأخبار العالمية</div>
+        <div class="logo-sub" id="siteSubtitle">World News Observatory · أخبار مباشرة</div>
       </div>
-    </aside>
+    </div>
 
-    <main class="content">
-      <div class="topbar">
-        <div>
-          <h2>لوحة التحكم الشاملة</h2>
-          <p>كل التعديلات تحفظ محلياً في المتصفح وتنعكس مباشرة على الصفحة الرئيسية.</p>
-        </div>
-        <div class="status-pill" id="saveStatus">جاهز للتعديل</div>
+    <div class="hdr-right">
+      <div class="pill-live">
+        <span class="live-dot"></span>
+        <span>مباشر</span>
       </div>
+      <button class="hdr-btn" id="refreshBtn" type="button">
+        <i class="fa-solid fa-rotate"></i>
+        <span>تحديث</span>
+      </button>
+    </div>
+  </header>
 
-      <section class="panel" id="identity">
-        <div class="panel-head">
-          <div>
-            <h3>هوية الموقع</h3>
-            <p>تغيير الاسم، الوصف، الشعار، وصورة الهوية بجوار الاسم.</p>
-          </div>
-        </div>
-        <div class="preview-wrap">
-          <div class="grid-2">
-            <div class="field">
-              <label>اسم الموقع</label>
-              <input id="siteTitle" type="text" />
-            </div>
-            <div class="field">
-              <label>العنوان الفرعي</label>
-              <input id="siteSubtitle" type="text" />
-            </div>
-            <div class="field full">
-              <label>وصف الفوتر</label>
-              <textarea id="siteFooterText"></textarea>
-            </div>
-            <div class="field">
-              <label>رابط صورة الشعار</label>
-              <input id="siteLogoUrl" type="url" placeholder="https://..." />
-              <small>يمكن وضع رابط صورة خارجية، أو رفع صورة من جهازك بالزر أسفل الحقل.</small>
-            </div>
-            <div class="field">
-              <label>حرف بديل عند عدم وجود صورة</label>
-              <input id="siteFallbackLetter" type="text" maxlength="2" />
-            </div>
-            <div class="field full">
-              <label>رفع شعار من الجهاز</label>
-              <div class="inline-actions">
-                <label class="ghost" for="logoUploader"><i class="fas fa-upload"></i> اختيار صورة</label>
-                <input class="hidden" id="logoUploader" type="file" accept="image/*" />
-                <button class="warn" id="removeLogoBtn" type="button"><i class="fas fa-trash"></i> حذف الصورة الحالية</button>
-              </div>
-            </div>
-            <div class="field">
-              <label>عنوان البنر الرئيسي</label>
-              <input id="heroTitle" type="text" />
-            </div>
-            <div class="field">
-              <label>وسم البنر</label>
-              <input id="heroLabel" type="text" />
-            </div>
-            <div class="field full">
-              <label>وصف البنر الرئيسي</label>
-              <textarea id="heroDescription"></textarea>
-            </div>
-            <div class="field">
-              <label>نص الزر الأساسي</label>
-              <input id="heroPrimaryText" type="text" />
-            </div>
-            <div class="field">
-              <label>رابط الزر الأساسي</label>
-              <input id="heroPrimaryUrl" type="text" />
-            </div>
-            <div class="field">
-              <label>نص الزر الثانوي</label>
-              <input id="heroSecondaryText" type="text" />
-            </div>
-            <div class="field">
-              <label>رابط الزر الثانوي</label>
-              <input id="heroSecondaryUrl" type="text" />
-            </div>
-          </div>
-
-          <div class="preview-card">
-            <div class="phone">
-              <div class="phone-notch"></div>
-              <div class="phone-screen">
-                <div class="p-header">
-                  <div class="p-logo" id="previewLogo"></div>
-                  <div>
-                    <div style="font-weight:900;font-size:.88rem" id="previewTitle"></div>
-                    <div style="font-size:.68rem;color:#d4af37" id="previewSubtitle"></div>
-                  </div>
-                </div>
-                <div class="p-ticker" id="previewTicker">عاجل: معاينة شريط الأخبار</div>
-                <div class="p-content">
-                  <div class="chip-row">
-                    <span class="p-chip">الكل</span>
-                    <span class="p-chip">عربي</span>
-                    <span class="p-chip">دولي</span>
-                  </div>
-                  <div class="p-banner" id="previewHero">معاينة البنر الرئيسي</div>
-                  <div class="p-card">
-                    <div class="p-img"></div>
-                    <div style="font-weight:800;font-size:.78rem">بطاقة خبر في شكل متوافق مع iPhone</div>
-                    <div style="font-size:.68rem;color:#9db0ca;line-height:1.8">المعاينة تساعدك تشوف الشكل النهائي بسرعة قبل فتح الموقع.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel" id="theme">
-        <div class="panel-head">
-          <div>
-            <h3>الألوان والخطوط</h3>
-            <p>تحكم كامل في ألوان الواجهة، الخط الرئيسي، وتباين العناصر.</p>
-          </div>
-        </div>
-        <div class="grid-3">
-          <div class="field"><label>لون الخلفية</label><input id="themeBg" type="color" /></div>
-          <div class="field"><label>الخلفية الثانوية</label><input id="themeBg2" type="color" /></div>
-          <div class="field"><label>لون البطاقات</label><input id="themeCard" type="color" /></div>
-          <div class="field"><label>لون الحدود</label><input id="themeBorder" type="color" /></div>
-          <div class="field"><label>اللون الأساسي</label><input id="themeAccent" type="color" /></div>
-          <div class="field"><label>اللون الذهبي/الثانوي</label><input id="themeAccent2" type="color" /></div>
-          <div class="field"><label>لون الإبراز</label><input id="themeHighlight" type="color" /></div>
-          <div class="field"><label>لون النص</label><input id="themeText" type="color" /></div>
-          <div class="field"><label>لون النصوص الثانوية</label><input id="themeMuted" type="color" /></div>
-          <div class="field full">
-            <label>الخط الرئيسي</label>
-            <select id="themeFont">
-              <option value="Cairo">Cairo</option>
-              <option value="Tajawal">Tajawal</option>
-              <option value="Changa">Changa</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel" id="sources">
-        <div class="panel-head">
-          <div>
-            <h3>إدارة المصادر</h3>
-            <p>إضافة مصدر جديد، تعديل مصدر قائم، تعطيله أو حذفه نهائياً.</p>
-          </div>
-          <div class="chip-row"><span class="chip" id="sourcesCounter">0 مصدر</span></div>
-        </div>
-        <div class="grid-3">
-          <div class="field"><label>معرّف المصدر ID</label><input id="srcId" type="text" placeholder="مثال: reuters" /></div>
-          <div class="field"><label>اسم المصدر</label><input id="srcName" type="text" /></div>
-          <div class="field"><label>لون المصدر</label><input id="srcColor" type="color" /></div>
-          <div class="field"><label>التصنيف</label><select id="srcCat"><option value="arabic">عربي</option><option value="intl">دولي</option></select></div>
-          <div class="field"><label>اللغة</label><select id="srcLang"><option value="ar">ar</option><option value="en">en</option></select></div>
-          <div class="field"><label>الحالة</label><select id="srcActive"><option value="true">مفعل</option><option value="false">متوقف</option></select></div>
-          <div class="field"><label>رابط الموقع</label><input id="srcSite" type="url" /></div>
-          <div class="field full"><label>روابط RSS</label><textarea id="srcFeeds" placeholder="ضع كل رابط في سطر مستقل"></textarea></div>
-        </div>
-        <div class="inline-actions" style="margin-top:14px">
-          <button class="btn-main" id="saveSourceBtn" type="button"><i class="fas fa-plus"></i> إضافة / تحديث المصدر</button>
-          <button class="ghost" id="resetSourceFormBtn" type="button"><i class="fas fa-rotate-left"></i> تفريغ الحقول</button>
-        </div>
-        <div class="list" id="sourcesList" style="margin-top:18px"></div>
-      </section>
-
-      <section class="panel" id="ticker">
-        <div class="panel-head">
-          <div>
-            <h3>شريط الأخبار</h3>
-            <p>التحكم في عنوان الشريط واختيار نمط العرض من الأخبار أو من عناصر يدوية.</p>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label>عنوان الشريط</label><input id="tickerLabelInput" type="text" /></div>
-          <div class="field"><label>نمط الشريط</label><select id="tickerMode"><option value="news">من الأخبار الحالية</option><option value="manual">يدوي</option></select></div>
-          <div class="field full"><label>العناصر اليدوية</label><textarea id="tickerItems" placeholder="كل عنصر في سطر منفصل"></textarea></div>
-        </div>
-      </section>
-
-      <section class="panel" id="banners">
-        <div class="panel-head">
-          <div>
-            <h3>إدارة البنرات</h3>
-            <p>إضافة بنرات جديدة مع صور وروابط، وتفعيل أو تعطيل أي بنر.</p>
-          </div>
-          <div class="chip-row"><span class="chip" id="bannersCounter">0 بنر</span></div>
-        </div>
-        <div class="grid-3">
-          <div class="field"><label>عنوان البنر</label><input id="bannerTitle" type="text" /></div>
-          <div class="field"><label>رابط الصورة</label><input id="bannerImage" type="url" /></div>
-          <div class="field"><label>الرابط عند الضغط</label><input id="bannerUrl" type="text" /></div>
-          <div class="field"><label>الحالة</label><select id="bannerActive"><option value="true">مفعل</option><option value="false">متوقف</option></select></div>
-        </div>
-        <div class="inline-actions" style="margin-top:14px">
-          <button class="btn-main" id="saveBannerBtn" type="button"><i class="fas fa-image"></i> إضافة / تحديث البنر</button>
-          <button class="ghost" id="resetBannerFormBtn" type="button"><i class="fas fa-rotate-left"></i> تفريغ الحقول</button>
-        </div>
-        <div class="list" id="bannersList" style="margin-top:18px"></div>
-      </section>
-
-      <section class="panel" id="links">
-        <div class="panel-head">
-          <div>
-            <h3>الروابط والأدوات</h3>
-            <p>إدارة البطاقات التفاعلية مثل Flightradar24 أو أي روابط تريد إضافتها.</p>
-          </div>
-          <div class="chip-row"><span class="chip" id="toolsCounter">0 أداة</span></div>
-        </div>
-        <div class="grid-3">
-          <div class="field"><label>اسم الرابط / الأداة</label><input id="toolTitle" type="text" /></div>
-          <div class="field"><label>الوصف</label><input id="toolDescription" type="text" /></div>
-          <div class="field"><label>الأيقونة FontAwesome</label><input id="toolIcon" type="text" placeholder="fa-link" /></div>
-          <div class="field"><label>الرابط</label><input id="toolUrl" type="url" /></div>
-          <div class="field"><label>الحالة</label><select id="toolActive"><option value="true">مفعل</option><option value="false">متوقف</option></select></div>
-        </div>
-        <div class="inline-actions" style="margin-top:14px">
-          <button class="btn-main" id="saveToolBtn" type="button"><i class="fas fa-link"></i> إضافة / تحديث الأداة</button>
-          <button class="ghost" id="resetToolFormBtn" type="button"><i class="fas fa-rotate-left"></i> تفريغ الحقول</button>
-        </div>
-        <div class="list" id="toolsList" style="margin-top:18px"></div>
-      </section>
-
-      <section class="panel" id="contacts">
-        <div class="panel-head">
-          <div>
-            <h3>معلومات المتصلين</h3>
-            <p>تحرير الهاتف، الواتساب، البريد الإلكتروني، والعنوان الظاهر في الموقع.</p>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label>رقم الهاتف</label><input id="contactPhone" type="text" /></div>
-          <div class="field"><label>رابط واتساب</label><input id="contactWhatsapp" type="text" /></div>
-          <div class="field"><label>البريد الإلكتروني</label><input id="contactEmail" type="email" /></div>
-          <div class="field"><label>العنوان</label><input id="contactAddress" type="text" /></div>
-        </div>
-      </section>
-
-      <section class="panel" id="backup">
-        <div class="panel-head">
-          <div>
-            <h3>نسخ احتياطي واستعادة</h3>
-            <p>تصدير إعدادات الموقع كملف JSON أو استيرادها مرة أخرى أو إعادة الضبط الافتراضي.</p>
-          </div>
-        </div>
-        <div class="inline-actions">
-          <button class="success" id="exportBtn" type="button"><i class="fas fa-file-export"></i> تصدير الإعدادات</button>
-          <label class="ghost" for="importInput"><i class="fas fa-file-import"></i> استيراد ملف إعدادات</label>
-          <input class="hidden" id="importInput" type="file" accept="application/json" />
-          <button class="danger" id="resetAllBtn" type="button"><i class="fas fa-trash-arrow-up"></i> إعادة الضبط الافتراضي</button>
-        </div>
-      </section>
-    </main>
+  <div class="ticker">
+    <div class="ticker-label">
+      <i class="fa-solid fa-bolt"></i>
+      <span id="tickerLabel">عاجل</span>
+    </div>
+    <div class="ticker-wrap">
+      <div class="ticker-inner" id="tickerInner">
+        <span>جاري تحميل الأخبار...</span>
+      </div>
+    </div>
   </div>
+
+  <div class="filters" id="filtersBar"></div>
+
+  <main>
+    <section class="hero-banner" id="heroBanner"></section>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="icon"><i class="fa-solid fa-satellite-dish"></i></div>
+        <div>
+          <label>المصادر المفعلة</label>
+          <strong id="statSources">0</strong>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="icon"><i class="fa-solid fa-newspaper"></i></div>
+        <div>
+          <label>إجمالي الأخبار</label>
+          <strong id="statNews">—</strong>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="icon"><i class="fa-solid fa-language"></i></div>
+        <div>
+          <label>الأخبار المترجمة</label>
+          <strong id="statTranslated">0</strong>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="icon"><i class="fa-solid fa-clock"></i></div>
+        <div>
+          <label>آخر تحديث</label>
+          <strong id="statUpdated">—</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="featuredSection">
+      <div class="section-head">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span>أبرز الأخبار</span>
+        </div>
+        <div class="section-count" id="featuredCount">0 عناصر</div>
+      </div>
+      <div class="featured" id="featuredGrid">
+        <div class="empty">لا توجد أخبار بارزة حالياً</div>
+      </div>
+    </section>
+
+    <section class="section" id="arabicSection">
+      <div class="section-head">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span>المصادر العربية</span>
+        </div>
+        <div class="section-count" id="arabicCount">0 خبر</div>
+      </div>
+      <div class="news-grid" id="arabicGrid">
+        <div class="empty">جاري تحميل الأخبار...</div>
+      </div>
+    </section>
+
+    <section class="section" id="intlSection">
+      <div class="section-head">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span>المصادر الدولية المترجمة</span>
+        </div>
+        <div class="section-count" id="intlCount">0 خبر</div>
+      </div>
+      <div class="news-grid" id="intlGrid">
+        <div class="empty">جاري تحميل الأخبار...</div>
+      </div>
+    </section>
+
+    <section class="section" id="toolsSection">
+      <div class="section-head">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span>روابط وأدوات المتابعة</span>
+        </div>
+        <div class="section-count" id="toolCount">0 روابط</div>
+      </div>
+      <div class="tool-grid" id="toolGrid">
+        <div class="empty">لا توجد روابط مفعلة حالياً</div>
+      </div>
+    </section>
+
+    <section class="section" id="contactsSection">
+      <div class="section-head">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span>معلومات التواصل</span>
+        </div>
+      </div>
+      <div class="contact-grid" id="contactGrid"></div>
+    </section>
+
+    <div class="modal-wrap" id="newsModal">
+      <div class="modal">
+        <button class="modal-close" id="closeModalBtn" type="button">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img id="modalImage" src="" alt="صورة الخبر" style="display:none" />
+        <div class="source-badge" id="modalSource" style="background:#1e3a5f;margin-bottom:12px;"></div>
+        <h3 id="modalTitle">عنوان الخبر</h3>
+        <p id="modalDesc">وصف الخبر</p>
+        <div class="modal-actions">
+          <a id="modalLink" href="#" target="_blank" rel="noopener noreferrer">قراءة الخبر من المصدر</a>
+          <button id="closeModalAction" type="button">إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-block">
+          <h4 id="footerTitle">مرصد الأخبار العالمية</h4>
+          <p id="footerDesc">منصة أخبار مرنة تغطي الأخبار العالمية في واجهة سريعة ومتوافقة مع الجوال.</p>
+        </div>
+
+        <div class="footer-block">
+          <h4>المصادر</h4>
+          <div class="footer-sources" id="footerSources"></div>
+        </div>
+
+        <div class="footer-block">
+          <h4>التواصل</h4>
+          <ul id="footerContacts"></ul>
+        </div>
+      </div>
+    </footer>
+  </main>
 
   <script>
     const STORAGE_KEY = 'worldNewsDashboardConfig_v2';
+
     const DEFAULT_CONFIG = {
-      site: { title:'مرصد الأخبار العالمية', subtitle:'World News Observatory · أخبار مباشرة', footerText:'منصة أخبار مرنة تدعم الإدارة الكاملة من خلال لوحة تحكم مستقلة.', logoUrl:'', fallbackLetter:'م' },
-      theme: { bg:'#0a1628', bg2:'#0d1e35', card:'#112240', border:'#1e3a5f', accent:'#c8102e', accent2:'#d4af37', highlight:'#00d4ff', text:'#e8eaf0', muted:'#8892a4', font:'Cairo' },
-      ticker: { label:'عاجل', mode:'news', manualItems:['مرحبا بك في مرصد الأخبار العالمية','يمكنك إدارة الشريط بالكامل من لوحة التحكم','التصميم متوافق مع شاشات الآيفون والأجهزة المحمولة'] },
-      hero: { label:'مركز المتابعة', title:'تابع الأخبار العالمية في واجهة سريعة ومرنة', description:'نسخة مطورة تدعم البنرات، لوحة التحكم، تغيير الهوية، وإدارة المصادر والروابط والألوان والخطوط بسهولة.', primaryText:'فتح لوحة التحكم', primaryUrl:'admin.html', secondaryText:'استعراض الأخبار', secondaryUrl:'#featuredSection' },
-      contacts: { phone:'+966500000000', whatsapp:'https://wa.me/966500000000', email:'news@example.com', address:'الرياض - المملكة العربية السعودية' },
+      site: {
+        title: 'مرصد الأخبار العالمية',
+        subtitle: 'World News Observatory · أخبار مباشرة',
+        footerText: 'منصة أخبار مرنة تغطي الأخبار العالمية في واجهة سريعة ومتوافقة مع الجوال.',
+        logoUrl: '',
+        fallbackLetter: 'م',
+        metaDescription: 'منصة أخبار مرنة تغطي الأخبار العالمية في واجهة سريعة ومتوافقة مع الجوال.',
+        faviconUrl: ''
+      },
+      theme: {
+        bg: '#0a1628',
+        bg2: '#0d1e35',
+        card: '#112240',
+        border: '#1e3a5f',
+        accent: '#c8102e',
+        accent2: '#d4af37',
+        highlight: '#00d4ff',
+        text: '#e8eaf0',
+        muted: '#8892a4',
+        font: 'Cairo'
+      },
+      ticker: {
+        label: 'عاجل',
+        mode: 'news',
+        manualItems: [
+          'مرحبا بك في مرصد الأخبار العالمية',
+          'تابع الأخبار العالمية من مصادر عربية ودولية',
+          'الواجهة متوافقة مع الجوال والأجهزة اللوحية'
+        ]
+      },
+      hero: {
+        label: 'مركز المتابعة',
+        title: 'تابع الأخبار العالمية في واجهة سريعة ومرنة',
+        description: 'نسخة مطورة تدعم البنرات، تغيير الهوية، إدارة المصادر، الروابط، الألوان، والخطوط بسهولة.',
+        primaryText: 'أبرز الأخبار',
+        primaryUrl: '#featuredSection',
+        secondaryText: 'المصادر العربية',
+        secondaryUrl: '#arabicSection'
+      },
+      contacts: {
+        phone: '+966500000000',
+        whatsapp: 'https://wa.me/966500000000',
+        email: 'news@example.com',
+        address: 'الرياض - المملكة العربية السعودية'
+      },
       tools: [
         {title:'Flightradar24', description:'متابعة حركة الطيران لحظة بلحظة', icon:'fa-plane', url:'https://www.flightradar24.com', active:true},
         {title:'Liveuamap', description:'خرائط حية للأحداث والنزاعات', icon:'fa-map-location-dot', url:'https://liveuamap.com', active:true}
       ],
       banners: [
-        {title:'لوحة تحكم شاملة', image:'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80', url:'admin.html', active:true},
-        {title:'إدارة الألوان والخطوط', image:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80', url:'admin.html#theme', active:true},
-        {title:'إدارة المصادر والروابط', image:'https://images.unsplash.com/photo-1504711331083-9c895941bf81?auto=format&fit=crop&w=1200&q=80', url:'admin.html#sources', active:true},
-        {title:'متوافق مع iPhone', image:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80', url:'admin.html', active:true}
+        {title:'أبرز الأخبار العالمية', image:'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80', url:'#featuredSection', active:true},
+        {title:'المصادر العربية', image:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80', url:'#arabicSection', active:true},
+        {title:'المصادر الدولية', image:'https://images.unsplash.com/photo-1504711331083-9c895941bf81?auto=format&fit=crop&w=1200&q=80', url:'#intlSection', active:true},
+        {title:'أدوات المتابعة', image:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80', url:'#toolsSection', active:true}
       ],
       sources: [
         {id:'aljazeera', name:'الجزيرة نت', color:'#e8282b', cat:'arabic', lang:'ar', active:true, feeds:['https://www.aljazeera.net/xml/rss2.0.xml'], site:'https://www.aljazeera.net'},
@@ -453,398 +522,371 @@
       ]
     };
 
-    function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
-    function merge(base, custom){
+    const FONT_MAP = {
+      Cairo: "'Cairo', sans-serif",
+      Tajawal: "'Tajawal', sans-serif",
+      Changa: "'Changa', sans-serif"
+    };
+
+    function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+    function mergeConfig(base, custom){
+      if(!custom || typeof custom !== 'object') return base;
       for(const key in custom){
-        if(custom[key] && typeof custom[key] === 'object' && !Array.isArray(custom[key]) && base[key]) base[key] = merge(base[key], custom[key]);
-        else base[key] = custom[key];
+        if(
+          custom[key] &&
+          typeof custom[key] === 'object' &&
+          !Array.isArray(custom[key]) &&
+          base[key] &&
+          typeof base[key] === 'object' &&
+          !Array.isArray(base[key])
+        ){
+          base[key] = mergeConfig(base[key], custom[key]);
+        }else{
+          base[key] = custom[key];
+        }
       }
       return base;
     }
+
     function loadConfig(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return clone(DEFAULT_CONFIG);
-        return merge(clone(DEFAULT_CONFIG), JSON.parse(raw));
-      }catch(e){ return clone(DEFAULT_CONFIG); }
-    }
-    function saveConfig(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-      setStatus('تم حفظ التعديلات بنجاح', true);
-      renderPreview();
-      renderCollections();
-      renderBrand();
+        if(!raw) return deepClone(DEFAULT_CONFIG);
+        return mergeConfig(deepClone(DEFAULT_CONFIG), JSON.parse(raw));
+      }catch(e){
+        return deepClone(DEFAULT_CONFIG);
+      }
     }
 
     let config = loadConfig();
-    let editSourceIndex = null;
-    let editBannerIndex = null;
-    let editToolIndex = null;
+    let allNews = [];
+    let selectedFilter = 'all';
+    let selectedSource = null;
+    let searchTerm = '';
+    let translatedCount = 0;
+    const translationCache = {};
 
-    function qs(id){ return document.getElementById(id); }
-    function setStatus(text, ok=false){
-      const el = qs('saveStatus');
-      el.textContent = text;
-      el.style.background = ok ? 'rgba(34,197,94,.12)' : 'rgba(245,158,11,.12)';
-      el.style.color = ok ? '#bbf7d0' : '#fde68a';
-      el.style.borderColor = ok ? 'rgba(34,197,94,.24)' : 'rgba(245,158,11,.24)';
+    function escapeHtml(str){
+      return String(str ?? '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
     }
 
-    function applyInputs(){
-      qs('siteTitle').value = config.site.title || '';
-      qs('siteSubtitle').value = config.site.subtitle || '';
-      qs('siteFooterText').value = config.site.footerText || '';
-      qs('siteLogoUrl').value = config.site.logoUrl || '';
-      qs('siteFallbackLetter').value = config.site.fallbackLetter || 'م';
-      qs('heroTitle').value = config.hero.title || '';
-      qs('heroLabel').value = config.hero.label || '';
-      qs('heroDescription').value = config.hero.description || '';
-      qs('heroPrimaryText').value = config.hero.primaryText || '';
-      qs('heroPrimaryUrl').value = config.hero.primaryUrl || '';
-      qs('heroSecondaryText').value = config.hero.secondaryText || '';
-      qs('heroSecondaryUrl').value = config.hero.secondaryUrl || '';
+    function ensureHeadAssets(){
+      document.title = config.site.title || 'مرصد الأخبار العالمية';
 
-      qs('themeBg').value = config.theme.bg;
-      qs('themeBg2').value = config.theme.bg2;
-      qs('themeCard').value = config.theme.card;
-      qs('themeBorder').value = config.theme.border;
-      qs('themeAccent').value = config.theme.accent;
-      qs('themeAccent2').value = config.theme.accent2;
-      qs('themeHighlight').value = config.theme.highlight;
-      qs('themeText').value = config.theme.text;
-      qs('themeMuted').value = config.theme.muted;
-      qs('themeFont').value = config.theme.font;
+      let descMeta = document.querySelector('meta[name="description"]');
+      if(descMeta){
+        descMeta.setAttribute('content', config.site.metaDescription || '');
+      }
 
-      qs('tickerLabelInput').value = config.ticker.label || '';
-      qs('tickerMode').value = config.ticker.mode || 'news';
-      qs('tickerItems').value = (config.ticker.manualItems || []).join('\n');
-
-      qs('contactPhone').value = config.contacts.phone || '';
-      qs('contactWhatsapp').value = config.contacts.whatsapp || '';
-      qs('contactEmail').value = config.contacts.email || '';
-      qs('contactAddress').value = config.contacts.address || '';
+      let favicon = document.getElementById('dynamicFavicon');
+      if(config.site.faviconUrl){
+        if(!favicon){
+          favicon = document.createElement('link');
+          favicon.rel = 'icon';
+          favicon.id = 'dynamicFavicon';
+          document.head.appendChild(favicon);
+        }
+        favicon.href = config.site.faviconUrl;
+      }else if(favicon){
+        favicon.remove();
+      }
     }
 
-    function bindLiveInputs(){
-      [
-        'siteTitle','siteSubtitle','siteFooterText','siteLogoUrl','siteFallbackLetter',
-        'heroTitle','heroLabel','heroDescription','heroPrimaryText','heroPrimaryUrl','heroSecondaryText','heroSecondaryUrl',
-        'themeBg','themeBg2','themeCard','themeBorder','themeAccent','themeAccent2','themeHighlight','themeText','themeMuted','themeFont',
-        'tickerLabelInput','tickerMode','tickerItems','contactPhone','contactWhatsapp','contactEmail','contactAddress'
-      ].forEach(id => qs(id).addEventListener('input', syncFromInputs));
-      qs('tickerMode').addEventListener('change', syncFromInputs);
-      qs('themeFont').addEventListener('change', syncFromInputs);
+    function applyTheme(){
+      const root = document.documentElement;
+      const t = config.theme;
+      root.style.setProperty('--bg', t.bg);
+      root.style.setProperty('--bg2', t.bg2);
+      root.style.setProperty('--card', t.card);
+      root.style.setProperty('--border', t.border);
+      root.style.setProperty('--accent', t.accent);
+      root.style.setProperty('--accent2', t.accent2);
+      root.style.setProperty('--highlight', t.highlight);
+      root.style.setProperty('--text', t.text);
+      root.style.setProperty('--muted', t.muted);
+      root.style.setProperty('--font', FONT_MAP[t.font] || FONT_MAP.Cairo);
+
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if(metaTheme) metaTheme.setAttribute('content', t.bg);
+
+      ensureHeadAssets();
     }
 
-    function syncFromInputs(){
-      config.site.title = qs('siteTitle').value.trim();
-      config.site.subtitle = qs('siteSubtitle').value.trim();
-      config.site.footerText = qs('siteFooterText').value.trim();
-      config.site.logoUrl = qs('siteLogoUrl').value.trim();
-      config.site.fallbackLetter = qs('siteFallbackLetter').value.trim() || 'م';
+    function renderIdentity(){
+      document.getElementById('siteTitle').textContent = config.site.title || '';
+      document.getElementById('siteSubtitle').textContent = config.site.subtitle || '';
+      document.getElementById('footerTitle').textContent = config.site.title || '';
+      document.getElementById('footerDesc').textContent = config.site.footerText || '';
 
-      config.hero.title = qs('heroTitle').value.trim();
-      config.hero.label = qs('heroLabel').value.trim();
-      config.hero.description = qs('heroDescription').value.trim();
-      config.hero.primaryText = qs('heroPrimaryText').value.trim();
-      config.hero.primaryUrl = qs('heroPrimaryUrl').value.trim();
-      config.hero.secondaryText = qs('heroSecondaryText').value.trim();
-      config.hero.secondaryUrl = qs('heroSecondaryUrl').value.trim();
+      const wrap = document.getElementById('siteLogoWrap');
+      if(config.site.logoUrl){
+        wrap.innerHTML = `<img src="${escapeHtml(config.site.logoUrl)}" alt="${escapeHtml(config.site.title || 'logo')}">`;
+      }else{
+        wrap.innerHTML = `<div class="logo-fallback">${escapeHtml(config.site.fallbackLetter || 'م')}</div>`;
+      }
 
-      config.theme.bg = qs('themeBg').value;
-      config.theme.bg2 = qs('themeBg2').value;
-      config.theme.card = qs('themeCard').value;
-      config.theme.border = qs('themeBorder').value;
-      config.theme.accent = qs('themeAccent').value;
-      config.theme.accent2 = qs('themeAccent2').value;
-      config.theme.highlight = qs('themeHighlight').value;
-      config.theme.text = qs('themeText').value;
-      config.theme.muted = qs('themeMuted').value;
-      config.theme.font = qs('themeFont').value;
-
-      config.ticker.label = qs('tickerLabelInput').value.trim();
-      config.ticker.mode = qs('tickerMode').value;
-      config.ticker.manualItems = qs('tickerItems').value.split('\n').map(v => v.trim()).filter(Boolean);
-
-      config.contacts.phone = qs('contactPhone').value.trim();
-      config.contacts.whatsapp = qs('contactWhatsapp').value.trim();
-      config.contacts.email = qs('contactEmail').value.trim();
-      config.contacts.address = qs('contactAddress').value.trim();
-
-      setStatus('هناك تعديلات غير محفوظة');
-      renderPreview();
-      renderBrand();
+      renderContacts();
+      renderFooterSources();
+      ensureHeadAssets();
     }
 
-    function renderBrand(){
-      qs('brandTitle').textContent = config.site.title || 'مرصد الأخبار العالمية';
-      const logo = qs('brandLogo');
-      logo.innerHTML = config.site.logoUrl
-        ? `<img src="${escape(config.site.logoUrl)}" alt="logo">`
-        : `<span>${escape(config.site.fallbackLetter || 'م')}</span>`;
-      document.title = `لوحة التحكم - ${config.site.title || 'مرصد الأخبار العالمية'}`;
-      document.documentElement.style.setProperty('--font', `'${config.theme.font}', sans-serif`);
-      document.documentElement.style.setProperty('--accent', config.theme.accent);
-      document.documentElement.style.setProperty('--accent2', config.theme.accent2);
-      document.documentElement.style.setProperty('--card', config.theme.card);
-      document.documentElement.style.setProperty('--bg2', config.theme.bg2);
-      document.documentElement.style.setProperty('--text', config.theme.text);
-      document.documentElement.style.setProperty('--muted', config.theme.muted);
-      document.querySelector('meta[name="theme-color"]').setAttribute('content', config.theme.bg);
+    function linkTargetAttrs(url){
+      return /^https?:\/\//i.test(url || '') ? 'target="_blank" rel="noopener noreferrer"' : '';
     }
 
-    function renderPreview(){
-      qs('previewTitle').textContent = config.site.title || 'اسم الموقع';
-      qs('previewSubtitle').textContent = config.site.subtitle || 'الوصف';
-      qs('previewTicker').textContent = `${config.ticker.label || 'عاجل'}: ${(config.ticker.manualItems?.[0] || 'معاينة شريط الأخبار')}`;
-      qs('previewHero').textContent = config.hero.title || 'معاينة البنر الرئيسي';
-      const logo = qs('previewLogo');
-      logo.style.background = config.theme.accent;
-      logo.innerHTML = config.site.logoUrl ? `<img src="${escape(config.site.logoUrl)}" alt="logo">` : `<span style="font-weight:900">${escape(config.site.fallbackLetter || 'م')}</span>`;
-      document.querySelector('.phone-screen').style.background = config.theme.bg;
-      document.querySelector('.p-header').style.background = config.theme.bg2;
-      document.querySelector('.p-ticker').style.background = config.theme.accent;
-      document.querySelectorAll('.p-chip').forEach(chip => { chip.style.background = config.theme.bg2; chip.style.borderColor = config.theme.border; });
-      document.querySelector('.p-banner').style.background = `linear-gradient(135deg, ${config.theme.bg2}, ${config.theme.card})`;
-      document.querySelector('.p-card').style.background = config.theme.card;
-      document.querySelector('.p-card').style.borderColor = config.theme.border;
-      document.querySelectorAll('.phone-screen, .p-card, .p-banner, .p-chip, .p-header, .p-ticker').forEach(el => el.style.color = config.theme.text);
-    }
+    function renderHero(){
+      const banners = (config.banners || []).filter(b => b.active).slice(0,4);
+      const cards = banners.length
+        ? banners.map(b => `
+            <a class="mini-banner" href="${escapeHtml(b.url || '#')}" ${linkTargetAttrs(b.url || '')}>
+              ${b.image ? `<img src="${escapeHtml(b.image)}" alt="${escapeHtml(b.title || '')}">` : ''}
+              <div class="overlay-text">${escapeHtml(b.title || '')}</div>
+            </a>
+          `).join('')
+        : `<div class="banner-empty">لا توجد بنرات مفعلة حالياً</div>`;
 
-    function renderCollections(){
-      renderSources();
-      renderBanners();
-      renderTools();
-    }
-
-    function renderSources(){
-      qs('sourcesCounter').textContent = `${config.sources.length} مصدر`;
-      qs('sourcesList').innerHTML = config.sources.map((src, idx) => `
-        <div class="item">
-          <div class="item-top">
-            <div class="item-title">
-              <span class="dot" style="background:${escape(src.color)}"></span>
-              <div>
-                <h4>${escape(src.name)}</h4>
-                <p>ID: ${escape(src.id)} • ${src.cat === 'arabic' ? 'عربي' : 'دولي'} • ${escape(src.lang)} • ${src.active ? 'مفعل' : 'متوقف'}</p>
-              </div>
-            </div>
-            <div class="item-actions">
-              <button class="edit-btn" data-action="edit-source" data-index="${idx}"><i class="fas fa-pen"></i> تعديل</button>
-              <button class="toggle-btn" data-action="toggle-source" data-index="${idx}">${src.active ? 'إيقاف' : 'تفعيل'}</button>
-              <button class="delete-btn" data-action="delete-source" data-index="${idx}">حذف</button>
-            </div>
+      document.getElementById('heroBanner').innerHTML = `
+        <div class="hero-copy">
+          <div class="hero-kicker">
+            <i class="fa-solid fa-sparkles"></i>
+            <span>${escapeHtml(config.hero.label || '')}</span>
           </div>
-          <div class="mini-grid">
-            <div class="mini-box"><strong>الموقع</strong><span>${escape(src.site || '-')}</span></div>
-            <div class="mini-box"><strong>روابط RSS</strong><span>${escape((src.feeds || []).join(' | ') || '-')}</span></div>
+          <h1>${escapeHtml(config.hero.title || '')}</h1>
+          <p>${escapeHtml(config.hero.description || '')}</p>
+          <div class="hero-actions">
+            <a class="btn-primary" href="${escapeHtml(config.hero.primaryUrl || '#')}">${escapeHtml(config.hero.primaryText || 'المزيد')}</a>
+            <a class="btn-secondary" href="${escapeHtml(config.hero.secondaryUrl || '#')}">${escapeHtml(config.hero.secondaryText || 'استعراض')}</a>
           </div>
         </div>
-      `).join('');
+        <div class="hero-media">${cards}</div>
+      `;
     }
 
-    function renderBanners(){
-      qs('bannersCounter').textContent = `${config.banners.length} بنر`;
-      qs('bannersList').innerHTML = config.banners.map((banner, idx) => `
-        <div class="item">
-          <div class="item-top">
-            <div class="item-title">
-              <div>
-                <h4>${escape(banner.title)}</h4>
-                <p>${banner.active ? 'مفعل' : 'متوقف'} • ${escape(banner.url || '#')}</p>
-              </div>
-            </div>
-            <div class="item-actions">
-              <button class="edit-btn" data-action="edit-banner" data-index="${idx}">تعديل</button>
-              <button class="toggle-btn" data-action="toggle-banner" data-index="${idx}">${banner.active ? 'إيقاف' : 'تفعيل'}</button>
-              <button class="delete-btn" data-action="delete-banner" data-index="${idx}">حذف</button>
-            </div>
+    function renderContacts(){
+      const contactGrid = document.getElementById('contactGrid');
+      const items = [
+        {
+          title:'الهاتف',
+          text:config.contacts.phone,
+          icon:'fa-phone',
+          href: config.contacts.phone ? `tel:${config.contacts.phone}` : '#'
+        },
+        {
+          title:'واتساب',
+          text:config.contacts.whatsapp,
+          icon:'fa-brands fa-whatsapp',
+          href: config.contacts.whatsapp || '#'
+        },
+        {
+          title:'البريد الإلكتروني',
+          text:config.contacts.email,
+          icon:'fa-envelope',
+          href: config.contacts.email ? `mailto:${config.contacts.email}` : '#'
+        },
+        {
+          title:'العنوان',
+          text:config.contacts.address,
+          icon:'fa-location-dot',
+          href:'#'
+        }
+      ].filter(item => item.text);
+
+      contactGrid.innerHTML = items.length ? items.map(item => `
+        <a class="contact-card" href="${escapeHtml(item.href)}" ${linkTargetAttrs(item.href)}>
+          <div class="contact-icon"><i class="${escapeHtml(item.icon)}"></i></div>
+          <div class="contact-body">
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.text)}</p>
           </div>
-          <div class="mini-grid">
-            <div class="mini-box"><strong>الصورة</strong><span>${escape(banner.image || '-')}</span></div>
-            <div class="mini-box"><strong>الرابط</strong><span>${escape(banner.url || '-')}</span></div>
-          </div>
-        </div>
-      `).join('');
+        </a>
+      `).join('') : `<div class="empty">لا توجد بيانات تواصل حالياً</div>`;
+
+      document.getElementById('footerContacts').innerHTML = items.length
+        ? items.map(item => `<li>${escapeHtml(item.title)}: ${escapeHtml(item.text)}</li>`).join('')
+        : `<li>لا توجد بيانات تواصل</li>`;
+    }
+
+    function renderFooterSources(){
+      const sourceWrap = document.getElementById('footerSources');
+      const active = (config.sources || []).filter(s => s.active);
+      document.getElementById('statSources').textContent = active.length;
+      sourceWrap.innerHTML = active.length
+        ? active.map(s => `<span>${escapeHtml(s.name)}</span>`).join('')
+        : `<span>لا توجد مصادر مفعلة</span>`;
     }
 
     function renderTools(){
-      qs('toolsCounter').textContent = `${config.tools.length} أداة`;
-      qs('toolsList').innerHTML = config.tools.map((tool, idx) => `
-        <div class="item">
-          <div class="item-top">
-            <div class="item-title">
-              <div>
-                <h4>${escape(tool.title)}</h4>
-                <p>${escape(tool.description || '')} • ${tool.active ? 'مفعل' : 'متوقف'}</p>
+      const tools = (config.tools || []).filter(t => t.active);
+      document.getElementById('toolCount').textContent = `${tools.length} روابط`;
+      document.getElementById('toolGrid').innerHTML = tools.length
+        ? tools.map(tool => `
+            <a class="tool-card" href="${escapeHtml(tool.url || '#')}" ${linkTargetAttrs(tool.url || '')}>
+              <div class="tool-icon"><i class="fa-solid ${escapeHtml(tool.icon || 'fa-link')}"></i></div>
+              <div class="tool-body">
+                <h3>${escapeHtml(tool.title || '')}</h3>
+                <p>${escapeHtml(tool.description || '')}</p>
               </div>
-            </div>
-            <div class="item-actions">
-              <button class="edit-btn" data-action="edit-tool" data-index="${idx}">تعديل</button>
-              <button class="toggle-btn" data-action="toggle-tool" data-index="${idx}">${tool.active ? 'إيقاف' : 'تفعيل'}</button>
-              <button class="delete-btn" data-action="delete-tool" data-index="${idx}">حذف</button>
-            </div>
-          </div>
-          <div class="mini-grid">
-            <div class="mini-box"><strong>الأيقونة</strong><span>${escape(tool.icon || '-')}</span></div>
-            <div class="mini-box"><strong>الرابط</strong><span>${escape(tool.url || '-')}</span></div>
-          </div>
+            </a>
+          `).join('')
+        : `<div class="empty">لا توجد روابط مفعلة حالياً</div>`;
+    }
+
+    function renderFilters(){
+      const activeSources = (config.sources || []).filter(s => s.active);
+
+      const filterBtn = (label, type, value, isActive) => `
+        <button class="filter-btn ${isActive ? 'active' : ''}" type="button" data-type="${type}" data-value="${value}">
+          ${escapeHtml(label)}
+        </button>
+      `;
+
+      const sourceBtns = activeSources.map(src => filterBtn(src.name, 'source', src.id, selectedSource === src.id)).join('');
+
+      const html = `
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" type="search" placeholder="بحث في الأخبار..." value="${escapeHtml(searchTerm)}">
         </div>
-      `).join('');
-    }
+        ${filterBtn('🌐 الكل', 'filter', 'all', selectedFilter === 'all' && !selectedSource)}
+        ${filterBtn('🟢 عربي', 'filter', 'arabic', selectedFilter === 'arabic')}
+        ${filterBtn('🌍 دولي', 'filter', 'intl', selectedFilter === 'intl')}
+        ${filterBtn('🔤 مترجم', 'filter', 'tr', selectedFilter === 'tr')}
+        ${sourceBtns}
+      `;
 
-    function resetSourceForm(){ editSourceIndex = null; qs('srcId').value=''; qs('srcName').value=''; qs('srcColor').value='#c8102e'; qs('srcCat').value='arabic'; qs('srcLang').value='ar'; qs('srcActive').value='true'; qs('srcSite').value=''; qs('srcFeeds').value=''; }
-    function resetBannerForm(){ editBannerIndex = null; qs('bannerTitle').value=''; qs('bannerImage').value=''; qs('bannerUrl').value=''; qs('bannerActive').value='true'; }
-    function resetToolForm(){ editToolIndex = null; qs('toolTitle').value=''; qs('toolDescription').value=''; qs('toolIcon').value='fa-link'; qs('toolUrl').value=''; qs('toolActive').value='true'; }
+      const bar = document.getElementById('filtersBar');
+      bar.innerHTML = html;
 
-    function upsertSource(){
-      const src = {
-        id: qs('srcId').value.trim(),
-        name: qs('srcName').value.trim(),
-        color: qs('srcColor').value,
-        cat: qs('srcCat').value,
-        lang: qs('srcLang').value,
-        active: qs('srcActive').value === 'true',
-        site: qs('srcSite').value.trim(),
-        feeds: qs('srcFeeds').value.split('\n').map(v => v.trim()).filter(Boolean)
-      };
-      if(!src.id || !src.name || !src.site || !src.feeds.length){ alert('من فضلك أكمل بيانات المصدر الأساسية'); return; }
-      const existingIndex = config.sources.findIndex((item, idx) => item.id === src.id && idx !== editSourceIndex);
-      if(existingIndex !== -1){ alert('هذا المعرّف مستخدم بالفعل'); return; }
-      if(editSourceIndex !== null) config.sources[editSourceIndex] = src;
-      else config.sources.push(src);
-      resetSourceForm(); renderSources(); setStatus('تم تعديل المصادر ولم يتم الحفظ بعد');
-    }
-
-    function upsertBanner(){
-      const banner = { title: qs('bannerTitle').value.trim(), image: qs('bannerImage').value.trim(), url: qs('bannerUrl').value.trim(), active: qs('bannerActive').value === 'true' };
-      if(!banner.title || !banner.image){ alert('العنوان ورابط الصورة مطلوبان'); return; }
-      if(editBannerIndex !== null) config.banners[editBannerIndex] = banner; else config.banners.push(banner);
-      resetBannerForm(); renderBanners(); setStatus('تم تعديل البنرات ولم يتم الحفظ بعد');
-    }
-
-    function upsertTool(){
-      const tool = { title: qs('toolTitle').value.trim(), description: qs('toolDescription').value.trim(), icon: qs('toolIcon').value.trim() || 'fa-link', url: qs('toolUrl').value.trim(), active: qs('toolActive').value === 'true' };
-      if(!tool.title || !tool.url){ alert('اسم الأداة والرابط مطلوبان'); return; }
-      if(editToolIndex !== null) config.tools[editToolIndex] = tool; else config.tools.push(tool);
-      resetToolForm(); renderTools(); setStatus('تم تعديل الروابط ولم يتم الحفظ بعد');
-    }
-
-    function attachListActions(){
-      document.body.addEventListener('click', e => {
-        const btn = e.target.closest('[data-action]');
-        if(!btn) return;
-        const index = Number(btn.dataset.index);
-        const action = btn.dataset.action;
-
-        if(action === 'edit-source'){
-          const src = config.sources[index]; editSourceIndex = index;
-          qs('srcId').value=src.id; qs('srcName').value=src.name; qs('srcColor').value=src.color; qs('srcCat').value=src.cat; qs('srcLang').value=src.lang; qs('srcActive').value=String(src.active); qs('srcSite').value=src.site; qs('srcFeeds').value=(src.feeds||[]).join('\n');
-          location.hash = '#sources';
-        }
-        if(action === 'toggle-source'){ config.sources[index].active = !config.sources[index].active; renderSources(); setStatus('تم تعديل حالة مصدر ولم يتم الحفظ بعد'); }
-        if(action === 'delete-source'){ if(confirm('حذف هذا المصدر؟')){ config.sources.splice(index,1); renderSources(); setStatus('تم حذف مصدر ولم يتم الحفظ بعد'); } }
-
-        if(action === 'edit-banner'){
-          const banner = config.banners[index]; editBannerIndex = index;
-          qs('bannerTitle').value=banner.title; qs('bannerImage').value=banner.image; qs('bannerUrl').value=banner.url; qs('bannerActive').value=String(banner.active); location.hash = '#banners';
-        }
-        if(action === 'toggle-banner'){ config.banners[index].active = !config.banners[index].active; renderBanners(); setStatus('تم تعديل حالة بنر ولم يتم الحفظ بعد'); }
-        if(action === 'delete-banner'){ if(confirm('حذف هذا البنر؟')){ config.banners.splice(index,1); renderBanners(); setStatus('تم حذف بنر ولم يتم الحفظ بعد'); } }
-
-        if(action === 'edit-tool'){
-          const tool = config.tools[index]; editToolIndex = index;
-          qs('toolTitle').value=tool.title; qs('toolDescription').value=tool.description; qs('toolIcon').value=tool.icon; qs('toolUrl').value=tool.url; qs('toolActive').value=String(tool.active); location.hash = '#links';
-        }
-        if(action === 'toggle-tool'){ config.tools[index].active = !config.tools[index].active; renderTools(); setStatus('تم تعديل حالة أداة ولم يتم الحفظ بعد'); }
-        if(action === 'delete-tool'){ if(confirm('حذف هذه الأداة؟')){ config.tools.splice(index,1); renderTools(); setStatus('تم حذف أداة ولم يتم الحفظ بعد'); } }
+      const input = document.getElementById('searchInput');
+      input.addEventListener('input', e => {
+        searchTerm = e.target.value.trim().toLowerCase();
+        renderNews();
       });
-    }
 
-    function exportConfig(){
-      const blob = new Blob([JSON.stringify(config, null, 2)], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'news-dashboard-config.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
+      bar.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
+          const value = btn.dataset.value;
 
-    function importConfig(file){
-      const reader = new FileReader();
-      reader.onload = () => {
-        try{
-          const data = JSON.parse(reader.result);
-          config = merge(clone(DEFAULT_CONFIG), data);
-          applyInputs(); renderPreview(); renderCollections(); renderBrand(); saveConfig(); resetSourceForm(); resetBannerForm(); resetToolForm();
-        }catch(e){ alert('ملف غير صالح'); }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetAll(){
-      if(!confirm('هل تريد إعادة جميع الإعدادات للوضع الافتراضي؟')) return;
-      config = clone(DEFAULT_CONFIG);
-      applyInputs(); renderPreview(); renderCollections(); renderBrand(); resetSourceForm(); resetBannerForm(); resetToolForm(); saveConfig();
-    }
-
-    function setupLogoUploader(){
-      qs('logoUploader').addEventListener('change', e => {
-        const file = e.target.files?.[0];
-        if(!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          config.site.logoUrl = reader.result;
-          qs('siteLogoUrl').value = reader.result;
-          renderBrand(); renderPreview(); setStatus('تم تحميل شعار جديد ولم يتم الحفظ بعد');
-        };
-        reader.readAsDataURL(file);
-      });
-      qs('removeLogoBtn').addEventListener('click', () => {
-        config.site.logoUrl = '';
-        qs('siteLogoUrl').value = '';
-        renderBrand(); renderPreview(); setStatus('تم حذف الشعار ولم يتم الحفظ بعد');
-      });
-    }
-
-    function syncNav(){
-      const links = [...document.querySelectorAll('.nav a')];
-      const sections = links.map(link => document.querySelector(link.getAttribute('href')));
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if(entry.isIntersecting){
-            links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+          if(type === 'filter'){
+            selectedFilter = value;
+            selectedSource = null;
+          }else{
+            selectedSource = selectedSource === value ? null : value;
+            selectedFilter = 'all';
           }
+
+          renderFilters();
+          renderNews();
         });
-      }, {threshold:.35});
-      sections.forEach(sec => sec && observer.observe(sec));
+      });
     }
 
-    function escape(str){ return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+    const PROXIES = [
+      {
+        url: url => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&count=15`,
+        parser: async r => {
+          const d = await r.json();
+          return d.status === 'ok' ? {type:'json', data:d} : null;
+        }
+      },
+      {
+        url: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+        parser: async r => {
+          const d = await r.json();
+          return d.contents ? {type:'xml', data:d.contents} : null;
+        }
+      },
+      {
+        url: url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        parser: async r => {
+          const t = await r.text();
+          return t && t.length > 200 ? {type:'xml', data:t} : null;
+        }
+      }
+    ];
 
-    qs('saveAllBtn').addEventListener('click', () => { syncFromInputs(); saveConfig(); });
-    qs('syncPreviewBtn').addEventListener('click', () => { syncFromInputs(); renderPreview(); renderBrand(); setStatus('تم تحديث المعاينة'); });
-    qs('saveSourceBtn').addEventListener('click', upsertSource);
-    qs('resetSourceFormBtn').addEventListener('click', resetSourceForm);
-    qs('saveBannerBtn').addEventListener('click', upsertBanner);
-    qs('resetBannerFormBtn').addEventListener('click', resetBannerForm);
-    qs('saveToolBtn').addEventListener('click', upsertTool);
-    qs('resetToolFormBtn').addEventListener('click', resetToolForm);
-    qs('exportBtn').addEventListener('click', exportConfig);
-    qs('importInput').addEventListener('change', e => e.target.files?.[0] && importConfig(e.target.files[0]));
-    qs('resetAllBtn').addEventListener('click', resetAll);
+    async function fetchFeed(feedUrl){
+      for(const proxy of PROXIES){
+        try{
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 10000);
+          const res = await fetch(proxy.url(feedUrl), { signal: controller.signal });
+          clearTimeout(timeout);
 
-    attachListActions();
-    setupLogoUploader();
-    bindLiveInputs();
-    applyInputs();
-    renderBrand();
-    renderPreview();
-    renderCollections();
-    resetSourceForm();
-    resetBannerForm();
-    resetToolForm();
-    syncNav();
-  </script>
-</body>
-</html>
+          if(res.ok){
+            const data = await proxy.parser(res);
+            if(data) return data;
+          }
+        }catch(e){}
+      }
+      return null;
+    }
+
+    function stripHtml(html){
+      const div = document.createElement('div');
+      div.innerHTML = html || '';
+      return (div.textContent || div.innerText || '').trim();
+    }
+
+    function extractImage(html){
+      const m = String(html || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+      return m ? m[1] : '';
+    }
+
+    function createItem(source, index, title, link, description, image, pubDate){
+      return {
+        id: `${source.id}_${index}_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        title,
+        titleAr: source.lang === 'ar' ? title : '',
+        description,
+        descriptionAr: source.lang === 'ar' ? description : '',
+        link,
+        image,
+        pubDate,
+        source: source.id,
+        sourceName: source.name,
+        sourceColor: source.color,
+        cat: source.cat,
+        lang: source.lang,
+        translated: source.lang === 'ar'
+      };
+    }
+
+    function parseResult(result, source){
+      try{
+        if(result.type === 'json'){
+          return (result.data.items || []).slice(0,12).map((item, idx) => {
+            const title = (item.title || '').trim();
+            const link = item.link || source.site;
+            const desc = stripHtml(item.description || item.content || '').slice(0,260);
+            const date = item.pubDate || new Date().toISOString();
+            const image = item.enclosure?.link || item.thumbnail || extractImage(item.description || item.content || '');
+            if(!title || !link) return null;
+            return createItem(source, idx, title, link, desc, image, date);
+          }).filter(Boolean);
+        }
+
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(result.data, 'text/xml');
+
+        return [...xml.querySelectorAll('item')].slice(0,12).map((item, idx) => {
+          const title = item.querySelector('title')?.textContent?.trim();
+          const link = item.querySelector('link')?.textContent?.trim() || source.site;
+          const rawDesc = item.querySelector('description')?.textContent || '';
+          const desc = stripHtml(rawDesc).slice(0,260);
+          const date = item.querySelector('pubDate')?.textContent?.trim() || new Date().toISOString();
+
+          let image = '';
+          const enclosure = item.querySelector('enclosure');
+          if(enclosure?.getAttribute('type')?.startsWith('image')){
+            image = enclosure.getAttribute('url') || '';
+          }
+          if(!image) image = extractImage(rawDesc);
+
